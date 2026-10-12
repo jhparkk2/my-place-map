@@ -6,6 +6,12 @@
 GitHub Pages에서 배포: Settings → Pages → Build and deployment → Deploy from a branch → main / (root) → Save.
 이후 https://jhparkk2.github.io/my-place-map/ 에서 확인하세요.
 
+## 발자국 v1.4 — 첫 화면과 검색 편의 개선
+- 새 장소 등록에서 장소 검색창을 먼저 보여주고 보조 버튼은 접어두어 화면을 단순화
+- 파스텔 지도(CARTO / OpenStreetMap)와 카테고리별 말풍선 마커, 사진이 들어간 지도 후기 카드
+- 카카오맵 상호명 직접 검색은 아직 연동 전입니다. 이를 위해 Kakao Developers에서 앱 생성, Kakao Map API 활성화, JavaScript 키의 SDK 도메인 설정이 필요합니다. REST API 비밀 키를 공개 웹페이지에 넣지 마세요.
+- 기존 사용자 사진·방문 기록은 같은 브라우저 IndexedDB에 유지됩니다.
+
 ## 제공 기능
 - 지도에서 장소 확인 (OpenStreetMap / Leaflet)
 - 장소 주소 검색 (OpenStreetMap Nominatim)
