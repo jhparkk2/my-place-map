@@ -1,0 +1,18 @@
+# 발자국 · 나만의 장소 지도
+
+실제로 방문한 맛집·카페·명소를 지도에 기록하는 아이폰 친화형 웹앱입니다.
+
+## 시작
+GitHub Pages에서 배포: Settings → Pages → Build and deployment → Deploy from a branch → main / (root) → Save.
+이후 https://jhparkk2.github.io/my-place-map/ 에서 확인하세요.
+
+## 제공 기능
+- 지도에서 장소 확인 (OpenStreetMap / Leaflet)
+- 장소 주소 검색 (OpenStreetMap Nominatim)
+- 방문 후기, 사진 최대 3장, 별점, 재방문 표시
+- 카테고리별 기록 보기
+- 내 기록(JSON) 내보내기/복원
+- 아이폰 Safari에서 홈 화면에 추가 (PWA)
+
+## 꼭 알아둘 점
+현재 v1은 시험용 개인 앱입니다. 로그인이나 서버 동기화가 없고 저장된 장소와 사진은 해당 브라우저의 IndexedDB에 남습니다. 기기를 바꾸거나 데이터를 삭제하기 전에 '내 기록 관리'에서 백업을 내려받으세요. 공유 기능은 장소와 후기 텍스트를 공유합니다. 온라인 지도와 장소 검색은 인터넷이 필요하며 OSM/Nominatim 사용 정책을 따라야 합니다. 공개 서비스를 출시하기 전에는 서버 저장, 개인정보 보호, 지도 서비스 운영 정책과 검색량 제한을 검토해야 합니다.
