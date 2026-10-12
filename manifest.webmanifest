@@ -1,0 +1,19 @@
+{
+  "name": "발자국 - 나만의 장소 지도",
+  "short_name": "발자국",
+  "description": "실제로 다녀온 곳을 기록하는 장소 중심 지도",
+  "lang": "ko-KR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8faf8",
+  "theme_color": "#114d41",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
