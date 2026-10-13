@@ -15,10 +15,13 @@ GitHub Pages에서 배포: Settings → Pages → Build and deployment → Deplo
 - 카카오 개발자 콘솔에서 JavaScript SDK 도메인(https://jhparkk2.github.io) 및 카카오맵 API 사용 설정 필요
 - 테스트 URL: https://jhparkk2.github.io/my-place-map/?v=15
 
-## 발자국 v1.4 — 첫 화면과 검색 편의 개선
+## 발자국 v1.5 — 국내 식당 검색과 홈 검색 기능 개선
 - 새 장소 등록에서 장소 검색창을 먼저 보여주고 보조 버튼은 접어두어 화면을 단순화
 - 파스텔 지도(CARTO / OpenStreetMap)와 카테고리별 말풍선 마커, 사진이 들어간 지도 후기 카드
-- 카카오맵 상호명 직접 검색은 아직 연동 전입니다. 이를 위해 Kakao Developers에서 앱 생성, Kakao Map API 활성화, JavaScript 키의 SDK 도메인 설정이 필요합니다. REST API 비밀 키를 공개 웹페이지에 넣지 마세요.
+- **카카오맵 상호명 직접 검색 연동**: 앱의 '관리 > 카카오 장소 검색 연결'에서 JavaScript 키를 등록하면 '인천 옥련동 정동진횟집' 같은 검색을 카카오 장소 DB로 확인합니다.
+- 카카오 개발자 페이지에서 지도 API를 활성화하고 JavaScript 키의 SDK 허용 도메인에 https://jhparkk2.github.io 를 등록하세요. 도메인 경로 `/my-place-map/`는 입력하지 않습니다.
+- REST API 키를 HTML 파일이나 공개 GitHub 저장소에 절대 넣지 마세요. 이 버전은 JavaScript 키만 브라우저 저장소에 보관합니다.
+- 첫 화면 바로 검색 기능을 추가했습니다. 카카오 검색에 실패하거나 키가 없다면 기존의 해외 지도 검색과 지도 직접 지정으로 전환합니다.
 - 기존 사용자 사진·방문 기록은 같은 브라우저 IndexedDB에 유지됩니다.
 
 ## 제공 기능
