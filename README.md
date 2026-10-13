@@ -6,6 +6,15 @@
 GitHub Pages에서 배포: Settings → Pages → Build and deployment → Deploy from a branch → main / (root) → Save.
 이후 https://jhparkk2.github.io/my-place-map/ 에서 확인하세요.
 
+## 발자국 v1.5 — 카카오맵 장소 검색 연결
+- 카카오 JavaScript SDK의 장소 검색(Places.keywordSearch) 연결. **REST API 키를 공개하지 않음**
+- 인천 옥련동 정동진횟집처럼 지역+상호 검색 후, 필요 시 상호명만 재검색
+- 검색 결과의 상호·주소 확인 후 선택해 방문 기록에 저장
+- 기존 파스텔 Leaflet 지도, IndexedDB 방문 기록·사진·후기·지역별 보기 유지
+- 카카오 API가 로드되지 않으면 기존 주소 검색 제공자 보조 사용
+- 카카오 개발자 콘솔에서 JavaScript SDK 도메인(https://jhparkk2.github.io) 및 카카오맵 API 사용 설정 필요
+- 테스트 URL: https://jhparkk2.github.io/my-place-map/?v=15
+
 ## 발자국 v1.4 — 첫 화면과 검색 편의 개선
 - 새 장소 등록에서 장소 검색창을 먼저 보여주고 보조 버튼은 접어두어 화면을 단순화
 - 파스텔 지도(CARTO / OpenStreetMap)와 카테고리별 말풍선 마커, 사진이 들어간 지도 후기 카드
