@@ -46,7 +46,7 @@
 <section class="panel active" id="mapPanel"><div class="sectiontitle"><h2>나만의 장소 지도</h2><span class="subtle" id="mapCount">0개 장소</span></div><div id="map" role="application" aria-label="저장한 장소 지도"></div><div class="map-legend"><span>🍜 맛집</span><span>☕ 카페</span><span>🌿 명소</span><span>🏡 숙소</span></div><p class="mapnote">📍 지도에서 장소를 눌러 내 기록을 확인하세요. 새 장소를 저장하려면 아래 버튼을 누르세요.</p><div class="sectiontitle"><h2>최근 발자국</h2><button class="topaction" id="morePlaces">전체 보기</button></div><div class="places" id="recentPlaces"></div></section>
 <section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="재방문">❤️ 재방문</button></div><div class="places" id="allPlaces"></div></section>
 <section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 발자국</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
-<section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup" id="kakaoSetup"><h3>🟡 카카오 장소 검색 연결</h3><p>국내 식당을 정확하게 검색하려면 기존에 발급받은 <b>카카오 JavaScript 키</b>를 등록해 주세요. REST API 키는 입력하지 마세요.</p><label class="field"><span>JavaScript 키</span><input id="kakaoJsKey" placeholder="카카오 JavaScript 키" autocomplete="off" spellcheck="false"></label><button type="button" id="saveKakaoKey" class="btn secondary">카카오 연결하기</button><p class="field-hint" id="kakaoKeyStatus"></p><p class="field-hint">JavaScript SDK 도메인: https://jhparkk2.github.io (경로 없이)</p></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존에 저장한 발자국 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다.</div></section>
+<section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존에 저장한 발자국 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다.</div></section>
 <div class="foot">발자국 · 직접 가본 곳을 기록하는 지도 · 시험판 v1.5</div></div>
 <button class="btn cta" id="addBtn">＋ 새로운 장소 기록하기</button>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새로운 발자국</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
@@ -215,53 +215,55 @@ function kakaoScore(p,q){
  return score;
 }
 
-var kakaoSDKLoading=null;
-function savedKakaoKey(){try{return(localStorage.getItem("footprint-kakao-js-key")||"").trim()}catch(e){return""}}
-function loadKakao(){
- if(window.kakao&&kakao.maps&&kakao.maps.services)return Promise.resolve();
- if(kakaoSDKLoading)return kakaoSDKLoading;
- var key=savedKakaoKey();if(!key)return Promise.reject(Error("카카오 키 미등록"));
- kakaoSDKLoading=new Promise(function(resolve,reject){
-  var script=document.createElement("script"),done=false;
-  var timer=setTimeout(function(){finish(Error("카카오 서버 연결 시간 초과"))},12000);
-  function finish(err){if(done)return;done=true;clearTimeout(timer);if(err){kakaoSDKLoading=null;reject(err)}else resolve()}
-  script.src="https://dapi.kakao.com/v2/maps/sdk.js?appkey="+encodeURIComponent(key)+"&libraries=services&autoload=false";
-  script.async=true;script.onerror=function(){finish(Error("카카오 SDK를 불러오지 못했습니다. JavaScript SDK 도메인을 확인해 주세요."))};
-  script.onload=function(){try{if(!window.kakao||!kakao.maps)throw Error("카카오 지도 설정 오류");kakao.maps.load(function(){if(kakao.maps.services)finish();else finish(Error("카카오 장소검색 미활성화"))})}catch(e){finish(e)}};
-  document.head.appendChild(script);
- });return kakaoSDKLoading;
-}
-async function fetchKakao(q){
- await loadKakao();
- return new Promise(function(resolve,reject){
-  try{new kakao.maps.services.Places().keywordSearch(q,function(data,status){
-    if(status===kakao.maps.services.Status.ZERO_RESULT)return resolve([]);
-    if(status!==kakao.maps.services.Status.OK)return reject(Error("카카오 지도 API 검색 오류"));
-    resolve(data.map(function(p){return{name:p.place_name,address:p.road_address_name||p.address_name||"",lat:+p.y,lon:+p.x}}));
-   },{size:15})}catch(e){reject(e)}
- });
-}
 async function searchPlaces(){
- var q=$("placeSearch").value.trim()||$("placeName").value.trim();if(!q){alert("가게 이름을 입력해 주세요.");return}
- if(searchBusy)return;searchBusy=true;$("placeSearch").value=q;$("searchBtn").disabled=true;$("searchBtn").textContent="검색 중";
- var box=$("searchResults");box.innerHTML='<div class="searchstatus">🔎 장소를 찾고 있어요…</div>';
+ var q=$("placeSearch").value.trim()||$("placeName").value.trim();
+ if(!q){alert("가게 이름 또는 지역을 입력해 주세요.");return;}
+ if(searchBusy)return;
+ $("placeSearch").value=q;searchBusy=true;$("searchBtn").disabled=true;$("searchBtn").textContent="검색 중";
+ var box=$("searchResults");box.innerHTML='<div class="searchstatus">🔎 카카오맵에서 장소를 찾고 있어요…</div>';
+ var found=[],errors=0,usingKakao=kakaoReady();
  try{
-  var found=places.filter(function(p){return plausibleName(q,p.name,p.address)}).map(function(p){return{name:p.name,address:p.address,lat:p.lat,lon:p.lon,saved:true}}),notice="";
-  if(savedKakaoKey()){
-    try{var rows=await fetchKakao(q);if(!rows.length&&q.includes(" ")){var last=q.split(/\s+/).pop();if(last.length>1)rows=await fetchKakao(last)}found=found.concat(rows)}
-    catch(e){notice="카카오 검색 실패: "+e.message}
-  }else notice="카카오 키가 등록되지 않았습니다. 관리 탭에서 연결하면 국내 식당 검색 정확도가 높아집니다.";
-  if(!savedKakaoKey()||notice.startsWith("카카오 검색 실패")){
-    var answers=await Promise.allSettled([fetchPhoton(q),fetchNominatim(q)]);
-    answers.forEach(function(r){if(r.status==="fulfilled")found=found.concat(r.value)})
+  places.forEach(function(p){
+   if(searchKey(p.name+" "+p.address).includes(searchKey(q))||plausibleName(q,p.name,p.address)){
+    found.push({name:p.name,address:p.address,lat:p.lat,lon:p.lon,saved:true});
+   }
+  });
+  if(usingKakao){
+   var words=q.split(/\s+/).filter(Boolean),queries=[q];
+   if(words.length>3)queries.push(words.slice(-2).join(" "));
+   if(words.length>1)queries.push(words[words.length-1]);
+   queries=queries.filter(function(v,i,a){return a.indexOf(v)===i;});
+   for(var i=0;i<queries.length;i++){
+    try{
+     var results=await fetchKakao(queries[i],q);
+     found=found.concat(results);
+    }catch(e){errors++;}
+    if(found.some(function(p){return !p.saved&&plausibleName(q,p.name,p.address);}))break;
+   }
+  } else {
+   // 카카오 API 접속 장애 시 기존 해외 검색을 보조 수단으로 유지합니다.
+   var attempts=await Promise.allSettled([fetchPhoton(q),fetchNominatim(q)]);
+   attempts.forEach(function(v){if(v.status==="fulfilled")found=found.concat(v.value);else errors++;});
   }
-  var seen=new Set();found=found.filter(function(p){var k=searchKey(p.name)+":"+Math.round(p.lat*5000)+":"+Math.round(p.lon*5000);if(seen.has(k))return false;seen.add(k);return true}).slice(0,15);
-  box.innerHTML="";found.forEach(addResult);
-  if(notice){var tip=document.createElement("div");tip.className="searchstatus";tip.textContent="ℹ "+notice;box.appendChild(tip)}
-  if(!found.length){$("searchMore").open=true;var msg=document.createElement("div");msg.className="searchstatus";msg.textContent="검색 결과가 없어요. 관리에서 카카오 키를 연결하거나 지도를 눌러 지정해 주세요.";box.appendChild(msg)}
-  else{var msg=document.createElement("div");msg.className="searchstatus";msg.textContent="결과를 누르면 위치가 자동으로 설정돼요.";box.appendChild(msg)}
- }catch(e){box.textContent="장소 검색 실패. 다른 검색어 또는 지도 직접 지정을 이용해 주세요."}
- finally{searchBusy=false;$("searchBtn").disabled=false;$("searchBtn").textContent="검색"}
+  var matched=found.filter(function(p){return p.saved||plausibleName(q,p.name,p.address);});
+  matched.sort(function(a,b){return kakaoScore(b,q)-kakaoScore(a,q);});
+  var seen=new Set(),unique=matched.filter(function(p){
+   var key=searchKey(p.name)+":"+Math.round(p.lat*5000)+":"+Math.round(p.lon*5000);
+   if(seen.has(key))return false;seen.add(key);return true;
+  }).slice(0,15);
+  box.innerHTML="";unique.forEach(addResult);
+  if(!unique.length){
+   $("searchMore").open=true;
+   var msg=document.createElement("div");msg.className="searchstatus";
+   msg.textContent=usingKakao?(errors?"카카오맵 검색 연결을 확인할 수 없어요. 카카오맵 사용 설정과 등록한 웹 주소를 확인해 주세요.":"검색된 장소가 없어요. 가게 이름만으로 다시 검색하거나 카카오맵에서 위치를 확인해 보세요."):"카카오맵을 불러오지 못했어요. 잠시 후 다시 시도하거나 아래 보조 검색을 이용해 주세요.";
+   box.appendChild(msg);
+  }else{
+   var caption=document.createElement("div");caption.className="searchstatus";
+   caption.textContent="검색 결과에서 실제 방문한 장소를 선택하세요. 주소도 함께 확인해 주세요.";
+   box.appendChild(caption);
+  }
+ }catch(err){box.textContent="장소 검색에 실패했어요. 네트워크 연결을 확인한 뒤 다시 시도해 주세요.";}
+ finally{searchBusy=false;$("searchBtn").disabled=false;$("searchBtn").textContent="검색";}
 }
 function setPickerMarker(lat,lon){candidatePoint={lat:+lat,lon:+lon};if(!pickerMap)return;if(!pickerMarker){pickerMarker=L.marker([lat,lon],{draggable:true}).addTo(pickerMap);pickerMarker.on("dragend",function(){var point=pickerMarker.getLatLng();setPickerMarker(point.lat,point.lng);});}else pickerMarker.setLatLng([lat,lon]);$("confirmPick").disabled=false;$("pickStatus").textContent="선택된 지도 위치: "+lat.toFixed(6)+", "+lon.toFixed(6)+" · 핀을 움직여 조정할 수 있어요.";}
 function openPicker(){if(typeof L==="undefined"){alert("지도를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.");return;}
@@ -278,9 +280,6 @@ $("searchBtn").addEventListener("click",searchPlaces);
 function quickSearch(){var q=$("quickSearch").value.trim();if(!q)return $("quickSearch").focus();resetForm();openOverlay("formOverlay");$("placeSearch").value=q;searchPlaces()}
 $("quickSearchBtn").addEventListener("click",quickSearch);
 $("quickSearch").addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();quickSearch()}});
-function kakaoKeyStatus(){var k=savedKakaoKey();$("kakaoJsKey").value=k;$("kakaoKeyStatus").textContent=k?"✅ 이 브라우저에 카카오 키가 저장됐어요.":"⚠ 카카오 키가 등록되지 않았어요."}
-$("saveKakaoKey").addEventListener("click",function(){var k=$("kakaoJsKey").value.trim();if(k&&!/^[a-zA-Z0-9]{15,80}$/.test(k)){alert("JavaScript 키를 확인해 주세요.");return}try{if(k)localStorage.setItem("footprint-kakao-js-key",k);else localStorage.removeItem("footprint-kakao-js-key");kakaoKeyStatus();alert("설정이 저장됐어요.");location.reload()}catch(e){alert("키를 저장하지 못했어요.")}});
-kakaoKeyStatus();
 $("showPickMap").addEventListener("click",openPicker);
 $("naverSearch").addEventListener("click",function(){var query=$("placeSearch").value.trim()||$("placeName").value.trim();if(!query){alert("찾을 가게 이름을 먼저 입력해 주세요.");return;}window.open("https://search.naver.com/search.naver?query="+encodeURIComponent(query),"_blank","noopener");});
 $("pasteAddress").addEventListener("click",async function(){var pasted="";try{if(navigator.clipboard&&navigator.clipboard.readText)pasted=await navigator.clipboard.readText();}catch(err){}if(!pasted.trim()){var input=window.prompt("네이버에서 복사한 도로명 주소를 붙여넣어 주세요.\n예: 인천 연수구 옥련로 107","");if(input===null)return;pasted=input;}pasted=pasted.trim().split(/\n/).map(function(v){return v.trim();}).filter(Boolean).slice(0,4).join(" ");if(!pasted){alert("주소를 복사하거나 입력해 주세요.");return;}$("placeSearch").value=pasted;searchPlaces();});
