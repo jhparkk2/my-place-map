@@ -160,6 +160,20 @@
 .share-photo-preview img{width:90px;height:90px;object-fit:cover;border-radius:10px;flex:none}
 .share-photo-preview p{font-size:12px;line-height:1.6;color:#496856;margin:0}
 .share-fallback-hint{font-size:12px;line-height:1.65;color:#78612f;background:#fff9e9;padding:12px;border-radius:12px;margin:11px 0}
+
+/* v2.4 공유받은 화면을 발자국 장소 상세 디자인으로 */
+.shared-hero{border-radius:19px;overflow:hidden;background:#f0f7f0;margin:7px 0 10px}
+.shared-hero img{display:block;width:100%;height:280px;object-fit:cover}
+.shared-hero-empty{min-height:185px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;color:#6b8776;line-height:1.65;text-align:center;border:1px dashed #cbded0;border-radius:19px;font-size:13px}
+.shared-hero-empty b{font-size:40px}
+.shared-caption{font-size:12px;color:#789185;text-align:right;margin-bottom:12px}
+.shared-kicker{display:flex;justify-content:space-between;gap:8px;align-items:center;margin:12px 0 17px}
+.shared-kicker .stars{color:#e8a138;font-size:20px;white-space:nowrap;font-weight:850}
+.shared-kicker .stars small{color:#253c32;font-size:14px;margin-left:5px}
+.shared-readonly{font-size:12px;line-height:1.6;color:#587467;background:#f1f8f2;border-radius:12px;padding:12px;margin:18px 0}
+.shared-detail-info{padding:16px;background:#fafcf9;border:1px solid #e9efe9;border-radius:16px;display:grid;gap:13px;margin:8px 0 14px}
+.shared-visit-card{margin:13px 0 18px}
+.shared-visit-card h3{font-size:17px;margin:8px 0 13px}
 </style></head>
 <body><div class="app">
 <header class="header"><div class="brand"><span class="brandicon">👣</span>발자국</div><button class="topaction" id="backupTop">내 기록 백업 ↗</button></header>
@@ -170,7 +184,7 @@
 <section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="재방문">❤️ 재방문</button></div><div class="places" id="allPlaces"></div></section>
 <section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 발자국</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
 <section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존에 저장한 발자국 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다.</div></section>
-<div class="foot">발자국 · 직접 가본 곳을 기록하는 지도 · 시험판 v2.3</div></div>
+<div class="foot">발자국 · 직접 가본 곳을 기록하는 지도 · 시험판 v2.4</div></div>
 <button class="btn cta" id="addBtn">＋ 새로운 장소 기록하기</button>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새로운 발자국</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
 <form id="placeForm"><div class="form-intro">🔎 <strong>장소 이름만 입력해서 검색</strong>해 보세요.<br>검색 결과를 선택한 다음 사진과 후기를 남기면 돼요.</div>
@@ -202,11 +216,13 @@
 </div></div>
 
 <div class="overlay" id="sharedPlaceOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sharedPlaceTitle">
-<div class="sheethead"><h2>👣 발자국에서 공유한 장소</h2><button class="x" data-close="sharedPlaceOverlay" aria-label="닫기">×</button></div>
-<h3 id="sharedPlaceTitle" class="shared-place-title">장소</h3>
-<p class="share-intro">가족·친구가 공유한 장소 정보입니다. 이 화면은 공유 시점의 내용이며 작성자의 개인 기록이나 댓글에는 접근할 수 없어요.</p>
-<div class="shared-meta" id="sharedPlaceMeta"></div>
-<div class="shared-actions actions"><button class="btn secondary" type="button" id="sharedNaverBtn">🟢 네이버 검색 ↗</button><button class="btn light" type="button" id="sharedMapBtn">📍 지도에서 보기 ↗</button></div>
+<div class="sheethead"><h2 id="sharedPlaceTitle">공유받은 장소</h2><button class="x" data-close="sharedPlaceOverlay" aria-label="닫기">×</button></div>
+<div class="shared-hero" id="sharedHero"></div><p class="shared-caption" id="sharedPhotoCaption"></p>
+<div class="shared-kicker" id="sharedKicker"></div>
+<div class="shared-detail-info" id="sharedPlaceMeta"></div>
+<div id="sharedRevisit"></div><div class="shared-visit-card" id="sharedVisit"></div>
+<div class="shared-readonly">👣 친구·가족이 공유한 장소의 읽기 전용 화면입니다. 작성자의 다른 기록과 댓글에는 접근할 수 없어요.</div>
+<div class="shared-actions actions"><button class="btn secondary" type="button" id="sharedNaverBtn">🟢 네이버 검색 ↗</button><button class="btn light" type="button" id="sharedMapBtn">📍 길찾기 ↗</button></div>
 <div class="actions"><button class="btn" type="button" id="sharedBackBtn">내 발자국 보기</button></div>
 </div></div>
 <div class="overlay" id="visitOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="visitTitle"><div class="sheethead"><h2 id="visitTitle">👣 재방문 기록 남기기</h2><button class="x" data-close="visitOverlay" aria-label="닫기">×</button></div>
@@ -441,7 +457,7 @@ function shareText(p,o){
 
 function snapshotForShare(p,o){
  var latest=latestVisit(p);
- var snapshot={v:1,n:String(p.name||"").slice(0,90),c:String(p.category||"").slice(0,20)};
+ var snapshot={v:2,n:String(p.name||"").slice(0,90),c:String(p.category||"").slice(0,20)};
  if(o.address){
   if(p.address)snapshot.a=String(p.address).slice(0,160);
   if(Number.isFinite(+p.lat)&&Number.isFinite(+p.lon)){snapshot.y=+p.lat;snapshot.x=+p.lon;}
@@ -452,9 +468,9 @@ function snapshotForShare(p,o){
  if(o.review){
   snapshot.rt=latest.rating;
   if(latest.date)snapshot.d=latest.date;
-  if(latest.review)snapshot.t=String(latest.review).slice(0,280);
+  if(latest.review)snapshot.t=String(latest.review).slice(0,280);snapshot.count=Math.min(99,visitEntries(p).length);if(p.revisit)snapshot.rv=1;
  }
- if(o.naver)snapshot.nv=1;
+ if(o.naver)snapshot.nv=1;if(o.photo&&sharePhotoSource(p))snapshot.im=1;
  return snapshot;
 }
 function encodeSharedSnapshot(payload){
@@ -469,8 +485,8 @@ function decodeSharedSnapshot(encoded){
   var bin=atob(base),bytes=new Uint8Array(bin.length);
   for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
   var p=JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(bytes));
-  if(!p||p.v!==1||typeof p.n!=="string"||!p.n.trim()||p.n.length>90)return null;
-  var out={v:1,n:p.n.slice(0,90),c:String(p.c||"").slice(0,20)};
+  if(!p||(p.v!==1&&p.v!==2)||typeof p.n!=="string"||!p.n.trim()||p.n.length>90)return null;
+  var out={v:p.v,n:p.n.slice(0,90),c:String(p.c||"").slice(0,20)};
   if(typeof p.a==="string")out.a=p.a.slice(0,160);
   if(typeof p.city==="string")out.city=p.city.slice(0,40);
   if(typeof p.town==="string")out.town=p.town.slice(0,40);
@@ -480,6 +496,11 @@ function decodeSharedSnapshot(encoded){
   if(typeof p.d==="string")out.d=p.d.slice(0,10);
   if(typeof p.t==="string")out.t=p.t.slice(0,280);
   if(p.nv===1)out.nv=1;
+  if(p.v===2){
+   if(Number.isFinite(p.count))out.count=Math.max(1,Math.min(99,Math.floor(p.count)));
+   if(p.rv===1&&Number.isFinite(p.rt))out.rv=1;
+   if(p.im===1)out.im=1;
+  }
   return out;
  }catch(err){return null;}
 }
@@ -494,39 +515,66 @@ function getSharedPlaceFromHash(){
  return decodeSharedSnapshot(raw.slice(7));
 }
 function showIncomingSharedPlace(){
- var data=getSharedPlaceFromHash();
- if(!data)return false;
- $("sharedPlaceTitle").textContent=data.n;
+ var d=getSharedPlaceFromHash();if(!d)return false;
+ $("sharedPlaceTitle").textContent=d.n;
+ var hero=$("sharedHero");hero.innerHTML="";
+ var local=d.im&&places.find(function(p){return p.name===d.n&&(!d.a||p.address===d.a);});
+ var photo=local&&sharePhotoSource(local);
+ var caption=$("sharedPhotoCaption");
+ if(photo){
+  var img=document.createElement("img");img.src=photo;img.alt=d.n+" 방문 사진";hero.appendChild(img);
+  caption.textContent="📷 내 기기에 저장된 방문 사진";
+ }else{
+  var empty=document.createElement("div");empty.className="shared-hero-empty";
+  var symbol=document.createElement("b");symbol.textContent=d.im?"📷":"📍";
+  var note=document.createElement("span");note.textContent=d.im?
+  "공유된 사진은 카카오톡에서 확인해 주세요. 다른 기기에서도 여기서 사진을 보려면 온라인 사진 저장소가 필요합니다.":
+  "공유받은 장소";empty.appendChild(symbol);empty.appendChild(note);hero.appendChild(empty);caption.textContent="";
+ }
+ var kicker=$("sharedKicker");kicker.innerHTML="";
+ var badge=document.createElement("span");badge.className="detail-category";badge.textContent=emoji(d.c)+" "+(d.c||"장소");kicker.appendChild(badge);
+ if(d.rt){
+  var stars=document.createElement("div");stars.className="stars";stars.textContent="★".repeat(d.rt)+"☆".repeat(5-d.rt);
+  var score=document.createElement("small");score.textContent=d.rt+".0 / 5점";stars.appendChild(score);kicker.appendChild(stars);
+ }
  var box=$("sharedPlaceMeta");box.innerHTML="";
- function field(label,value){
-  var node=document.createElement("div");node.className="shared-row";
-  var heading=document.createElement("small");heading.textContent=label;
-  var body=document.createElement("strong");body.textContent=value;
-  node.appendChild(heading);node.appendChild(body);box.appendChild(node);
+ function field(ico,title,value){
+  var row=document.createElement("div");row.className="detail-info-line";
+  var icon=document.createElement("span");icon.className="info-icon";icon.textContent=ico;
+  var inside=document.createElement("div");var label=document.createElement("small");label.textContent=title;
+  var bold=document.createElement("strong");bold.textContent=value;inside.appendChild(label);inside.appendChild(bold);
+  row.appendChild(icon);row.appendChild(inside);box.appendChild(row);return bold;
  }
- if(data.a)field("📍 장소 주소",data.a);
- if(data.ph){
-  var row=document.createElement("div");row.className="shared-row";
-  var label=document.createElement("small");label.textContent="☎️ 전화번호";row.appendChild(label);
-  var phone=document.createElement("a");phone.textContent=data.ph;
-  var clean=data.ph.replace(/[^0-9+]/g,"");
-  if(clean.length>=7&&clean.length<=16)phone.href="tel:"+clean;
-  row.appendChild(phone);box.appendChild(row);
+ if(d.d)field("📅","최근 방문일",dateText(d.d));
+ if(d.city||d.town)field("🗂️","지역",[d.city||"",d.town||""].filter(Boolean).join(" · "));
+ if(d.a)field("📍","장소 주소",d.a);
+ if(d.ph){
+  var phone=field("☎️","장소 전화번호",d.ph),digits=d.ph.replace(/[^0-9+]/g,"");
+  if(digits.length>=7&&digits.length<=16){
+   var link=document.createElement("a");link.href="tel:"+digits;link.textContent=d.ph;phone.textContent="";phone.appendChild(link);
+  }
  }
- if(data.rt)field("⭐ 방문 별점",data.rt+" / 5");
- if(data.d)field("📅 방문일",dateText(data.d));
- if(data.t)field("✍️ 공유한 후기",data.t);
- if(!box.children.length)field("장소",data.n);
+ if(!box.children.length)field("📍","장소",d.n);
+ var revisit=$("sharedRevisit");revisit.innerHTML="";
+ if(d.rv){var heart=document.createElement("div");heart.className="detail-heart active";heart.textContent="❤️ 다시 가고 싶은 장소로 저장됨";revisit.appendChild(heart);}
+ var history=$("sharedVisit");history.innerHTML="";
+ if(d.rt||d.t||d.d){
+  var heading=document.createElement("h3");heading.textContent="📒 나의 방문 기록";
+  var count=document.createElement("span");count.className="visit-count";count.textContent="총 "+(d.count||1)+"회 방문";
+  heading.appendChild(count);history.appendChild(heading);
+  var record=document.createElement("div");record.className="visit-record";
+  var top=document.createElement("div");top.className="visit-record-top";
+  var dt=document.createElement("strong");dt.textContent="📅 "+dateText(d.d);
+  var rt=document.createElement("span");rt.textContent=d.rt?"★".repeat(d.rt):"";
+  top.appendChild(dt);top.appendChild(rt);record.appendChild(top);
+  var review=document.createElement("p");review.textContent=d.t||"후기가 기록되지 않았어요.";
+  record.appendChild(review);history.appendChild(record);
+ }
  var naver=$("sharedNaverBtn"),mapBtn=$("sharedMapBtn");
- naver.style.display=data.nv?"":"none";
- mapBtn.style.display=Number.isFinite(data.y)&&Number.isFinite(data.x)?"":"none";
- naver.onclick=function(){
-  var q=[data.city||"",data.town||"",data.n].filter(Boolean).join(" ").trim();
-  window.open("https://search.naver.com/search.naver?query="+encodeURIComponent(q),"_blank","noopener");
- };
- mapBtn.onclick=function(){
-  window.open("https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(data.y+","+data.x),"_blank","noopener");
- };
+ naver.style.display=d.nv?"":"none";
+ mapBtn.style.display=Number.isFinite(d.y)&&Number.isFinite(d.x)?"":"none";
+ naver.onclick=function(){var q=[d.city||"",d.town||"",d.n].filter(Boolean).join(" ");window.open("https://search.naver.com/search.naver?query="+encodeURIComponent(q),"_blank","noopener");};
+ mapBtn.onclick=function(){window.open("https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(d.y+","+d.x),"_blank","noopener");};
  openOverlay("sharedPlaceOverlay");return true;
 }
 function sharePhotoSource(p){
