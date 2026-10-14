@@ -189,7 +189,7 @@
 </div>
 <p class="share-intro"><strong>보낼 내용 미리보기</strong></p><div class="share-preview" id="sharePreview"></div>
 <div class="share-link-info"><strong>🔗 발자국 장소 링크가 포함됩니다</strong>친구가 링크를 누르면 발자국 웹앱에서 선택한 장소를 볼 수 있어요. 사진은 링크에 담기지 않으며 필요하면 따로 보내 주세요.</div><div class="actions"><button id="shareSend" type="button" class="btn">🔗 발자국 링크 공유</button><button id="shareCopy" type="button" class="btn secondary">링크·내용 복사</button></div><div class="actions"><button id="sharePhotoSend" type="button" class="btn light">📷 사진만 별도로 공유</button></div>
-<p class="share-note">🔒 장소 링크는 받은 사람이 다른 사람에게 전달할 수도 있습니다. 링크에 포함된 선택 항목은 링크를 아는 누구나 볼 수 있습니다. 계정 초대·친구만 열람 제한·댓글 동기화는 아직 지원되지 않습니다. 방문 사진은 링크에 포함되지 않습니다.</p>
+<p class="share-note">🔒 장소 링크는 받은 사람이 다른 사람에게 전달할 수도 있습니다. 링크에 포함된 선택 항목은 링크를 아는 누구나 볼 수 있습니다. 긴 후기는 링크에 처음 280자까지만 담깁니다. 계정 초대·친구만 열람 제한·댓글 동기화는 아직 지원되지 않습니다. 방문 사진은 링크에 포함되지 않습니다.</p>
 </div></div>
 
 <div class="overlay" id="sharedPlaceOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sharedPlaceTitle">
@@ -550,7 +550,7 @@ $("backupTop").addEventListener("click",function(){selectTab("managePanel");});
 $("morePlaces").addEventListener("click",function(){selectTab("listPanel");});
 document.querySelectorAll(".tab").forEach(function(b){b.addEventListener("click",function(){selectTab(b.dataset.tab);});});
 $("filters").addEventListener("click",function(e){var b=e.target.closest("[data-filter]");if(!b)return;activeFilter=b.dataset.filter;document.querySelectorAll(".chip").forEach(function(x){x.classList.toggle("active",x===b);});redraw();});
-document.querySelectorAll("[data-close]").forEach(function(b){b.addEventListener("click",function(){var id=b.dataset.close;closeOverlay(id);if(id==="photoOverlay"&&lastPhotoTrigger)lastPhotoTrigger.focus();});});
+document.querySelectorAll("[data-close]").forEach(function(b){b.addEventListener("click",function(){var id=b.dataset.close;closeOverlay(id);if(id==="photoOverlay"&&lastPhotoTrigger)lastPhotoTrigger.focus();if(id==="sharedPlaceOverlay"&&location.hash.indexOf("#place=")===0)history.replaceState(null,"",location.pathname+location.search);});});
 ["recentPlaces","allPlaces"].forEach(function(id){$(id).addEventListener("click",function(e){var card=e.target.closest("[data-id]");if(card)showDetail(card.dataset.id);});$(id).addEventListener("keydown",function(e){if(e.key==="Enter"){var card=e.target.closest("[data-id]");if(card)showDetail(card.dataset.id);}});});
 
 function searchKey(s){return String(s||"").toLowerCase().replace(/\s+/g,"").replace(/[(){}\[\],.]/g,"");}
