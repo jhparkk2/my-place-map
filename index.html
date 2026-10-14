@@ -184,7 +184,7 @@
 <label class="switchline"><input id="sharePhone" type="checkbox"> ☎️ 전화번호 포함</label>
 <label class="switchline"><input id="shareReview" type="checkbox" checked> ⭐ 최근 방문 별점·후기 포함</label>
 <label class="switchline"><input id="shareNaver" type="checkbox" checked> 🟢 네이버 검색 링크 포함</label>
-<label class="switchline"><input id="sharePhoto" type="checkbox"> 📷 사진도 별도로 보내기</label>
+
 <p class="share-mini" id="sharePhotoHelp">사진은 지원되는 기기에서만 첨부할 수 있어요.</p>
 </div>
 <p class="share-intro"><strong>보낼 내용 미리보기</strong></p><div class="share-preview" id="sharePreview"></div>
@@ -409,7 +409,7 @@ function naverSearchQuery(p){
 }
 
 function getShareOptions(){
- return {address:$("shareAddress").checked,phone:$("sharePhone").checked,review:$("shareReview").checked,naver:$("shareNaver").checked,photo:$("sharePhoto").checked};
+ return {address:$("shareAddress").checked,phone:$("sharePhone").checked,review:$("shareReview").checked,naver:$("shareNaver").checked};
 }
 function shareText(p,o){
  o=o||{address:true,phone:false,review:true,naver:true};
@@ -535,9 +535,8 @@ function renderSharePreview(){
 function openShareSheet(){
  var p=places.find(function(x){return x.id===currentId;});if(!p)return;
  $("sharePlaceTitle").textContent="📍 "+p.name;
- $("shareAddress").checked=true;$("sharePhone").checked=false;$("shareReview").checked=true;$("shareNaver").checked=true;$("sharePhoto").checked=false;
+ $("shareAddress").checked=true;$("sharePhone").checked=false;$("shareReview").checked=true;$("shareNaver").checked=true;
  var hasPhoto=!!sharePhotoSource(p);
- $("sharePhoto").disabled=!hasPhoto;
  $("sharePhotoHelp").textContent=hasPhoto?"앱 링크를 먼저 보낸 뒤 사진은 별도 버튼으로 보낼 수 있어요.":"등록한 방문 사진이 없어 사진 전송을 사용할 수 없어요.";
  $("sharePhotoSend").disabled=!hasPhoto;
  renderSharePreview();openOverlay("shareOverlay");
@@ -829,7 +828,7 @@ $("naverSearchBtn").addEventListener("click",function(){
 $("navigateBtn").addEventListener("click",function(){var p=places.find(function(q){return q.id===currentId;});if(p)window.open("https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(p.lat+","+p.lon),"_blank","noopener");});
 
 $("shareBtn").addEventListener("click",openShareSheet);
-["shareAddress","sharePhone","shareReview","shareNaver","sharePhoto"].forEach(function(id){$(id).addEventListener("change",renderSharePreview);});
+["shareAddress","sharePhone","shareReview","shareNaver"].forEach(function(id){$(id).addEventListener("change",renderSharePreview);});
 $("shareCopy").addEventListener("click",async function(){
  var p=places.find(function(q){return q.id===currentId;});if(!p)return;
  var opts=getShareOptions();var t=shareText(p,opts)+"\n\n🔗 발자국에서 열기:\n"+buildSharedPlaceUrl(p,opts);
@@ -843,7 +842,7 @@ $("shareSend").addEventListener("click",async function(){
  var t=shareText(p,opts),btn=$("shareSend");btn.disabled=true;
  try{
   if(navigator.share){
-   await navigator.share({title:p.name+" · 발자국",text:t,url:url});
+   await navigator.share({title:p.name+" · 발자국",text:"🔗 발자국에서 장소 열기:\n"+url+"\n\n"+t,url:url});
   }else if(navigator.clipboard&&navigator.clipboard.writeText){
    await navigator.clipboard.writeText(t+"\n\n🔗 발자국에서 열기:\n"+url);
    alert("발자국 장소 링크를 복사했어요. 카카오톡에 붙여넣어 주세요.");
