@@ -125,6 +125,14 @@
 .comment-reply-state.active{display:flex}
 .comment-reply-state button{border:0;background:none;color:#235a40;text-decoration:underline}
 .detail-phone-link{color:#176e50;text-decoration:underline;text-underline-offset:3px}
+
+/* v2.0.1: 전화번호 정보 항상 표시 + 카카오 검색 보조 */
+.phone-add{border:0;background:#e6f4ed;border-radius:9px;padding:7px 11px;color:#126549;font-weight:800;font-size:13px;cursor:pointer}
+.phone-hint{font-size:12px;color:#81968a}
+.phone-search-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.phone-search-status{font-size:12px;color:#657e71;line-height:1.65;margin-top:8px}
+.phone-choice{display:block;width:100%;text-align:left;border:1px solid #d9e9de;border-radius:11px;background:#f8fbf8;padding:10px;margin:7px 0;color:#173d2b;font-size:13px}
+.phone-choice small{display:block;font-size:12px;color:#688477;margin:4px 0 0}
 </style></head>
 <body><div class="app">
 <header class="header"><div class="brand"><span class="brandicon">👣</span>발자국</div><button class="topaction" id="backupTop">내 기록 백업 ↗</button></header>
@@ -135,12 +143,12 @@
 <section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="재방문">❤️ 재방문</button></div><div class="places" id="allPlaces"></div></section>
 <section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 발자국</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
 <section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존에 저장한 발자국 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다.</div></section>
-<div class="foot">발자국 · 직접 가본 곳을 기록하는 지도 · 시험판 v2.0</div></div>
+<div class="foot">발자국 · 직접 가본 곳을 기록하는 지도 · 시험판 v2.0.1</div></div>
 <button class="btn cta" id="addBtn">＋ 새로운 장소 기록하기</button>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새로운 발자국</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
 <form id="placeForm"><div class="form-intro">🔎 <strong>장소 이름만 입력해서 검색</strong>해 보세요.<br>검색 결과를 선택한 다음 사진과 후기를 남기면 돼요.</div>
 <label class="field"><span>어디 다녀오셨어요? *</span><div class="locationrow"><input id="placeSearch" placeholder="예: 인천 옥련동 정동진횟집" autocomplete="off" enterkeyhint="search"><button class="btn secondary" id="searchBtn" type="button">검색</button></div><p class="field-hint">장소명이나 동네 + 가게 이름으로 검색해 주세요.</p><div class="searchres" id="searchResults" role="status" aria-live="polite"></div><details class="search-more" id="searchMore"><summary>가게가 검색되지 않나요? 다른 방법 보기</summary><p class="searchhelp">카카오맵에서도 장소를 찾을 수 없다면 네이버에서 주소를 복사하거나 지도에서 직접 위치를 찍을 수 있어요.</p><div class="searchactions"><button class="btn light" id="naverSearch" type="button">🟢 네이버에서 가게 찾기 ↗</button><button class="btn light" id="kakaoSearch" type="button">🟡 카카오맵 검색 ↗</button><button class="btn secondary" id="pasteAddress" type="button">📋 주소 붙여넣기</button><button class="btn secondary" id="showPickMap" type="button">📍 지도에서 위치 지정</button></div></details><div id="pickBox" class="pickbox" style="display:none"><h3>📍 지도에서 정확한 위치 선택</h3><p>지도를 확대해서 실제 가게가 있는 곳을 터치해 주세요. 핀이 놓인 위치로 저장됩니다.</p><div id="pickMap" class="pickmap"></div><div class="actions"><button class="btn light" id="locateMe" type="button">⌖ 내 주변 보기</button><button class="btn secondary" id="confirmPick" type="button" disabled>이 위치로 지정하기</button></div><p id="pickStatus" class="searchstatus">먼저 지도에서 위치를 눌러 주세요.</p></div><div id="selectedLocation" class="selected" style="display:none"></div></label>
-<label class="field"><span>내 기록에 표시할 이름 *</span><input id="placeName" required maxlength="100" placeholder="예: 정동진횟집"></label><label class="field"><span>장소 전화번호 (선택)</span><input id="placePhone" type="tel" inputmode="tel" maxlength="30" placeholder="예: 032-123-4567"></label><label class="field"><span>장소 종류</span><select id="placeCategory"><option>맛집</option><option>카페</option><option>명소</option><option>숙소</option><option>기타</option></select></label><div class="row"><label class="field"><span>시·도</span><select id="regionCity"><option value="">시·도 선택</option></select></label><label class="field"><span>동네</span><input id="regionTown" maxlength="40" placeholder="예: 옥련동"></label></div><p class="searchhelp">지역별 보기를 위한 분류예요. 자동 입력된 값도 직접 수정할 수 있어요.</p>
+<label class="field"><span>내 기록에 표시할 이름 *</span><input id="placeName" required maxlength="100" placeholder="예: 정동진횟집"></label><div class="field"><span>장소 전화번호 (선택)</span><input id="placePhone" type="tel" inputmode="tel" maxlength="30" placeholder="예: 032-123-4567"><div class="phone-search-actions"><button type="button" id="findPhoneBtn" class="btn light">🔎 카카오에서 전화번호 찾기</button></div><div id="phoneSearchResults" class="phone-search-status" role="status" aria-live="polite"></div></div><label class="field"><span>장소 종류</span><select id="placeCategory"><option>맛집</option><option>카페</option><option>명소</option><option>숙소</option><option>기타</option></select></label><div class="row"><label class="field"><span>시·도</span><select id="regionCity"><option value="">시·도 선택</option></select></label><label class="field"><span>동네</span><input id="regionTown" maxlength="40" placeholder="예: 옥련동"></label></div><p class="searchhelp">지역별 보기를 위한 분류예요. 자동 입력된 값도 직접 수정할 수 있어요.</p>
 <div class="row"><label class="field"><span>방문한 날짜</span><input id="placeDate" type="date"></label><label class="field"><span>나만의 별점</span><select id="placeRating"><option value="5">★★★★★ 5점</option><option value="4">★★★★☆ 4점</option><option value="3">★★★☆☆ 3점</option><option value="2">★★☆☆☆ 2점</option><option value="1">★☆☆☆☆ 1점</option></select></label></div>
 <label class="field"><span>솔직한 방문 후기</span><textarea id="placeReview" maxlength="2000" placeholder="무엇이 좋았나요? 다음에 다시 오면 무엇을 주문할까요?"></textarea></label><label class="field"><span>방문 사진 (최대 3장)</span><input id="placePhotos" type="file" accept="image/*" multiple><small class="subtle">사진은 기기 내에 저장돼요. 용량을 줄여 자동 압축합니다.</small><div class="photoPreview" id="photoPreview"></div></label><label class="switchline"><input id="placeRevisit" type="checkbox"> ❤️ 다음에 또 가고 싶은 장소</label>
 <div class="actions"><button class="btn" type="submit" id="saveBtn">발자국 저장하기</button></div></form></div></div>
@@ -260,7 +268,7 @@ function renderMarkers(){
  });
  if(coords.length===1)map.setView(coords[0],14);else if(coords.length>1)map.fitBounds(coords,{padding:[40,40],maxZoom:13});
 }
-function resetForm(){editingId=null;selectedCoords=null;photosForSave=[];$("placeForm").reset();$("placeDate").value=new Date().toLocaleDateString("en-CA");$("formTitle").textContent="새로운 발자국";$("saveBtn").textContent="발자국 저장하기";$("selectedLocation").style.display="none";$("searchResults").innerHTML="";$("searchMore").open=false;$("pickBox").style.display="none";candidatePoint=null;$("confirmPick").disabled=true;$("pickStatus").textContent="먼저 지도에서 위치를 눌러 주세요.";$("photoPreview").innerHTML="";$("regionCity").value="";$("regionTown").value="";}
+function resetForm(){editingId=null;selectedCoords=null;photosForSave=[];$("phoneSearchResults").innerHTML="";$("placeForm").reset();$("placeDate").value=new Date().toLocaleDateString("en-CA");$("formTitle").textContent="새로운 발자국";$("saveBtn").textContent="발자국 저장하기";$("selectedLocation").style.display="none";$("searchResults").innerHTML="";$("searchMore").open=false;$("pickBox").style.display="none";candidatePoint=null;$("confirmPick").disabled=true;$("pickStatus").textContent="먼저 지도에서 위치를 눌러 주세요.";$("photoPreview").innerHTML="";$("regionCity").value="";$("regionTown").value="";}
 function setLocation(lat,lon,address){selectedCoords={lat:+lat,lon:+lon,address:String(address||"위치 지정"),area:areaFromAddress(address)};var r=detectRegion(String(address||"")+" "+$("placeSearch").value+" "+$("placeName").value);if(r.city)$("regionCity").value=r.city;if(r.town)$("regionTown").value=r.town;$("selectedLocation").textContent="✅ 선택한 위치: "+selectedCoords.address;$("selectedLocation").style.display="block";$("searchResults").innerHTML="";}
 function areaFromAddress(address){var x=String(address||"").trim();var ar=x.split(/[\s,]+/).filter(Boolean);return ar.slice(0,2).join(" ")||"기타";}
 function showPhotos(){var box=$("photoPreview");box.innerHTML="";photosForSave.forEach(function(src,i){var item=document.createElement("div");item.className="preview-item";var im=document.createElement("img");im.src=src;im.alt="등록한 사진 "+(i+1);var removeBtn=document.createElement("button");removeBtn.type="button";removeBtn.className="remove-photo";removeBtn.dataset.index=String(i);removeBtn.setAttribute("aria-label","사진 "+(i+1)+" 삭제");removeBtn.textContent="×";item.appendChild(im);item.appendChild(removeBtn);box.appendChild(item);});var label=document.createElement("div");label.className="photo-preview-count";label.textContent="사진 "+photosForSave.length+" / 3장 · 사진의 ×를 눌러 삭제할 수 있어요.";box.appendChild(label);}
@@ -274,10 +282,11 @@ function showDetail(id){
  var gallery=pics.length?'<div class="detail-photo-rail" role="region" aria-label="방문 사진을 좌우로 넘겨보세요">'+pics.map(function(src,i){return '<button type="button" class="detail-photo-btn" data-photo-index="'+i+'" aria-label="방문 사진 '+(i+1)+' 크게 보기"><img src="'+esc(src)+'" alt="방문 사진 '+(i+1)+'" loading="lazy"></button>';}).join("")+'</div><div class="detail-gallery-help">📷 전체 사진 '+pics.length+'장 · 사진을 누르면 크게 볼 수 있어요'+(pics.length>1?' · 좌우로 넘겨보세요':'')+'</div>':'<div class="detail-photo-empty"><span>'+emoji(p.category)+'</span>사진을 추가하면 여기에 표시돼요</div>';
  var stars='<span class="detail-stars">'+"★".repeat(rating)+'<span class="unfilled">'+"☆".repeat(5-rating)+'</span></span>';
  var info='<div class="detail-info"><div class="detail-info-line"><span class="info-icon">📅</span><div><small>최근 방문일</small><strong>'+esc(dateText(last.date))+'</strong></div></div><div class="detail-info-line"><span class="info-icon">🗂️</span><div><small>지역</small><strong>'+esc(regionLabel(p))+'</strong></div></div><div class="detail-info-line"><span class="info-icon">📍</span><div><small>장소 주소</small><strong>'+esc(p.address||p.area||"주소 미기록")+'</strong></div></div></div>';
- if(p.phone){
- var digits=String(p.phone).replace(/[^0-9+]/g,"");
- if(digits.length>=7&&digits.length<=16)info=info.replace(/<\/div>$/, '<div class="detail-info-line"><span class="info-icon">☎️</span><div><small>장소 전화번호</small><strong><a class="detail-phone-link" href="tel:'+esc(digits)+'">'+esc(p.phone)+'</a></strong></div></div></div>');
- }
+ var digits=String(p.phone||"").replace(/[^0-9+]/g,"");
+ var phoneDisplay=(digits.length>=7&&digits.length<=16)?
+ '<a class="detail-phone-link" href="tel:'+esc(digits)+'">'+esc(p.phone)+'</a>':
+ '<span class="phone-hint">등록된 번호가 없어요</span> <button class="phone-add" type="button" data-add-phone="1">＋ 번호 추가</button>';
+ info=info.slice(0,-6)+'<div class="detail-info-line"><span class="info-icon">☎️</span><div><small>장소 전화번호</small><strong>'+phoneDisplay+'</strong></div></div></div>';
  var heart='<button type="button" class="detail-heart'+(p.revisit?' active':'')+'" data-toggle-revisit="1" aria-pressed="'+(p.revisit?'true':'false')+'">'+(p.revisit?'❤️ 다시 가고 싶은 장소로 저장됨':'🤍 다음에 또 가고 싶은 장소로 표시')+'</button>';
  var photoCursor=0;
  var timeline='<div class="visit-summary"><h3>📒 나의 방문 기록</h3><span class="visit-count">총 '+entries.length+'회 방문</span></div><button type="button" class="visit-add" data-add-visit="1">＋ 재방문 기록 추가하기</button>'+entries.map(function(v){
@@ -357,7 +366,7 @@ document.querySelectorAll("[data-close]").forEach(function(b){b.addEventListener
 
 function searchKey(s){return String(s||"").toLowerCase().replace(/\s+/g,"").replace(/[(){}\[\],.]/g,"");}
 function suggestName(name){if(!$("placeName").value.trim()&&name&&name.length<100)$("placeName").value=name;}
-function addResult(place){var b=document.createElement("button");b.className="result";b.type="button";var t=document.createElement("strong");t.textContent="📍 "+place.name;b.appendChild(t);var meta=document.createElement("small");meta.textContent=(place.address||"주소 정보 없음")+(place.saved?" · 내 저장 장소":place.source==="kakao"?" · 카카오 장소 검색":" · 지도 검색 결과");b.appendChild(meta);b.addEventListener("click",function(){setLocation(place.lat,place.lon,place.address||place.name);suggestName(place.name);if(pickerMap){pickerMap.setView([+place.lat,+place.lon],17);setPickerMarker(+place.lat,+place.lon);}});$("searchResults").appendChild(b);}
+function addResult(place){var b=document.createElement("button");b.className="result";b.type="button";var t=document.createElement("strong");t.textContent="📍 "+place.name;b.appendChild(t);var meta=document.createElement("small");meta.textContent=(place.address||"주소 정보 없음")+(place.phone?" · ☎ "+place.phone:"")+(place.saved?" · 내 저장 장소":place.source==="kakao"?" · 카카오 장소 검색":" · 지도 검색 결과");b.appendChild(meta);b.addEventListener("click",function(){setLocation(place.lat,place.lon,place.address||place.name);suggestName(place.name);if(place.phone)$("placePhone").value=place.phone;if(pickerMap){pickerMap.setView([+place.lat,+place.lon],17);setPickerMarker(+place.lat,+place.lon);}});$("searchResults").appendChild(b);}
 function plausibleName(query,name,address){var q=searchKey(query),n=searchKey(name),whole=searchKey(name+" "+address),last=query.trim().split(/\s+/).slice(-1)[0],lastKey=searchKey(last);
  if(!q||!n)return false;return whole.includes(q)||q.includes(n)||(lastKey.length>1&&(n.includes(lastKey)||whole.includes(lastKey)));
 }
@@ -386,7 +395,7 @@ function fetchKakao(query,originalQuery){
     if(status===kakao.maps.services.Status.ZERO_RESULT){resolve([]);return;}
     if(status!==kakao.maps.services.Status.OK){reject(new Error("카카오 장소 검색 오류: "+status));return;}
     resolve(rows.map(function(p){
-     return {name:p.place_name||"",address:p.road_address_name||p.address_name||"",lat:+p.y,lon:+p.x,source:"kakao"};
+     return {name:p.place_name||"",address:p.road_address_name||p.address_name||"",lat:+p.y,lon:+p.x,phone:p.phone||"",source:"kakao"};
     }).filter(function(p){return p.name&&Number.isFinite(p.lat)&&Number.isFinite(p.lon);}));
    },kakaoSearchOptions(originalQuery,query));
   }catch(e){reject(e);}
@@ -412,7 +421,7 @@ async function searchPlaces(){
  try{
   places.forEach(function(p){
    if(searchKey(p.name+" "+p.address).includes(searchKey(q))||plausibleName(q,p.name,p.address)){
-    found.push({name:p.name,address:p.address,lat:p.lat,lon:p.lon,saved:true});
+    found.push({name:p.name,address:p.address,lat:p.lat,lon:p.lon,phone:p.phone||"",saved:true});
    }
   });
   if(usingKakao){
@@ -463,6 +472,52 @@ function openPicker(){if(typeof L==="undefined"){alert("지도를 불러오지 �
  setTimeout(function(){pickerMap.invalidateSize();},180);
  $("pickBox").scrollIntoView({behavior:"smooth",block:"nearest"});
 }
+function phoneDistanceMeters(lat1,lon1,lat2,lon2){
+ var a=+lat1,b=+lon1,c=+lat2,d=+lon2;
+ if(![a,b,c,d].every(Number.isFinite))return Infinity;
+ var R=6371000,dr=(c-a)*Math.PI/180,dl=(d-b)*Math.PI/180;
+ var h=Math.sin(dr/2)*Math.sin(dr/2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dl/2)*Math.sin(dl/2);
+ return 2*R*Math.asin(Math.min(1,Math.sqrt(h)));
+}
+$("findPhoneBtn").addEventListener("click",async function(){
+ var button=$("findPhoneBtn"),out=$("phoneSearchResults"),query=$("placeName").value.trim()||$("placeSearch").value.trim();
+ if(!query){out.textContent="장소 이름을 먼저 입력해 주세요.";return;}
+ if(!kakaoReady()){out.textContent="카카오 장소 검색을 사용할 수 없어요. 번호를 직접 입력해 주세요.";return;}
+ button.disabled=true;out.textContent="장소 전화번호를 찾고 있어요…";
+ try{
+  var attempts=[query];
+  var bits=query.split(/\s+/).filter(Boolean);
+  if(bits.length>1)attempts.push(bits.slice(-2).join(" "));
+  if(bits.length>1)attempts.push(bits[bits.length-1]);
+  var found=[];
+  for(var i=0;i<attempts.length;i++){var result=await fetchKakao(attempts[i],query);found=found.concat(result);if(found.some(function(p){return p.phone;}))break;}
+  var seen=new Set();
+  found=found.filter(function(p){
+   if(!p.phone)return false;
+   var key=p.name+"|"+p.phone;if(seen.has(key))return false;seen.add(key);return true;
+  });
+  if(selectedCoords){
+   var nearby=found.filter(function(p){return phoneDistanceMeters(p.lat,p.lon,selectedCoords.lat,selectedCoords.lon)<=250;});
+   if(nearby.length)found=nearby;
+  }
+  found.sort(function(a,b){
+   var nameA=searchKey(a.name),nameB=searchKey(b.name),q=searchKey(query);
+   return Number(nameB===q)*100-Number(nameA===q)*100+
+    (selectedCoords?phoneDistanceMeters(a.lat,a.lon,selectedCoords.lat,selectedCoords.lon)-phoneDistanceMeters(b.lat,b.lon,selectedCoords.lat,selectedCoords.lon):0);
+  });
+  out.innerHTML="";
+  if(!found.length){out.textContent="전화번호가 검색되지 않았어요. 직접 입력할 수 있어요.";return;}
+  var heading=document.createElement("div");heading.textContent="가게명과 주소를 확인한 뒤 정확한 번호를 선택해 주세요.";out.appendChild(heading);
+  found.slice(0,5).forEach(function(p){
+   var choose=document.createElement("button");choose.type="button";choose.className="phone-choice";
+   choose.textContent="☎ "+p.phone+" · "+p.name;
+   var sub=document.createElement("small");sub.textContent=p.address;choose.appendChild(sub);
+   choose.addEventListener("click",function(){$("placePhone").value=p.phone;out.textContent="✅ "+p.name+" 전화번호를 입력했어요. 아래에서 장소를 저장해 주세요.";});
+   out.appendChild(choose);
+  });
+ }catch(err){out.textContent="전화번호 검색에 실패했어요. 직접 입력해 주세요.";}
+ finally{button.disabled=false;}
+});
 $("searchBtn").addEventListener("click",searchPlaces);
 function quickSearch(){var q=$("quickSearch").value.trim();if(!q)return $("quickSearch").focus();resetForm();openOverlay("formOverlay");$("placeSearch").value=q;searchPlaces()}
 $("quickSearchBtn").addEventListener("click",quickSearch);
@@ -478,6 +533,13 @@ $("photoPreview").addEventListener("click",function(e){var b=e.target.closest(".
 $("placePhotos").addEventListener("change",async function(e){var files=Array.from(e.target.files||[]);if(files.length+photosForSave.length>3){alert("사진은 총 3장까지 등록할 수 있어요. 수정 화면에서 기존 사진의 ×를 눌러 삭제할 수 있어요.");e.target.value="";return;}try{for(var i=0;i<files.length;i++){photosForSave.push(await compress(files[i]));}showPhotos();}catch(err){alert(err.message||"사진을 처리하지 못했어요.");}e.target.value="";});
 $("placeForm").addEventListener("submit",async function(e){e.preventDefault();if(!selectedCoords){alert("위치 검색 후 결과에서 장소를 선택해 주세요.");return;}var btn=$("saveBtn");btn.disabled=true;try{var p=normalized({id:editingId||uid(),name:$("placeName").value.trim(),category:$("placeCategory").value,address:selectedCoords.address,area:selectedCoords.area,regionCity:$("regionCity").value,regionTown:$("regionTown").value.trim(),lat:selectedCoords.lat,lon:selectedCoords.lon,date:$("placeDate").value,rating:+$("placeRating").value,review:$("placeReview").value.trim(),revisit:$("placeRevisit").checked,photos:photosForSave,phone:$("placePhone").value.trim(),comments:editingId?((places.find(function(q){return q.id===editingId;})||{}).comments||[]):[],visits:editingId?((places.find(function(q){return q.id===editingId;})||{}).visits||[]):[],updatedAt:Date.now()});if(!p||!p.name){alert("장소 이름을 입력해 주세요.");return;}await put(p);places=await getAll();redraw();closeOverlay("formOverlay");if(editingId){showDetail(p.id);}else{selectTab("mapPanel");alert("발자국을 저장했어요! 🎉");}}catch(err){alert("저장에 실패했어요. 브라우저 저장 공간을 확인해 주세요.");}finally{btn.disabled=false;}});
 $("detailBody").addEventListener("click",async function(e){
+ if(e.target.closest("[data-add-phone]")){
+  editCurrent();
+  $("placePhone").scrollIntoView({block:"center",behavior:"smooth"});
+  $("placePhone").focus();
+  return;
+ }
+
  var replyButton=e.target.closest("[data-comment-reply]");
  if(replyButton){
   var owner=places.find(function(q){return q.id===currentId;});
