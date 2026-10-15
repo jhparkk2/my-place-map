@@ -1,7 +1,7 @@
 {
-  "name": "발자국 - 나만의 장소 지도",
-  "short_name": "발자국",
-  "description": "실제로 다녀온 곳을 기록하는 장소 중심 지도",
+  "name": "나와봄 - 나만의 장소 지도",
+  "short_name": "나와봄",
+  "description": "내가 직접 가본 장소와 추억을 사진·후기로 담는 나만의 지도",
   "lang": "ko-KR",
   "start_url": "./",
   "scope": "./",
