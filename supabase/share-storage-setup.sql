@@ -10,6 +10,7 @@ where id = 'baljaguk-photos';
 
 -- 업로드: 로그인한 사용자(익명 로그인 포함)는 자기 UID 폴더에만,
 -- 정해진 두 파일명(photo.jpg, record.json)으로만 업로드 가능합니다.
+drop policy if exists "baljaguk_share_upload_own" on storage.objects;
 create policy "baljaguk_share_upload_own"
 on storage.objects
 for insert to authenticated
@@ -21,6 +22,7 @@ with check (
 );
 
 -- 실패 업로드 정리 및 향후 공유 취소 구현을 위한 자기 파일 삭제 권한
+drop policy if exists "baljaguk_share_delete_own" on storage.objects;
 create policy "baljaguk_share_delete_own"
 on storage.objects
 for delete to authenticated
