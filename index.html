@@ -207,12 +207,16 @@
 <label class="switchline"><input id="shareNaver" type="checkbox" checked> 🟢 네이버 검색 링크 포함</label>
 
 <label class="switchline"><input id="sharePhoto" type="checkbox" checked> 📷 사진도 함께 공유하기</label>
-<div id="sharePhotoPreview" class="share-photo-preview"><img id="sharePhotoThumb" alt="공유할 방문 사진"><p>대표 사진 1장을 후기 및 발자국 링크와 함께 보냅니다. 사진은 내 기록 전체가 아니라 이 한 장만 첨부됩니다.</p></div>
+<div id="sharePhotoPreview" class="share-photo-preview"><img id="sharePhotoThumb" alt="공유할 방문 사진"><p>선택한 사진 1장만 온라인에 저장해요. 다른 사진과 기록은 내 아이폰에 그대로 남습니다.</p></div>
 <p class="share-mini" id="sharePhotoHelp">사진과 링크를 한 번에 공유할 수 있어요.</p>
 </div>
 <p class="share-intro"><strong>보낼 내용 미리보기</strong></p><div class="share-preview" id="sharePreview"></div>
-<div class="share-link-info"><strong>📷 사진 + 🔗 발자국 장소 링크</strong>지원되는 아이폰 공유 메뉴에 사진 한 장과 후기·장소 링크를 함께 전달해요. 카카오톡은 첨부 사진이 있으면 링크를 생략할 수 있어요. 그럴 땐 아래 '링크·내용 복사'로 같은 채팅방에 붙여넣으면 됩니다.</div><div class="actions"><button id="shareSend" type="button" class="btn">📤 사진·장소 한번에 공유</button><button id="shareCopy" type="button" class="btn secondary">링크·내용 복사</button></div><div class="share-fallback-hint">사진 첨부가 지원되지 않으면 자동으로 텍스트·링크 공유로 전환합니다. 받는 친구는 링크를 눌러 발자국에서 장소 정보를 확인할 수 있어요.</div>
-<p class="share-note">🔒 장소 링크는 받은 사람이 다른 사람에게 전달할 수도 있습니다. 링크에 포함된 선택 항목은 링크를 아는 누구나 볼 수 있습니다. 긴 후기는 링크에 처음 280자까지만 담깁니다. 계정 초대·친구만 열람 제한·댓글 동기화는 아직 지원되지 않습니다. 방문 사진은 링크 자체가 아닌 공유 메시지에 별도 파일로 첨부되며, 수신자가 링크를 열었을 때는 사진이 표시되지 않습니다.</p>
+<div class="share-link-info"><strong>📷 사진이 열리는 장소 링크</strong>카카오톡에는 짧은 링크 하나만 보내요. 받는 사람이 누르면 실제 방문 사진·별점·후기를 한 화면에서 볼 수 있어요.</div>
+<div class="actions" id="cloudPrepareRow"><button id="cloudPrepare" type="button" class="btn">① 사진 포함 링크 준비</button></div>
+<p class="share-mini" id="cloudStatus" role="status" aria-live="polite"></p>
+<div class="actions"><button id="shareSend" type="button" class="btn">② 카카오톡 등으로 공유</button><button id="shareCopy" type="button" class="btn secondary">링크·내용 복사</button></div>
+<div class="share-fallback-hint">사진 링크를 준비한 뒤 공유해 주세요. 공유할 항목을 바꾸면 링크를 다시 준비해야 해요.</div>
+<p class="share-note">🔒 링크를 준비하면 선택한 사진 한 장과 장소 정보가 공개용 저장소에 올라갑니다. 링크를 아는 누구나 볼 수 있고 다른 사람에게 전달할 수 있어요. 공유 취소·친구만 보기·댓글 동기화는 아직 지원되지 않습니다. 카카오톡 대화창에서 실제 사진이 미리 보이게 하는 기능은 별도 서버 설정이 필요합니다.</p>
 </div></div>
 
 <div class="overlay" id="sharedPlaceOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sharedPlaceTitle">
@@ -241,9 +245,11 @@
 </div></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=51ce171d297689b74c119e403b8eaf87&libraries=services"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function(){
 "use strict";
+var SB_URL="https://axnipmcwpevjofnpcqpj.supabase.co", SB_KEY="sb_publishable_ljzv4HLzBV7ZSerkWaIlcQ_hepJ-s77", SB_BUCKET="baljaguk-photos", sbClient=null, cloudReadyUrl="";
 var DBNAME="footprint-place-v1", DBSTORE="places", db, places=[], activeFilter="전체", selectedCoords=null, editingId=null, editingVisitId=null, currentId=null, map=null, markers=null, photosForSave=[], visitPhotosForSave=[], commentReplyId=null, viewerPhotos=[], viewerIndex=0, lastPhotoTrigger=null, photoTouchStart=null, searchBusy=false, regionViewCity="", regionViewTown="", pickerMap=null, pickerMarker=null, candidatePoint=null, pickerInitialized=false;
 var $=function(id){return document.getElementById(id);};
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
@@ -514,21 +520,21 @@ function getSharedPlaceFromHash(){
  if(raw.indexOf("#place=")!==0)return null;
  return decodeSharedSnapshot(raw.slice(7));
 }
-function showIncomingSharedPlace(){
- var d=getSharedPlaceFromHash();if(!d)return false;
+function showIncomingSharedPlace(cloudData,cloudPhoto){
+ var d=cloudData||getSharedPlaceFromHash();if(!d)return false;
  $("sharedPlaceTitle").textContent=d.n;
  var hero=$("sharedHero");hero.innerHTML="";
  var local=d.im&&places.find(function(p){return p.name===d.n&&(!d.a||p.address===d.a);});
- var photo=local&&sharePhotoSource(local);
+ var photo=cloudPhoto||(local&&sharePhotoSource(local));
  var caption=$("sharedPhotoCaption");
  if(photo){
   var img=document.createElement("img");img.src=photo;img.alt=d.n+" 방문 사진";hero.appendChild(img);
-  caption.textContent="📷 내 기기에 저장된 방문 사진";
+  caption.textContent=cloudPhoto?"📷 공유받은 방문 사진":"📷 내 기기에 저장된 방문 사진";
  }else{
   var empty=document.createElement("div");empty.className="shared-hero-empty";
   var symbol=document.createElement("b");symbol.textContent=d.im?"📷":"📍";
   var note=document.createElement("span");note.textContent=d.im?
-  "공유된 사진은 카카오톡에서 확인해 주세요. 다른 기기에서도 여기서 사진을 보려면 온라인 사진 저장소가 필요합니다.":
+  "공유 사진을 불러올 수 없어요. 보낸 사람에게 공유 링크를 다시 요청해 주세요.":
   "공유받은 장소";empty.appendChild(symbol);empty.appendChild(note);hero.appendChild(empty);caption.textContent="";
  }
  var kicker=$("sharedKicker");kicker.innerHTML="";
@@ -577,6 +583,54 @@ function showIncomingSharedPlace(){
  mapBtn.onclick=function(){window.open("https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(d.y+","+d.x),"_blank","noopener");};
  openOverlay("sharedPlaceOverlay");return true;
 }
+
+function getSbClient(){
+ if(!window.supabase||typeof window.supabase.createClient!=="function")throw Error("사진 저장 프로그램을 불러오지 못했어요. 인터넷 연결을 확인해 주세요.");
+ if(!sbClient)sbClient=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
+ return sbClient;
+}
+async function uploadSharedPhoto(p,options){
+ var src=sharePhotoSource(p);
+ if(!options.photo||!src)return buildSharedPlaceUrl(p,options);
+ var client=getSbClient(),sessionResult=await client.auth.getSession();
+ if(sessionResult.error)throw sessionResult.error;
+ var user=sessionResult.data.session&&sessionResult.data.session.user;
+ if(!user){
+  var loginResult=await client.auth.signInAnonymously();
+  if(loginResult.error)throw Error("Supabase에서 익명 로그인을 켜야 해요. ("+loginResult.error.message+")");
+  user=loginResult.data.user;
+ }
+ if(!user||!user.id)throw Error("로그인 정보를 확인할 수 없어요.");
+ var key=crypto.randomUUID(),dir="shares/"+user.id+"/"+key,storage=client.storage.from(SB_BUCKET);
+ var blob=await(await fetch(src)).blob();
+ if(blob.size>5*1024*1024)throw Error("사진 크기가 5MB를 넘어요.");
+ var photoPath=dir+"/photo.jpg",jsonPath=dir+"/record.json";
+ var photo=await storage.upload(photoPath,blob,{contentType:"image/jpeg",upsert:false});
+ if(photo.error)throw Error("사진 업로드 실패: "+photo.error.message+" (Storage 권한 설정을 확인해 주세요.)");
+ var record=new Blob([JSON.stringify(snapshotForShare(p,options))],{type:"application/json"});
+ var uploaded=await storage.upload(jsonPath,record,{contentType:"application/json",upsert:false});
+ if(uploaded.error){try{await storage.remove([photoPath]);}catch(ignore){}throw Error("장소 정보 업로드 실패: "+uploaded.error.message);}
+ return location.origin+location.pathname+"#cloud="+user.id+"/"+key;
+}
+async function showCloudShare(){
+ var m=/^#cloud=([a-f0-9-]{36})\/([a-f0-9-]{36})$/i.exec(location.hash);
+ if(!m)return false;
+ var base=SB_URL+"/storage/v1/object/public/"+SB_BUCKET+"/shares/"+m[1]+"/"+m[2]+"/";
+ try{
+  var resp=await fetch(base+"record.json",{cache:"no-store"});
+  if(!resp.ok)throw Error("공유 정보 다운로드 실패 ("+resp.status+")");
+  var obj=await resp.json();
+  if(!obj||obj.v!==2||typeof obj.n!=="string")throw Error("공유 형식이 맞지 않아요.");
+  var clean=decodeSharedSnapshot(encodeSharedSnapshot(obj));
+  if(!clean)throw Error("공유 정보가 잘못됐어요.");
+  showIncomingSharedPlace(clean,clean.im===1?base+"photo.jpg":"");
+  return true;
+ }catch(err){alert("공유받은 장소를 열지 못했어요.\n"+(err.message||""));return false;}
+}
+function dispatchIncomingShare(){
+ if(location.hash.indexOf("#cloud=")===0){showCloudShare();return;}
+ if(location.hash.indexOf("#place=")===0)showIncomingSharedPlace();
+}
 function sharePhotoSource(p){
  var entries=visitEntries(p);
  for(var i=0;i<entries.length;i++){
@@ -586,18 +640,24 @@ function sharePhotoSource(p){
 }
 function renderSharePreview(){
  var p=places.find(function(x){return x.id===currentId;});if(!p)return;
- var opts=getShareOptions();
- $("sharePreview").textContent=shareText(p,opts)+"\n\n🔗 발자국에서 열기:\n"+buildSharedPlaceUrl(p,opts);
- $("sharePhotoPreview").classList.toggle("active",!!(opts.photo&&sharePhotoSource(p)));
+ var o=getShareOptions(),cloud=o.photo&&!!sharePhotoSource(p);
+ $("cloudPrepareRow").style.display=cloud?"":"none";
+ $("shareSend").disabled=cloud&&!cloudReadyUrl;
+ $("shareCopy").disabled=cloud&&!cloudReadyUrl;
+ $("sharePhotoPreview").classList.toggle("active",cloud);
+ var url=cloud?(cloudReadyUrl||"📷 위의 '사진 포함 링크 준비' 버튼을 먼저 눌러주세요."):buildSharedPlaceUrl(p,o);
+ $("sharePreview").textContent=shareText(p,o)+"\n\n🔗 발자국에서 열기:\n"+url;
 }
+function updateShareOptions(){cloudReadyUrl="";$("cloudStatus").textContent="";renderSharePreview();}
 function openShareSheet(){
  var p=places.find(function(x){return x.id===currentId;});if(!p)return;
+ cloudReadyUrl="";$("cloudStatus").textContent="";
  $("sharePlaceTitle").textContent="📍 "+p.name;
  $("shareAddress").checked=true;$("sharePhone").checked=false;$("shareReview").checked=true;$("shareNaver").checked=true;
  var source=sharePhotoSource(p),hasPhoto=!!source;
  $("sharePhoto").checked=hasPhoto;$("sharePhoto").disabled=!hasPhoto;
  if(hasPhoto)$("sharePhotoThumb").src=source;else $("sharePhotoThumb").removeAttribute("src");
- $("sharePhotoHelp").textContent=hasPhoto?"사진 1장도 함께 전송하도록 선택했어요. 원하지 않으면 체크를 해제할 수 있어요.":"등록한 방문 사진이 없어 장소 링크와 후기만 전송해요.";
+ $("sharePhotoHelp").textContent=hasPhoto?"사진 1장을 포함한 링크를 준비할 수 있어요.":"등록한 사진이 없어 후기와 장소만 공유해요.";
  renderSharePreview();openOverlay("shareOverlay");
 }
 async function exportBackup(){if(!places.length){alert("아직 백업할 기록이 없어요.");return;}var blob=new Blob([JSON.stringify({app:"footprint",version:3,exportedAt:new Date().toISOString(),places:places},null,2)],{type:"application/json"});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="발자국_백업_"+new Date().toISOString().slice(0,10)+".json";document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},2000);}
@@ -887,55 +947,40 @@ $("naverSearchBtn").addEventListener("click",function(){
 $("navigateBtn").addEventListener("click",function(){var p=places.find(function(q){return q.id===currentId;});if(p)window.open("https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(p.lat+","+p.lon),"_blank","noopener");});
 
 $("shareBtn").addEventListener("click",openShareSheet);
-["shareAddress","sharePhone","shareReview","shareNaver","sharePhoto"].forEach(function(id){$(id).addEventListener("change",renderSharePreview);});
-$("shareCopy").addEventListener("click",async function(){
+["shareAddress","sharePhone","shareReview","shareNaver","sharePhoto"].forEach(function(id){$(id).addEventListener("change",updateShareOptions);});
+$("cloudPrepare").addEventListener("click",async function(){
  var p=places.find(function(q){return q.id===currentId;});if(!p)return;
- var opts=getShareOptions();var t=shareText(p,opts)+"\n\n🔗 발자국에서 열기:\n"+buildSharedPlaceUrl(p,opts);
- try{if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(t);alert("텍스트가 복사됐어요. 사진은 복사에 포함되지 않습니다.");}
- else window.prompt("선택한 정보를 복사해 주세요.",t);}
- catch(err){window.prompt("선택한 정보를 복사해 주세요.",t);}
+ var btn=$("cloudPrepare");btn.disabled=true;$("cloudStatus").textContent="⏳ 사진과 장소 정보를 올리는 중이에요...";
+ try{cloudReadyUrl=await uploadSharedPhoto(p,getShareOptions());$("cloudStatus").textContent="✅ 링크 준비 완료! 이제 아래에서 공유해 주세요.";}
+ catch(err){cloudReadyUrl="";$("cloudStatus").textContent="⚠️ "+(err.message||"연결에 실패했어요.");}
+ finally{btn.disabled=false;renderSharePreview();}
 });
-$("shareSend").addEventListener("click",async function(){
+$("shareCopy").addEventListener("click",function(){
  var p=places.find(function(q){return q.id===currentId;});if(!p)return;
- var opts=getShareOptions(),url=buildSharedPlaceUrl(p,opts),t=shareText(p,opts);
- var textWithLink="🔗 발자국에서 장소 열기:\n"+url+"\n\n"+t;
- var btn=$("shareSend");btn.disabled=true;
- try{
-  var payload={title:p.name+" · 발자국",text:textWithLink,url:url};
-  if(opts.photo){
-   var source=sharePhotoSource(p);
-   if(source){
-    try{
-     var imageBlob=await (await fetch(source)).blob();
-     var photoFile=new File([imageBlob],"baljaguk-photo.jpg",{type:imageBlob.type||"image/jpeg"});
-     if(navigator.share&&navigator.canShare&&navigator.canShare({files:[photoFile]})){
-      payload.files=[photoFile];
-     }else{
-      alert("이 기기에서는 사진과 링크를 함께 전송할 수 없어, 링크와 후기를 먼저 공유합니다.");
-     }
-    }catch(photoErr){
-     alert("사진 첨부를 준비하지 못해 링크와 후기만 공유합니다.");
-    }
-   }
-  }
-  if(navigator.share){
-   await navigator.share(payload);
-  }else if(navigator.clipboard&&navigator.clipboard.writeText){
-   await navigator.clipboard.writeText(textWithLink);
-   alert("장소 링크와 후기를 복사했어요. 카카오톡에 붙여넣어 주세요.");
-  }else window.prompt("아래 링크를 복사해 친구에게 보내 주세요.",url);
- }catch(err){
-  if(err.name!=="AbortError")alert("공유하지 못했어요. '링크·내용 복사'를 이용해 주세요.");
- }finally{btn.disabled=false;}
+ var o=getShareOptions(),url=o.photo&&sharePhotoSource(p)?cloudReadyUrl:buildSharedPlaceUrl(p,o);
+ if(!url){alert("사진 포함 링크를 먼저 준비해 주세요.");return;}
+ var text="👣 "+p.name+"\n📷 방문 사진·후기 보기:\n"+url;
+ if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(function(){alert("링크가 복사됐어요! 카카오톡에 붙여넣어 주세요.");}).catch(function(){window.prompt("이 링크를 복사해 주세요.",url);});
+ else window.prompt("이 링크를 복사해 주세요.",url);
+});
+$("shareSend").addEventListener("click",function(){
+ var p=places.find(function(q){return q.id===currentId;});if(!p)return;
+ var o=getShareOptions(),url=o.photo&&sharePhotoSource(p)?cloudReadyUrl:buildSharedPlaceUrl(p,o);
+ if(!url){alert("사진 포함 링크를 먼저 준비해 주세요.");return;}
+ var message="👣 "+p.name+"\n📷 발자국 방문 사진·후기 보기:\n"+url;
+ // Web Share는 아이폰의 실제 탭 이벤트 안에서 즉시 실행해야 합니다.
+ if(navigator.share)navigator.share({title:p.name+" · 발자국",text:message}).catch(function(err){if(err.name!=="AbortError")alert("공유할 수 없어요. '링크·내용 복사'를 이용해 주세요.");});
+ else if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(message).then(function(){alert("링크를 복사했어요. 카카오톡에 붙여넣어 주세요.");}).catch(function(){window.prompt("이 링크를 복사해 주세요.",url);});
+ else window.prompt("이 링크를 복사해 주세요.",url);
 });
 $("sharedBackBtn").addEventListener("click",function(){
  closeOverlay("sharedPlaceOverlay");
- if(location.hash.indexOf("#place=")===0)history.replaceState(null,"",location.pathname+location.search);
+ if(location.hash.indexOf("#place=")===0||location.hash.indexOf("#cloud=")===0)history.replaceState(null,"",location.pathname+location.search);
 });
 $("exportBtn").addEventListener("click",exportBackup);
 $("importFile").addEventListener("change",async function(e){var file=e.target.files[0];if(!file)return;try{var raw=JSON.parse(await file.text());if(raw.app!=="footprint"||!Array.isArray(raw.places))throw Error("발자국 백업 파일이 아니에요.");if(!confirm(raw.places.length+"개 기록을 불러올까요? 같은 ID의 기록은 덮어씁니다."))return;var count=0;for(var i=0;i<raw.places.length;i++){var p=normalized(raw.places[i]);if(p){await put(p);count++;}}places=await getAll();redraw();alert(count+"개 장소를 불러왔어요.");selectTab("listPanel");}catch(err){alert("백업 파일을 불러오지 못했어요: "+err.message);}finally{e.target.value="";}});
-(async function(){try{await openDb();places=await getAll();redraw();}catch(err){alert("아이폰 브라우저 저장소를 열 수 없어요. Safari 일반 모드로 다시 접속해 주세요.");}initMap();showIncomingSharedPlace();})();
-window.addEventListener("hashchange",function(){if(location.hash.indexOf("#place=")===0)showIncomingSharedPlace();});
+(async function(){try{await openDb();places=await getAll();redraw();}catch(err){alert("아이폰 브라우저 저장소를 열 수 없어요. Safari 일반 모드로 다시 접속해 주세요.");}initMap();dispatchIncomingShare();})();
+window.addEventListener("hashchange",dispatchIncomingShare);
 if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("./sw.js").catch(function(){});});}
 })();
 </script></body></html>
