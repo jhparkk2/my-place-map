@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#114d41"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="나와봄"><meta name="description" content="실제로 가본 장소만 기록하는 나만의 장소 지도"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon.svg" type="image/svg+xml"><title>나와봄 | 나만의 장소 지도</title>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#b85d4b"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="나와봄"><meta name="description" content="실제로 가본 장소만 기록하는 나만의 장소 지도"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon.svg?v=27" type="image/svg+xml"><link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=27"><title>나와봄 | 나만의 장소 지도</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <style>
 :root{--ink:#142c2a;--muted:#74827f;--green:#125c4d;--green2:#e8f5f0;--cream:#f8faf8;--line:#e6edeb;--shadow:0 10px 35px rgba(20,56,48,.07)}*{box-sizing:border-box}html,body{margin:0;padding:0;background:var(--cream);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:var(--ink)}button,input,textarea,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #90cfb6;outline-offset:2px}.app{max-width:720px;margin:auto;min-height:100dvh;padding:0 16px 100px}.header{display:flex;justify-content:space-between;align-items:center;padding:25px 2px 14px}.brand{display:flex;align-items:center;gap:9px;font-size:23px;font-weight:850;letter-spacing:-1px}.brandicon{display:grid;place-items:center;background:var(--green);color:white;width:35px;height:35px;border-radius:13px;font-size:22px}.topaction{background:white;border:1px solid var(--line);border-radius:12px;padding:9px 12px;color:var(--green);font-size:13px;font-weight:750}.intro{background:linear-gradient(125deg,#0d5547,#327e68);border-radius:25px;padding:23px;color:white;box-shadow:var(--shadow);overflow:hidden;position:relative}.intro:after{content:"✦";position:absolute;right:12px;bottom:-35px;font-size:143px;color:#ffffff12}.eyebrow{font-size:12px;color:#cbe7d8;font-weight:650}.intro h1{font-size:25px;letter-spacing:-.8px;line-height:1.4;margin:8px 0 9px;position:relative;z-index:1}.intro p{font-size:13px;color:#d5eae2;margin:0;position:relative;z-index:1}.stats{display:flex;gap:10px;margin:14px 0}.stat{background:white;border:1px solid var(--line);border-radius:17px;padding:15px;flex:1;min-width:0;box-shadow:0 4px 14px #134e3c08}.stat .num{font-size:25px;font-weight:850;line-height:1.2}.stat small{display:block;color:var(--muted);font-size:11px;margin-top:5px}.tabs{display:flex;gap:6px;padding:5px;background:#e9efec;border-radius:15px;margin:18px 0 16px}.tab{border:0;flex:1;border-radius:11px;background:transparent;color:#667773;font-weight:750;padding:12px}.tab.active{color:var(--green);background:white;box-shadow:0 2px 7px #0c433019}.sectiontitle{display:flex;align-items:center;justify-content:space-between;margin:12px 1px}.sectiontitle h2{font-size:18px;margin:0;letter-spacing:-.4px}.subtle{font-size:12px;color:var(--muted)}#map{width:100%;height:340px;border-radius:20px;border:1px solid var(--line);z-index:0;background:#e8eee9}.mapnote{font-size:12px;color:#788783;margin:10px 2px 16px;line-height:1.6}.filters{display:flex;gap:7px;overflow:auto;padding:4px 0 12px;scrollbar-width:none}.chip{flex:none;background:white;border:1px solid var(--line);border-radius:50px;color:#687773;font-size:13px;font-weight:700;padding:9px 13px}.chip.active{color:white;background:var(--green);border-color:var(--green)}.places{display:grid;gap:12px}.place{display:flex;min-height:117px;background:white;border:1px solid var(--line);border-radius:19px;padding:12px;gap:12px;box-shadow:0 3px 11px #134e3c05;cursor:pointer}.thumb{width:94px;min-width:94px;min-height:94px;align-self:stretch;object-fit:cover;background:#e4f0e9;border-radius:13px;display:grid;place-items:center;font-size:37px}.details{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}.place h3{font-size:16px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;margin:4px 0 5px}.place p{font-size:12px;color:var(--muted);margin:0 0 7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.place .note{font-size:12px;color:#4a6660;margin:0;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.pill{font-size:11px;color:var(--green);font-weight:750}.empty{text-align:center;background:white;border:1px dashed #cbded5;border-radius:20px;padding:39px 20px;color:var(--muted);font-size:13px;line-height:1.7}.empty .emoji{font-size:40px;margin-bottom:8px}.empty strong{display:block;font-size:17px;color:var(--ink);margin-bottom:5px}.btn{display:inline-flex;justify-content:center;align-items:center;gap:7px;border:none;border-radius:13px;background:var(--green);color:white;font-weight:750;padding:13px 18px}.btn.secondary{background:var(--green2);color:var(--green)}.btn.light{background:white;color:var(--green);border:1px solid var(--line)}.btn.danger{background:#fff0f0;color:#b64747}.btn:disabled{opacity:.55}.cta{position:fixed;bottom:calc(17px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);max-width:688px;width:calc(100% - 32px);box-shadow:0 8px 22px #0d59483d;font-size:15px;padding:15px;z-index:450}.panel{display:none}.panel.active{display:block}.overlay{display:none;position:fixed;inset:0;background:#112b27b8;z-index:1100;align-items:flex-end;justify-content:center}.overlay.open{display:flex}.sheet{width:100%;max-width:720px;background:white;border-radius:25px 25px 0 0;max-height:94dvh;overflow:auto;padding:22px 18px calc(20px + env(safe-area-inset-bottom))}.sheethead{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}.sheethead h2{font-size:19px;margin:0}.x{border:0;background:#f1f5f2;border-radius:50%;width:33px;height:33px;font-size:20px}.field{display:block;margin:14px 0}.field>span{display:block;font-size:13px;font-weight:750;margin-bottom:7px}.field input,.field textarea,.field select{width:100%;border:1px solid #dbe5e0;border-radius:12px;padding:12px 13px;background:white;color:var(--ink);font-size:15px}.field textarea{min-height:92px;resize:vertical}.row{display:flex;gap:9px}.row>*{flex:1;min-width:0}.locationrow{display:flex;gap:7px}.locationrow input{flex:1;min-width:0}.locationrow button{flex:none}.searchres{display:grid;gap:7px;margin-top:9px}.searchhelp{font-size:12px;color:#76877e;line-height:1.6;margin:8px 2px 0}.searchactions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 5px}.searchactions .btn{font-size:12px;padding:10px 12px;flex:1;min-width:120px}.searchstatus{font-size:12px;color:#678377;line-height:1.6}.pickbox{background:#f4faf6;border:1px solid #dcebe2;border-radius:15px;padding:12px;margin:12px 0}.pickbox h3{margin:0 0 7px;font-size:14px}.pickbox p{font-size:12px;color:#647a72;line-height:1.5;margin:6px 0 11px}.pickmap{width:100%;height:255px;border-radius:12px;border:1px solid #d2e2d8}.result small{display:block;color:#748680;font-size:11px;margin-top:5px}.result strong{display:block;font-size:13px;color:#183e35}.result{border:1px solid var(--line);border-radius:10px;background:#f9fcfa;padding:10px;text-align:left;font-size:12px;color:var(--ink)}.selected{background:#e6f5eb;border-radius:10px;padding:10px;font-size:12px;color:#25664f;margin-top:7px;line-height:1.5}.photoPreview{display:flex;gap:8px;overflow-x:auto}.photoPreview img{width:81px;height:81px;object-fit:cover;border-radius:11px}.switchline{display:flex;align-items:center;gap:9px;margin:17px 0;font-size:14px;font-weight:700}.switchline input{accent-color:var(--green);width:19px;height:19px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.actions .btn{flex:1}.alert{font-size:12px;color:#98652e;line-height:1.6;background:#fff5e4;border-radius:12px;padding:11px;margin:10px 0}.detailimg{width:100%;max-height:280px;object-fit:cover;border-radius:16px;margin:8px 0}.detailMeta{font-size:13px;color:var(--muted);line-height:1.8}.detailNote{font-size:15px;white-space:pre-wrap;line-height:1.7}.backup{margin-top:20px;background:white;border-radius:18px;padding:17px;border:1px solid var(--line)}.backup h3{margin:0 0 8px;font-size:16px}.backup p{font-size:12px;color:var(--muted);line-height:1.6}.leaflet-container{font-family:inherit}.foot{margin:18px 3px;color:#9ba9a4;font-size:11px;text-align:center}@media(min-width:720px){.sheet{border-radius:24px;margin:auto auto 30px;max-height:90dvh}.overlay{align-items:center}.intro h1{font-size:29px}} 
@@ -196,9 +196,71 @@ body{background:linear-gradient(180deg,#f4faf3 0,#fbfcf8 360px)}
 .cta{border-radius:16px}
 @media(max-width:420px){.intro h1{font-size:25px}.brand{font-size:23px}}
 
+
+/* 나와봄 v2.7 — 새싹 지도 핀 / 코랄 & 세이지 */
+:root{--ink:#403f38;--muted:#827d74;--green:#317454;--green2:#edf6ec;--cream:#fffbf7;--line:#eee6de;--shadow:0 9px 28px rgba(101,74,55,.07);--coral:#b85d4b;--coral-light:#fff0e7}
+html,body{background:var(--cream)}
+body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
+.header{padding:20px 1px 18px}
+.brand{color:#51443c;letter-spacing:-1px;font-weight:850}
+.brandicon{width:46px;height:46px;padding:0;overflow:hidden;background:#fff2e5;border:1px solid #f1ddcf;border-radius:16px;box-shadow:0 3px 12px #9f705221}
+.brandicon svg{display:block;width:100%;height:100%}
+.topaction{color:#4c7259;border:1px solid #e5ebe3;background:#fffefa}
+.intro{color:#553e32;background:linear-gradient(125deg,#fff1e4 0%,#f9ddcf 100%);border:1px solid #f0d7c9;border-radius:26px;box-shadow:0 10px 26px #c28d6a1d;padding:26px 23px 27px}
+.intro .eyebrow{color:#ab6454;letter-spacing:1.4px}
+.intro h1{color:#504037;font-weight:850}
+.intro p{color:#7f6356}
+.intro:after{content:"✿";color:#ffffff70;right:10px;bottom:-42px}
+.home-search,.stat,.place,.backup{background:#fff;box-shadow:var(--shadow)}
+.home-search{border:1px solid #eee3d9;border-radius:19px}
+.home-search strong{color:#58483d}
+.home-search-row input{background:#fffbf8;border:1px solid #eaded3}
+.stat{border:1px solid #f0e7de;border-radius:18px}
+.stat .num{color:#b65f4f}
+.tabs{background:#f4ebe3;border:1px solid #efe4d9;border-radius:17px}
+.tab.active{color:#a85345;background:#fffdfb}
+.sectiontitle h2{color:#4c443a}
+.btn{border-radius:13px}
+.btn:not(.secondary):not(.light):not(.danger){background:var(--coral);color:white}
+.btn.secondary{background:#eaf5ed;color:#276c4d}
+.btn.light{background:#fffefb;color:#347255;border-color:#e8e6dd}
+.cta{background:#b85d4b!important;color:white!important;box-shadow:0 10px 25px #a05c4c4a;border-radius:17px}
+.chip.active{background:#39795b;border-color:#39795b}
+.place{border:1px solid #efe7df;border-radius:21px}
+.thumb{background:#fff1e8}
+.place h3{color:#49423b}
+.place .note{color:#70685e}
+.pill{color:#3b7a58}
+.empty{border-color:#eedbd1;background:#fffaf6}
+#map{border:2px solid #ece7de;background:#f0f3e8;box-shadow:0 7px 20px #6b62541c}
+.region-intro,.form-intro{background:#fff4eb;border:1px solid #f1e2d6;color:#896453}
+.region-card{border-color:#eee5db;box-shadow:var(--shadow)}
+.region-card:active{background:#fff1e8}
+.sheet{background:#fffcf9}
+.sheethead h2{color:#50453e}
+.x{background:#f7eee6;color:#796257}
+.field input,.field textarea,.field select{border-color:#e9ded5;background:#fffefa}
+.detail-photo-empty,.shared-hero{background:#fff1e8;border-color:#f0dfd1;color:#977b6a}
+.detail-info,.shared-detail-info{background:#fff9f4;border-color:#f0e7de}
+.detail-category{background:#eaf5e9;color:#357653}
+.detail-heart{border-color:#f1d1cd;background:#fff6f2;color:#a4554a}
+.detail-heart.active{background:#ffe9e7;border-color:#ebb7b1;color:#9c4b48}
+.detail-review,.visit-record,.comment-entry{background:#fffdfb;border-color:#eee5dc}
+.visit-add{background:#eaf5ec;border-color:#bedbc6;color:#347152}
+.visit-count{background:#eaf5ec;color:#347152}
+.comment-section{border-top-color:#eee2d6}
+.shared-row,.shared-review{background:#fff9f4;border-color:#eee3d9}
+@media(max-width:420px){.intro{padding:24px 20px}.intro h1{font-size:25px}.brand{font-size:23px}.brandicon{width:44px;height:44px}}
 </style></head>
 <body><div class="app">
-<header class="header"><div class="brand"><span class="brandicon">🌿</span>나와봄</div><button class="topaction" id="backupTop">내 기록 백업 ↗</button></header>
+<header class="header"><div class="brand"><span class="brandicon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
+  <rect width="512" height="512" rx="112" fill="#FFF2E5"/>
+  <path d="M256 73C170 73 105 139 105 223c0 107 151 230 151 230s151-123 151-230C407 139 342 73 256 73Z" fill="#DF8A74"/>
+  <circle cx="256" cy="221" r="91" fill="#FFF9F0"/>
+  <path d="M256 275v-70" fill="none" stroke="#438764" stroke-linecap="round" stroke-width="15"/>
+  <path d="M255 229c-44 2-66-20-65-58 39-7 67 14 65 58Z" fill="#70AA80"/>
+  <path d="M256 213c0-43 26-60 68-57 2 37-21 59-68 57Z" fill="#438764"/>
+</svg></span>나와봄</div><button class="topaction" id="backupTop">내 기록 백업 ↗</button></header>
 <section class="intro"><div class="eyebrow">MY PLACE, MY MEMORIES</div><h1>내가 와본 곳,<br>오래 남을 기억.</h1><p>좋았던 장소와 순간을 나만의 지도에 담아요. 🌿</p></section>
 <section class="home-search"><strong>🔎 다녀온 장소 바로 찾기</strong><div class="home-search-row"><input id="quickSearch" placeholder="인천 옥련동 정동진횟집" aria-label="장소 검색"><button type="button" class="btn secondary" id="quickSearchBtn">검색</button></div></section><section class="stats"><div class="stat"><div class="num" id="countPlaces">0</div><small>기록한 장소</small></div><div class="stat"><div class="num" id="countRegions">0</div><small>기록한 지역</small></div><div class="stat"><div class="num" id="countRevisits">0</div><small>다시 갈 곳</small></div></section>
 <nav class="tabs" aria-label="보기 선택"><button class="tab active" data-tab="mapPanel">🗺 지도</button><button class="tab" data-tab="regionPanel">🗂 지역별</button><button class="tab" data-tab="listPanel">📒 내 기록</button><button class="tab" data-tab="managePanel">⚙ 관리</button></nav>
@@ -206,7 +268,7 @@ body{background:linear-gradient(180deg,#f4faf3 0,#fbfcf8 360px)}
 <section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="재방문">❤️ 재방문</button></div><div class="places" id="allPlaces"></div></section>
 <section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 기록</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
 <section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존 발자국 또는 나와봄 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다.</div></section>
-<div class="foot">나와봄 · 직접 가본 곳을 기록하는 지도 · 시험판 v2.6</div></div>
+<div class="foot">나와봄 · 직접 가본 곳을 기록하는 지도 · 시험판 v2.7</div></div>
 <button class="btn cta" id="addBtn">＋ 새로운 장소 기록하기</button>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새 장소 기록</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
 <form id="placeForm"><div class="form-intro">🔎 <strong>장소 이름만 입력해서 검색</strong>해 보세요.<br>검색 결과를 선택한 다음 사진과 후기를 남기면 돼요.</div>
