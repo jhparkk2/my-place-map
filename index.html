@@ -431,6 +431,53 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 @media(min-width:650px){
  #recentPlaces .recent-place-card{flex-basis:32%;width:32%}
 }
+
+/* v3.7 — keep compact uniform cards, fill portrait photo sidebars softly */
+#recentPlaces .recent-photo-frame{
+ position:relative;
+ display:block;
+ width:100%;
+ height:156px;
+ min-height:156px;
+ max-height:156px;
+ flex:0 0 156px;
+ overflow:hidden;
+ isolation:isolate;
+ margin:0;
+ border-radius:14px;
+ background:#eee5dc
+}
+#recentPlaces .recent-photo-frame .recent-photo-backdrop,
+#recentPlaces .recent-photo-frame .recent-place-photo{
+ display:block;
+ position:absolute;
+ top:0;
+ left:0;
+ width:100%!important;
+ height:100%!important;
+ min-height:0!important;
+ max-height:100%!important;
+ margin:0!important;
+ padding:0!important;
+ border-radius:0;
+}
+#recentPlaces .recent-photo-frame .recent-photo-backdrop{
+ z-index:0;
+ object-fit:cover;
+ object-position:center;
+ transform:scale(1.18);
+ filter:blur(15px) brightness(.92);
+ opacity:.78;
+ pointer-events:none
+}
+#recentPlaces .recent-photo-frame .recent-place-photo{
+ z-index:1;
+ object-fit:contain;
+ object-position:center center;
+ background:transparent;
+ filter:none;
+ transform:none
+}
 </style></head>
 <body><div class="app">
 <header class="header"><div class="brand"><span class="brandicon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
@@ -448,7 +495,7 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 <section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="재방문">❤️ 재방문</button></div><div class="places" id="allPlaces"></div></section>
 <section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 기록</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
 <section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존 발자국 또는 나와봄 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다.</div></section>
-<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v3.6</div></div>
+<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v3.7</div></div>
 <button class="btn cta" id="addBtn">＋ 내가 가본 장소 기록하기</button>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새 장소 기록</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
 <form id="placeForm"><div class="form-intro">🔎 <strong>장소 이름만 입력해서 검색</strong>해 보세요.<br>검색 결과를 선택한 다음 사진과 후기를 남기면 돼요.</div>
@@ -562,7 +609,7 @@ function recentCardHtml(p){
  }
  var last=entries[0],count=entries.length;
  var photoMarkup=photo?
-  '<img class="recent-place-photo" src="'+esc(photo)+'" alt="'+esc(p.name)+' 방문 사진" loading="eager" decoding="async">':
+  '<div class="recent-photo-frame"><img class="recent-place-photo" src="'+esc(photo)+'" alt="'+esc(p.name)+' 방문 사진" loading="eager" decoding="async"></div>':
   '<div class="recent-place-empty-photo" aria-hidden="true">'+emoji(p.category)+'</div>';
  return '<article class="recent-place-card" data-id="'+esc(p.id)+'" tabindex="0" role="button" aria-label="'+esc(p.name)+' 방문 기록 열기">'+
   photoMarkup+
@@ -571,7 +618,19 @@ function recentCardHtml(p){
   '<h3>'+esc(p.name)+'</h3><p class="recent-place-area">'+esc(regionLabel(p))+'</p>'+
   '<p class="recent-place-review">'+esc(last.review||p.review||"방문 기록 보기")+'</p></div></article>';
 }
-function redraw(){sortPlaces();$("countPlaces").textContent=places.length;$("countRevisits").textContent=places.filter(function(p){return !!p.revisit;}).length;$("countRegions").textContent=new Set(places.map(function(p){var r=placeRegion(p);return r.city+"|"+r.town;})).size;$("mapCount").textContent=places.length+"개 장소";$("listCount").textContent=places.length+"개";$("recentPlaces").innerHTML=places.length?places.slice(0,3).map(recentCardHtml).join(""):emptyHtml();var shown=places.filter(function(p){return activeFilter==="전체"||activeFilter==="재방문"&&p.revisit||p.category===activeFilter;});$("allPlaces").innerHTML=shown.length?shown.map(cardHtml).join(""):emptyHtml();renderMarkers();renderRegions();}
+function addRecentPhotoBackdrops(){
+ document.querySelectorAll("#recentPlaces .recent-photo-frame > .recent-place-photo").forEach(function(img){
+  var frame=img.parentNode;
+  if(frame.querySelector(".recent-photo-backdrop"))return;
+  var backdrop=img.cloneNode(false);
+  backdrop.className="recent-photo-backdrop";
+  backdrop.alt="";
+  backdrop.setAttribute("aria-hidden","true");
+  backdrop.removeAttribute("loading");
+  frame.insertBefore(backdrop,img);
+ });
+}
+function redraw(){sortPlaces();$("countPlaces").textContent=places.length;$("countRevisits").textContent=places.filter(function(p){return !!p.revisit;}).length;$("countRegions").textContent=new Set(places.map(function(p){var r=placeRegion(p);return r.city+"|"+r.town;})).size;$("mapCount").textContent=places.length+"개 장소";$("listCount").textContent=places.length+"개";$("recentPlaces").innerHTML=places.length?places.slice(0,3).map(recentCardHtml).join(""):emptyHtml();addRecentPhotoBackdrops();var shown=places.filter(function(p){return activeFilter==="전체"||activeFilter==="재방문"&&p.revisit||p.category===activeFilter;});$("allPlaces").innerHTML=shown.length?shown.map(cardHtml).join(""):emptyHtml();renderMarkers();renderRegions();}
 
 var REGION_NAMES=["서울특별시","부산광역시","대구광역시","인천광역시","광주광역시","대전광역시","울산광역시","세종특별자치시","경기도","강원특별자치도","충청북도","충청남도","전북특별자치도","전라남도","경상북도","경상남도","제주특별자치도"];
 var REGION_ALIASES={
