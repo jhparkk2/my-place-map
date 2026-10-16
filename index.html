@@ -274,6 +274,12 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 .link-share-secondary{display:block;margin:14px auto 4px;background:none;border:0;color:#52705b;text-decoration:underline;text-underline-offset:3px;font-size:13px;font-weight:700;padding:10px}
 .link-share-guide{font-size:12px;line-height:1.65;color:#82796e;margin:11px 3px 0}
 .link-share-status{font-size:13px;line-height:1.6;color:#4f755c;background:#f1f7f0;border-radius:11px;padding:11px;margin:10px 0;min-height:38px}
+.link-share-more{border-top:1px solid #eee5da;padding-top:12px;margin-top:9px;color:#6f675f;font-size:13px;line-height:1.65}
+.link-share-more summary{cursor:pointer;font-weight:750;color:#5d715f;padding:8px 2px}
+.link-share-more p{margin:8px 0;font-size:12px}
+#linkedShareCopy{margin:7px auto 10px;min-height:40px}
+#linkedShareCopy:disabled{opacity:.35}
+.link-share-guide{border-top:1px solid #f0e7dd;padding-top:14px}
 </style></head>
 <body><div class="app">
 <header class="header"><div class="brand"><span class="brandicon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
@@ -291,7 +297,7 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 <section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="재방문">❤️ 재방문</button></div><div class="places" id="allPlaces"></div></section>
 <section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 기록</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
 <section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존 발자국 또는 나와봄 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다.</div></section>
-<div class="foot">나와봄 · 직접 가본 곳을 기록하는 지도 · 시험판 v3.1</div></div>
+<div class="foot">나와봄 · 직접 가본 곳을 기록하는 지도 · 시험판 v3.2</div></div>
 <button class="btn cta" id="addBtn">＋ 새로운 장소 기록하기</button>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새 장소 기록</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
 <form id="placeForm"><div class="form-intro">🔎 <strong>장소 이름만 입력해서 검색</strong>해 보세요.<br>검색 결과를 선택한 다음 사진과 후기를 남기면 돼요.</div>
@@ -333,10 +339,11 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 <div class="overlay" id="linkedShareOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="linkedShareTitle">
 <div class="sheethead"><h2 id="linkedShareTitle">나와봄 장소 공유</h2><button class="x" data-close="linkedShareOverlay" aria-label="닫기">×</button></div>
 <div class="link-share-preview"><img id="linkedShareImg" alt="공유할 장소 사진"><div id="linkedShareFallback" class="link-share-fallback">🌱</div><div class="link-share-info"><h3 id="linkedSharePlace">장소 이름</h3><p id="linkedShareAddress"></p><p id="linkedShareReview" class="link-share-stars"></p></div></div>
-<button id="linkedShareMain" type="button" class="btn link-share-primary">🔗 카카오톡 연결 카드 만들기</button>
-<p id="linkedShareStatus" class="link-share-status" role="status" aria-live="polite">사진과 후기가 담긴 카드를 눌러 나와봄 장소로 이동할 수 있어요.</p>
-<button id="linkedSharePhotoOnly" type="button" class="link-share-secondary">사진만 보내기 (기존 방식)</button>
-<p class="link-share-guide">연결 카드 만들기를 누르면 선택한 사진 1장과 장소 요약이 공개 링크로 저장돼요. 해당 링크를 아는 사람은 내용을 볼 수 있습니다. 최초 준비 후 카카오톡 보내기를 한 번 더 눌러주세요. 카카오 개발자 웹 도메인 등록이 필요해요.</p>
+<button id="linkedShareMain" type="button" class="btn link-share-primary">🔗 장소 링크 준비하기</button>
+<p id="linkedShareStatus" class="link-share-status" role="status" aria-live="polite">사진·후기를 보고 장소를 열 수 있는 링크를 만들어요.</p>
+<button id="linkedShareCopy" type="button" class="link-share-secondary" disabled>링크만 복사하기</button>
+<details class="link-share-more"><summary>공유가 안 되나요?</summary><p>카카오톡 사진 카드 공유는 카카오 개발자 도메인 등록 후 사용할 수 있어요. 그전에는 링크를 보내도 상대방이 장소를 열어볼 수 있습니다.</p><button id="linkedSharePhotoOnly" type="button" class="link-share-secondary">사진 카드만 공유하기</button></details>
+<p class="link-share-guide">처음 준비할 때 선택한 사진 1장과 장소 요약이 공개 저장소에 올라갑니다. 링크를 아는 누구나 볼 수 있고 다른 사람에게 전달할 수 있어요. 기존 내 기록은 그대로 유지돼요.</p>
 </div></div>
 
 <div class="overlay" id="sharedPlaceOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sharedPlaceTitle">
@@ -677,13 +684,17 @@ function openLinkedShare(){
  if(photo)$("linkedShareImg").src=photo;else $("linkedShareImg").removeAttribute("src");
  var same=linkedShareId===p.id&&linkedShareStamp===String(p.updatedAt||0)&&!!linkedShareUrl;
  $("linkedShareMain").disabled=false;
- $("linkedShareMain").textContent=same?"💬 카카오톡으로 연결 카드 보내기":"🔗 연결 카드 준비하기";
- $("linkedShareStatus").textContent=same?"연결 카드 준비 완료! 버튼을 눌러 카카오톡으로 보내세요.":"카카오톡에서 사진 카드를 누르면 이 장소를 볼 수 있게 준비할게요.";
+ $("linkedShareMain").textContent=same?"💬 카카오톡에 장소 보내기":"🔗 장소 링크 준비하기";
+ $("linkedShareCopy").disabled=!same;
+ $("linkedShareStatus").textContent=same?"✅ 연결할 장소가 준비됐어요. 이제 보내기만 누르면 돼요.":"공유할 사진 한 장과 방문 후기를 미리 확인해 주세요.";
  openOverlay("linkedShareOverlay");
- loadLinkedKakaoSdk().catch(function(){
-  if($("linkedShareOverlay").classList.contains("open")){
-   $("linkedShareStatus").textContent="카카오톡 연결 기능을 불러오지 못했어요. Safari에서 다시 시도하거나 카카오 개발자 설정을 확인해 주세요.";
-  }
+ loadLinkedKakaoSdk().then(function(){
+  if(!$("linkedShareOverlay").classList.contains("open"))return;
+  if(!same)return;
+  $("linkedShareMain").textContent="💬 카카오톡에 장소 보내기";
+ }).catch(function(){
+  if(!$("linkedShareOverlay").classList.contains("open"))return;
+  if(same){$("linkedShareMain").textContent="🔗 장소 링크 공유하기";$("linkedShareStatus").textContent="카카오 카드 기능을 사용할 수 없어 링크로 공유할 수 있어요. 상대방이 누르면 방문 사진과 후기가 열려요.";}
  });
 }
 function sendLinkedKakaoShare(p,url){
@@ -712,10 +723,29 @@ function sendLinkedKakaoShare(p,url){
   $("linkedShareStatus").textContent="카카오 공유 오류: "+String(err&&err.message||err||"").slice(0,130)+" · SDK 도메인·제품 링크 등록을 확인해 주세요.";
  }
 }
+function copyLinkedShareUrl(){
+ if(!linkedShareUrl){$("linkedShareStatus").textContent="먼저 「장소 링크 준비하기」를 눌러주세요.";return;}
+ var msg="🌱 나와봄에서 기록한 장소\n"+$("linkedSharePlace").textContent+"\n"+linkedShareUrl;
+ if(navigator.clipboard&&navigator.clipboard.writeText){
+  navigator.clipboard.writeText(msg).then(function(){
+   $("linkedShareStatus").textContent="✅ 링크를 복사했어요. 카카오톡에 붙여넣으면 상대방이 사진과 후기를 열어볼 수 있어요.";
+  }).catch(function(){window.prompt("아래 링크를 복사해 주세요.",linkedShareUrl);});
+ }else window.prompt("아래 링크를 복사해 주세요.",linkedShareUrl);
+}
+function shareLinkedPlaceUrl(p,url){
+ if(navigator.share){
+  navigator.share({title:p.name+" · 나와봄",text:"🌱 "+p.name+" · 내가 직접 다녀온 장소",url:url}).catch(function(err){
+   if(err&&err.name==="AbortError")return;
+   $("linkedShareStatus").textContent="공유창을 열지 못했어요. 아래 「링크만 복사하기」를 눌러주세요.";
+  });
+ }else copyLinkedShareUrl();
+}
 async function runLinkedShare(){
  var p=places.find(function(x){return x.id===currentId;});if(!p)return;
  if(linkedShareId===p.id&&linkedShareStamp===String(p.updatedAt||0)&&linkedShareUrl){
-  sendLinkedKakaoShare(p,linkedShareUrl);return;
+  if(window.Kakao&&window.Kakao.Share&&typeof window.Kakao.Share.sendDefault==="function")sendLinkedKakaoShare(p,linkedShareUrl);
+  else shareLinkedPlaceUrl(p,linkedShareUrl);
+  return;
  }
  var btn=$("linkedShareMain");btn.disabled=true;btn.textContent="사진 링크 만드는 중…";
  $("linkedShareStatus").textContent="선택한 사진 1장과 장소 정보를 공개 링크로 준비하고 있어요.";
@@ -723,8 +753,9 @@ async function runLinkedShare(){
   var opts={address:true,phone:false,review:true,naver:true,photo:!!sharePhotoSource(p)};
   var url=await uploadSharedPhoto(p,opts);
   linkedShareId=p.id;linkedShareStamp=String(p.updatedAt||0);linkedShareUrl=url;
-  btn.textContent="💬 카카오톡으로 연결 카드 보내기";
-  $("linkedShareStatus").textContent="✅ 준비 완료! 위 버튼을 한 번 더 눌러 카카오톡으로 보내세요.";
+  $("linkedShareCopy").disabled=false;
+  btn.textContent=window.Kakao&&window.Kakao.Share&&typeof window.Kakao.Share.sendDefault==="function"?"💬 카카오톡에 장소 보내기":"🔗 장소 링크 공유하기";
+  $("linkedShareStatus").textContent="✅ 장소 링크 준비 완료! 위 버튼을 한 번 더 누르면 보낼 수 있어요.";
  }catch(err){
   btn.textContent="↻ 연결 카드 다시 준비하기";
   $("linkedShareStatus").textContent="링크 준비 실패: "+String(err&&err.message||err||"다시 시도").slice(0,160);
@@ -1315,6 +1346,7 @@ $("navigateBtn").addEventListener("click",function(){var p=places.find(function(
 
 $("shareBtn").addEventListener("click",openLinkedShare);
 $("linkedShareMain").addEventListener("click",runLinkedShare);
+$("linkedShareCopy").addEventListener("click",copyLinkedShareUrl);
 $("linkedSharePhotoOnly").addEventListener("click",shareSimpleCard);
 $("kakaoCardSend").addEventListener("click",sendKakaoPhotoCard);
 $("nativePhotoSend").addEventListener("click",directPhotoShare);
