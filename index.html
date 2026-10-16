@@ -335,6 +335,38 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 }
 @media(min-width:650px){#recentPlaces .place{flex-basis:32%;}#recentPlaces .thumb{height:170px;min-height:170px}}
 @media(prefers-reduced-motion:reduce){#recentPlaces{scroll-behavior:auto}}
+
+/* v3.4 recent photos: prevent oversized grid track and show the whole photo */
+#recentPlaces .place{height:auto;align-self:flex-start}
+#recentPlaces .thumb{
+ position:relative;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ width:100%;
+ height:auto!important;
+ min-height:0!important;
+ aspect-ratio:4/3;
+ flex:0 0 auto;
+ overflow:hidden;
+ padding:0;
+ background:#f8eee6;
+ border-radius:13px
+}
+#recentPlaces .thumb img{
+ display:block;
+ position:absolute;
+ inset:0;
+ width:100%!important;
+ height:100%!important;
+ max-height:100%!important;
+ object-fit:contain!important;
+ object-position:center center;
+ border-radius:13px
+}
+#recentPlaces .details{flex:0 0 auto;min-height:0}
+@media(max-width:390px){#recentPlaces .thumb{height:auto!important;min-height:0!important}}
+@media(min-width:650px){#recentPlaces .thumb{height:auto!important;min-height:0!important}}
 </style></head>
 <body><div class="app">
 <header class="header"><div class="brand"><span class="brandicon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
@@ -352,7 +384,7 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 <section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="재방문">❤️ 재방문</button></div><div class="places" id="allPlaces"></div></section>
 <section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 기록</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
 <section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존 발자국 또는 나와봄 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다.</div></section>
-<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v3.3</div></div>
+<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v3.4</div></div>
 <button class="btn cta" id="addBtn">＋ 내가 가본 장소 기록하기</button>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새 장소 기록</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
 <form id="placeForm"><div class="form-intro">🔎 <strong>장소 이름만 입력해서 검색</strong>해 보세요.<br>검색 결과를 선택한 다음 사진과 후기를 남기면 돼요.</div>
