@@ -278,7 +278,7 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 <section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="재방문">❤️ 재방문</button></div><div class="places" id="allPlaces"></div></section>
 <section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 기록</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
 <section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존 발자국 또는 나와봄 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다.</div></section>
-<div class="foot">나와봄 · 직접 가본 곳을 기록하는 지도 · 시험판 v2.9</div></div>
+<div class="foot">나와봄 · 직접 가본 곳을 기록하는 지도 · 시험판 v3.0</div></div>
 <button class="btn cta" id="addBtn">＋ 새로운 장소 기록하기</button>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새 장소 기록</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
 <form id="placeForm"><div class="form-intro">🔎 <strong>장소 이름만 입력해서 검색</strong>해 보세요.<br>검색 결과를 선택한 다음 사진과 후기를 남기면 돼요.</div>
@@ -287,7 +287,7 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 <div class="row"><label class="field"><span>방문한 날짜</span><input id="placeDate" type="date"></label><label class="field"><span>나만의 별점</span><select id="placeRating"><option value="5">★★★★★ 5점</option><option value="4">★★★★☆ 4점</option><option value="3">★★★☆☆ 3점</option><option value="2">★★☆☆☆ 2점</option><option value="1">★☆☆☆☆ 1점</option></select></label></div>
 <label class="field"><span>솔직한 방문 후기</span><textarea id="placeReview" maxlength="2000" placeholder="무엇이 좋았나요? 다음에 다시 오면 무엇을 주문할까요?"></textarea></label><label class="field"><span>방문 사진 (최대 3장)</span><input id="placePhotos" type="file" accept="image/*" multiple><small class="subtle">사진은 기기 내에 저장돼요. 용량을 줄여 자동 압축합니다.</small><div class="photoPreview" id="photoPreview"></div></label><label class="switchline"><input id="placeRevisit" type="checkbox"> ❤️ 다음에 또 가고 싶은 장소</label>
 <div class="actions"><button class="btn" type="submit" id="saveBtn">장소 저장하기</button></div></form></div></div>
-<div class="overlay" id="detailOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><div class="sheethead"><h2 id="detailTitle">장소</h2><button class="x" data-close="detailOverlay" aria-label="닫기">×</button></div><div id="detailBody"></div><div class="actions"><button class="btn secondary" id="naverSearchBtn">🟢 네이버에서 이 장소 검색 ↗</button></div><div class="actions"><button class="btn secondary" id="navigateBtn">지도 길찾기 ↗</button><button class="btn light" id="shareBtn">공유하기</button></div><div class="actions"><button class="btn light" id="editBtn">장소 · 첫 방문 수정</button><button class="btn danger" id="deleteBtn">삭제</button></div></div></div>
+<div class="overlay" id="detailOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><div class="sheethead"><h2 id="detailTitle">장소</h2><button class="x" data-close="detailOverlay" aria-label="닫기">×</button></div><div id="detailBody"></div><div class="actions"><button class="btn secondary" id="naverSearchBtn">🟢 네이버에서 이 장소 검색 ↗</button></div><div class="actions"><button class="btn secondary" id="navigateBtn">지도 길찾기 ↗</button><button class="btn light" id="shareBtn">사진·후기 카드 공유</button></div><div class="actions"><button class="btn light" id="editBtn">장소 · 첫 방문 수정</button><button class="btn danger" id="deleteBtn">삭제</button></div></div></div>
 
 
 <div class="overlay" id="shareOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="shareTitle">
@@ -344,11 +344,11 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=51ce171d297689b74c119e403b8eaf87&libraries=services"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.8.3/kakao.min.js"></script>
 <script>
 (function(){
 "use strict";
 var SB_URL="https://axnipmcwpevjofnpcqpj.supabase.co", SB_KEY="sb_publishable_ljzv4HLzBV7ZSerkWaIlcQ_hepJ-s77", SB_BUCKET="baljaguk-photos", sbClient=null, cloudReadyUrl="";
+var shareCardFile=null, shareCardForId="", shareCardBuildToken=0;
 var DBNAME="footprint-place-v1", DBSTORE="places", db, places=[], activeFilter="전체", selectedCoords=null, editingId=null, editingVisitId=null, currentId=null, map=null, markers=null, photosForSave=[], visitPhotosForSave=[], commentReplyId=null, viewerPhotos=[], viewerIndex=0, lastPhotoTrigger=null, photoTouchStart=null, searchBusy=false, regionViewCity="", regionViewTown="", pickerMap=null, pickerMarker=null, candidatePoint=null, pickerInitialized=false;
 var $=function(id){return document.getElementById(id);};
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
@@ -455,6 +455,7 @@ function showDetail(id){
  var entries=visitEntries(p),last=entries[0],rating=last.rating,pics=[];
  entries.forEach(function(v){pics=pics.concat(v.photos||[]);});
  viewerPhotos=pics.slice();
+ prepareSimpleShareCard(p);
  var gallery=pics.length?'<div class="detail-photo-rail" role="region" aria-label="방문 사진을 좌우로 넘겨보세요">'+pics.map(function(src,i){return '<button type="button" class="detail-photo-btn" data-photo-index="'+i+'" aria-label="방문 사진 '+(i+1)+' 크게 보기"><img src="'+esc(src)+'" alt="방문 사진 '+(i+1)+'" loading="lazy"></button>';}).join("")+'</div><div class="detail-gallery-help">📷 전체 사진 '+pics.length+'장 · 사진을 누르면 크게 볼 수 있어요'+(pics.length>1?' · 좌우로 넘겨보세요':'')+'</div>':'<div class="detail-photo-empty"><span>'+emoji(p.category)+'</span>사진을 추가하면 여기에 표시돼요</div>';
  var stars='<span class="detail-stars">'+"★".repeat(rating)+'<span class="unfilled">'+"☆".repeat(5-rating)+'</span></span>';
  var info='<div class="detail-info"><div class="detail-info-line"><span class="info-icon">📅</span><div><small>최근 방문일</small><strong>'+esc(dateText(last.date))+'</strong></div></div><div class="detail-info-line"><span class="info-icon">🗂️</span><div><small>지역</small><strong>'+esc(regionLabel(p))+'</strong></div></div><div class="detail-info-line"><span class="info-icon">📍</span><div><small>장소 주소</small><strong>'+esc(p.address||p.area||"주소 미기록")+'</strong></div></div></div>';
@@ -536,6 +537,113 @@ function naverSearchQuery(p){
  if(town&&!name.includes(town))bits.push(town);
  if(name)bits.push(name);
  return bits.join(" ").trim()||String(p.address||"").trim();
+}
+
+/* 나와봄 v3.0: 복잡한 링크/SDK 없이 사진·장소·후기를 이미지 한 장으로 공유 */
+function paintShareRounded(ctx,x,y,w,h,r){
+ ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+ ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+ ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+ ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+}
+function shareLines(ctx,text,x,y,maxWidth,lineHeight,maxLines){
+ var clean=String(text||"").replace(/\s+/g," ").trim();
+ if(!clean)return y;
+ var chars=Array.from(clean),row="",lines=[];
+ for(var i=0;i<chars.length;i++){
+  var next=row+chars[i];
+  if(ctx.measureText(next).width>maxWidth&&row){lines.push(row.trim());row=chars[i];}
+  else row=next;
+ }
+ if(row.trim())lines.push(row.trim());
+ if(lines.length>maxLines){
+  lines=lines.slice(0,maxLines);
+  var last=lines.length-1;
+  while(lines[last]&&ctx.measureText(lines[last]+"…").width>maxWidth)lines[last]=lines[last].slice(0,-1);
+  lines[last]+="…";
+ }
+ for(var k=0;k<lines.length;k++)ctx.fillText(lines[k],x,y+k*lineHeight);
+ return y+lines.length*lineHeight;
+}
+function makeSimpleShareCard(p,img){
+ var canvas=document.createElement("canvas");canvas.width=900;canvas.height=1300;
+ var c=canvas.getContext("2d");if(!c)throw Error("이미지 카드를 만들지 못했어요.");
+ c.fillStyle="#fffbf7";c.fillRect(0,0,900,1300);
+ c.fillStyle="#b85d4b";c.beginPath();c.arc(77,77,23,0,Math.PI*2);c.fill();
+ c.fillStyle="#ffffff";c.font="bold 26px -apple-system, 'Apple SD Gothic Neo', sans-serif";c.fillText("N",68,87);
+ c.fillStyle="#453f38";c.font="bold 38px -apple-system, 'Apple SD Gothic Neo', sans-serif";c.fillText("나와봄",113,90);
+ c.textAlign="right";c.fillStyle="#847d72";c.font="24px -apple-system, 'Apple SD Gothic Neo', sans-serif";c.fillText("내가 직접 가본 곳",842,85);c.textAlign="left";
+ var x=55,y=140,w=790,h=610;
+ c.save();paintShareRounded(c,x,y,w,h,26);c.clip();
+ if(img&&img.naturalWidth&&img.naturalHeight){
+  var scale=Math.max(w/img.naturalWidth,h/img.naturalHeight);
+  var dw=img.naturalWidth*scale,dh=img.naturalHeight*scale;
+  c.drawImage(img,x+(w-dw)/2,y+(h-dh)/2,dw,dh);
+ }else{
+  var g=c.createLinearGradient(0,y,0,y+h);g.addColorStop(0,"#f7e6d6");g.addColorStop(1,"#e5f0e7");
+  c.fillStyle=g;c.fillRect(x,y,w,h);
+  c.textAlign="center";c.fillStyle="#47795e";c.font="bold 126px -apple-system, 'Apple SD Gothic Neo', sans-serif";c.fillText("📍",450,470);c.textAlign="left";
+ }
+ c.restore();
+ var v=latestVisit(p);
+ c.fillStyle="#39795b";c.font="bold 25px -apple-system, 'Apple SD Gothic Neo', sans-serif";
+ c.fillText((p.category||"장소")+"  ·  직접 다녀온 기록",66,810);
+ c.fillStyle="#3e3833";c.font="bold 53px -apple-system, 'Apple SD Gothic Neo', sans-serif";
+ var yy=shareLines(c,p.name,65,877,760,63,2);
+ c.fillStyle="#bd674e";c.font="bold 29px -apple-system, 'Apple SD Gothic Neo', sans-serif";
+ var rating=Math.max(1,Math.min(5,+v.rating||5));
+ var date=v.date?"  ·  "+dateText(v.date):"";
+ var starY=Math.max(951,yy+13);
+ c.fillText("★".repeat(rating)+"☆".repeat(5-rating)+"   "+rating+" / 5"+date,65,starY);
+ c.fillStyle="#74675c";c.font="25px -apple-system, 'Apple SD Gothic Neo', sans-serif";
+ var addressY=starY+51;
+ shareLines(c,"주소  "+(p.address||p.area||"장소 정보 미등록"),65,addressY,765,36,2);
+ c.fillStyle="#eee7de";c.fillRect(66,Math.max(1080,addressY+55),765,2);
+ c.fillStyle="#4c443e";c.font="29px -apple-system, 'Apple SD Gothic Neo', sans-serif";
+ var reviewY=Math.max(1122,addressY+90);
+ shareLines(c,v.review||"나와봄에 담은 나의 방문 기록",66,reviewY,765,40,2);
+ c.fillStyle="#846f61";c.font="23px -apple-system, 'Apple SD Gothic Neo', sans-serif";
+ c.fillText("나와봄  ·  소중한 장소와 추억을 담다",66,1260);
+ var data=canvas.toDataURL("image/jpeg",.85);
+ var bin=atob(data.split(",")[1]),bytes=new Uint8Array(bin.length);
+ for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+ return new File([bytes],"나와봄_방문카드.jpg",{type:"image/jpeg"});
+}
+function prepareSimpleShareCard(p){
+ var token=++shareCardBuildToken;shareCardFile=null;shareCardForId=p.id;
+ var btn=$("shareBtn");btn.disabled=true;btn.textContent="공유 카드 준비 중…";
+ function finish(img){
+  if(token!==shareCardBuildToken||shareCardForId!==p.id)return;
+  try{shareCardFile=makeSimpleShareCard(p,img);}
+  catch(err){shareCardFile=null;}
+  btn.disabled=false;btn.textContent="사진·후기 카드 공유";
+ }
+ var src=sharePhotoSource(p);
+ if(!src){finish(null);return;}
+ var img=new Image();
+ img.onload=function(){finish(img);};
+ img.onerror=function(){finish(null);};
+ img.src=src;
+ if(img.complete&&img.naturalWidth)finish(img);
+}
+function shareSimpleCard(){
+ var p=places.find(function(q){return q.id===currentId;});if(!p)return;
+ if(!shareCardFile||shareCardForId!==p.id){
+  alert("공유 카드를 준비 중이에요. 잠시 후 다시 눌러 주세요.");return;
+ }
+ // 사진과 텍스트를 한 장의 JPG로 합치므로 카카오톡에서 메시지가 분리되지 않아요.
+ // iOS에서는 실제 탭 동작 내에서 바로 Web Share를 호출해야 합니다.
+ var file=shareCardFile;
+ if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){
+  navigator.share({files:[file]}).catch(function(err){
+   if(err&&err.name==="AbortError")return;
+   alert("공유하지 못했어요. 아이폰 Safari에서 다시 시도해 주세요.");
+  });
+ }else{
+  var a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(function(){URL.revokeObjectURL(a.href);},3000);
+  alert("공유 기능을 지원하지 않아 카드 이미지를 저장했어요. 사진 앱 또는 파일 앱에서 공유해 주세요.");
+ }
 }
 
 function getShareOptions(){
@@ -1100,7 +1208,7 @@ $("naverSearchBtn").addEventListener("click",function(){
 });
 $("navigateBtn").addEventListener("click",function(){var p=places.find(function(q){return q.id===currentId;});if(p)window.open("https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(p.lat+","+p.lon),"_blank","noopener");});
 
-$("shareBtn").addEventListener("click",openShareSheet);
+$("shareBtn").addEventListener("click",shareSimpleCard);
 $("kakaoCardSend").addEventListener("click",sendKakaoPhotoCard);
 $("nativePhotoSend").addEventListener("click",directPhotoShare);
 ["shareAddress","sharePhone","shareReview","shareNaver","sharePhoto"].forEach(function(id){$(id).addEventListener("change",updateShareOptions);});
