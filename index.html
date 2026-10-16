@@ -478,6 +478,17 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
  filter:none;
  transform:none
 }
+
+/* v3.8 — consistent cropped recent-place thumbnails */
+#recentPlaces .recent-place-card{height:284px;min-height:284px;max-height:284px}
+#recentPlaces .recent-photo-frame,
+#recentPlaces .recent-place-empty-photo{height:143px;min-height:143px;max-height:143px;flex-basis:143px}
+#recentPlaces .recent-photo-frame>.recent-place-photo{
+ object-fit:cover!important;
+ object-position:center center!important;
+ background:#faeee3
+}
+#recentPlaces .recent-place-details{padding-top:10px;padding-bottom:4px}
 </style></head>
 <body><div class="app">
 <header class="header"><div class="brand"><span class="brandicon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
@@ -618,19 +629,7 @@ function recentCardHtml(p){
   '<h3>'+esc(p.name)+'</h3><p class="recent-place-area">'+esc(regionLabel(p))+'</p>'+
   '<p class="recent-place-review">'+esc(last.review||p.review||"방문 기록 보기")+'</p></div></article>';
 }
-function addRecentPhotoBackdrops(){
- document.querySelectorAll("#recentPlaces .recent-photo-frame > .recent-place-photo").forEach(function(img){
-  var frame=img.parentNode;
-  if(frame.querySelector(".recent-photo-backdrop"))return;
-  var backdrop=img.cloneNode(false);
-  backdrop.className="recent-photo-backdrop";
-  backdrop.alt="";
-  backdrop.setAttribute("aria-hidden","true");
-  backdrop.removeAttribute("loading");
-  frame.insertBefore(backdrop,img);
- });
-}
-function redraw(){sortPlaces();$("countPlaces").textContent=places.length;$("countRevisits").textContent=places.filter(function(p){return !!p.revisit;}).length;$("countRegions").textContent=new Set(places.map(function(p){var r=placeRegion(p);return r.city+"|"+r.town;})).size;$("mapCount").textContent=places.length+"개 장소";$("listCount").textContent=places.length+"개";$("recentPlaces").innerHTML=places.length?places.slice(0,3).map(recentCardHtml).join(""):emptyHtml();addRecentPhotoBackdrops();var shown=places.filter(function(p){return activeFilter==="전체"||activeFilter==="재방문"&&p.revisit||p.category===activeFilter;});$("allPlaces").innerHTML=shown.length?shown.map(cardHtml).join(""):emptyHtml();renderMarkers();renderRegions();}
+function redraw(){sortPlaces();$("countPlaces").textContent=places.length;$("countRevisits").textContent=places.filter(function(p){return !!p.revisit;}).length;$("countRegions").textContent=new Set(places.map(function(p){var r=placeRegion(p);return r.city+"|"+r.town;})).size;$("mapCount").textContent=places.length+"개 장소";$("listCount").textContent=places.length+"개";$("recentPlaces").innerHTML=places.length?places.slice(0,3).map(recentCardHtml).join(""):emptyHtml();var shown=places.filter(function(p){return activeFilter==="전체"||activeFilter==="재방문"&&p.revisit||p.category===activeFilter;});$("allPlaces").innerHTML=shown.length?shown.map(cardHtml).join(""):emptyHtml();renderMarkers();renderRegions();}
 
 var REGION_NAMES=["서울특별시","부산광역시","대구광역시","인천광역시","광주광역시","대전광역시","울산광역시","세종특별자치시","경기도","강원특별자치도","충청북도","충청남도","전북특별자치도","전라남도","경상북도","경상남도","제주특별자치도"];
 var REGION_ALIASES={
