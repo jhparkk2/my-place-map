@@ -253,6 +253,7 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 @media(max-width:420px){.intro{padding:24px 20px}.intro h1{font-size:25px}.brand{font-size:23px}.brandicon{width:44px;height:44px}}
 /* v2.8 공유·모바일 카드 디테일 */
 .kakao-share-btn,#kakaoCardSend{width:100%;background:#fee500!important;color:#27221b!important;border:1px solid #f2d300!important;box-shadow:0 3px 12px #d1b41322}
+.native-photo-btn{width:100%;background:#39795b!important;color:#fff!important;box-shadow:0 4px 14px #2f6e4e28}
 #kakaoCardSend:active{transform:scale(.99)}
 #kakaoCardSend:disabled{opacity:.5;box-shadow:none}
 .place,.tab,.chip,.btn{transition:background-color .15s ease,border-color .15s ease,box-shadow .15s ease,transform .15s ease}
@@ -277,7 +278,7 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 <section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="재방문">❤️ 재방문</button></div><div class="places" id="allPlaces"></div></section>
 <section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 기록</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
 <section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존 발자국 또는 나와봄 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다.</div></section>
-<div class="foot">나와봄 · 직접 가본 곳을 기록하는 지도 · 시험판 v2.8</div></div>
+<div class="foot">나와봄 · 직접 가본 곳을 기록하는 지도 · 시험판 v2.9</div></div>
 <button class="btn cta" id="addBtn">＋ 새로운 장소 기록하기</button>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새 장소 기록</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
 <form id="placeForm"><div class="form-intro">🔎 <strong>장소 이름만 입력해서 검색</strong>해 보세요.<br>검색 결과를 선택한 다음 사진과 후기를 남기면 돼요.</div>
@@ -308,9 +309,12 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 <div class="actions" id="cloudPrepareRow"><button id="cloudPrepare" type="button" class="btn">① 사진 포함 링크 준비</button></div>
 <p class="share-mini" id="cloudStatus" role="status" aria-live="polite"></p>
 <div class="actions"><button id="shareSend" type="button" class="btn">② 일반 공유</button><button id="shareCopy" type="button" class="btn secondary">링크·내용 복사</button></div>
-<div class="actions"><button id="kakaoCardSend" type="button" class="btn kakao-share-btn">💬 사진이 보이는 카카오톡 카드로 공유</button></div><p class="share-mini">카카오톡 카드 공유는 카카오 개발자 설정이 필요할 수 있어요. 동작하지 않으면 일반 공유를 이용해 주세요.</p>
-<div class="share-fallback-hint">사진 링크를 준비한 뒤 공유해 주세요. 공유할 항목을 바꾸면 링크를 다시 준비해야 해요.</div>
-<p class="share-note">🔒 링크를 준비하면 선택한 사진 한 장과 장소 정보가 공개용 저장소에 올라갑니다. 링크를 아는 누구나 볼 수 있고 다른 사람에게 전달할 수 있어요. 공유 취소·친구만 보기·댓글 동기화는 아직 지원되지 않습니다. 카카오톡 카드 공유 버튼은 사진과 장소 제목을 카드에 넣는 별도 공유 방식입니다. 일반 링크 붙여넣기는 나와봄 대표 이미지로 표시되며, 기존 카카오톡의 미리보기 캐시가 남을 수 있어요.</p>
+<div class="actions"><button id="nativePhotoSend" type="button" class="btn native-photo-btn">📷 내 사진 바로 공유 · 설정 필요 없음</button></div>
+<p class="share-mini">아이폰 공유 메뉴에서 카카오톡을 선택하세요. 사진 파일을 직접 보내는 방식이라 장소 링크가 함께 전달되지 않을 수 있어요.</p>
+<div class="actions"><button id="kakaoCardSend" type="button" class="btn kakao-share-btn">💬 카카오톡 사진 카드 공유 · 실험 기능</button></div>
+<p id="kakaoSdkStatus" class="share-mini" role="status" aria-live="polite">사진 카드 공유는 카카오 개발자 도메인 설정이 필요합니다. 사진 직접 공유는 설정 없이 사용할 수 있어요.</p>
+<div class="share-fallback-hint">사진을 바로 보낼 때는 위쪽 「내 사진 바로 공유」를 누르세요. 장소 사진이 포함된 클릭 가능한 카드 공유는 링크 준비와 카카오 개발자 설정이 필요해요.</div>
+<p class="share-note">🔒 링크를 준비하면 선택한 사진 한 장과 장소 정보가 공개용 저장소에 올라갑니다. 링크를 아는 누구나 볼 수 있고 다른 사람에게 전달할 수 있어요. 공유 취소·친구만 보기·댓글 동기화는 아직 지원되지 않습니다. 사진 직접 공유는 온라인 업로드 없이 아이폰 공유 메뉴로 전송하며, 카카오톡 카드 공유는 사진과 장소 제목을 카드에 넣는 별도 방식입니다. 일반 링크 붙여넣기는 나와봄 대표 이미지로 표시되며, 기존 카카오톡의 미리보기 캐시가 남을 수 있어요.</p>
 </div></div>
 
 <div class="overlay" id="sharedPlaceOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sharedPlaceTitle">
@@ -739,7 +743,8 @@ function renderSharePreview(){
  $("cloudPrepareRow").style.display=cloud?"":"none";
  $("shareSend").disabled=cloud&&!cloudReadyUrl;
  $("shareCopy").disabled=cloud&&!cloudReadyUrl;
- $("kakaoCardSend").disabled=cloud&&!cloudReadyUrl;
+ $("kakaoCardSend").disabled=false;
+ $("nativePhotoSend").disabled=!sharePhotoSource(p);
  $("sharePhotoPreview").classList.toggle("active",cloud);
  var url=cloud?(cloudReadyUrl||"📷 위의 '사진 포함 링크 준비' 버튼을 먼저 눌러주세요."):buildSharedPlaceUrl(p,o);
  $("sharePreview").textContent=shareText(p,o)+"\n\n🔗 나와봄에서 열기:\n"+url;
@@ -753,17 +758,41 @@ function openShareSheet(){
  var source=sharePhotoSource(p),hasPhoto=!!source;
  $("sharePhoto").checked=hasPhoto;$("sharePhoto").disabled=!hasPhoto;
  if(hasPhoto)$("sharePhotoThumb").src=source;else $("sharePhotoThumb").removeAttribute("src");
- $("sharePhotoHelp").textContent=hasPhoto?"사진 1장을 포함한 링크를 준비할 수 있어요.":"등록한 사진이 없어 후기와 장소만 공유해요.";
+ $("sharePhotoHelp").textContent=hasPhoto?"사진 파일로 바로 공유하거나, 온라인에 사진 한 장을 올려 링크를 준비할 수 있어요.":"등록한 사진이 없어 후기와 장소만 공유해요.";
+ $("kakaoSdkStatus").textContent=window.Kakao&&window.Kakao.Share&&typeof window.Kakao.Share.sendDefault==="function"?"✅ 카카오 SDK 로드 확인. 카드 전송은 개발자 도메인 설정에 따라 달라질 수 있어요.":"⚠️ 이 브라우저에서 카카오 카드 SDK를 불러오지 못했어요. 초록색 「내 사진 바로 공유」를 이용해 주세요.";
  renderSharePreview();openOverlay("shareOverlay");
+}
+function directPhotoShare(){
+ var p=places.find(function(x){return x.id===currentId;});if(!p)return;
+ var source=sharePhotoSource(p);
+ if(!source){alert("이 장소에 사진이 없어요. 사진을 기록한 후 다시 시도해 주세요.");return;}
+ try{
+  var match=/^data:(image\/(?:jpeg|png|webp));base64,([a-z0-9+/=\s]+)$/i.exec(source);
+  if(!match)throw Error("지원하지 않는 사진 형식이에요.");
+  var bytestr=atob(match[2].replace(/\s+/g,"")),bytes=new Uint8Array(bytestr.length);
+  for(var i=0;i<bytestr.length;i++)bytes[i]=bytestr.charCodeAt(i);
+  var type=match[1].toLowerCase(),ext=type==="image/png"?"png":type==="image/webp"?"webp":"jpg";
+  var file=new File([bytes],"nawabom-place."+ext,{type:type});
+  var o=Object.assign({},getShareOptions(),{photo:false});
+  var url=cloudReadyUrl||buildSharedPlaceUrl(p,o);
+  var txt="🌱 나와봄 · "+p.name+"\n"+(p.address?"📍 "+p.address+"\n":"")+"📷 방문 사진과 후기: "+url;
+  if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){
+   navigator.share({title:p.name+" · 나와봄",text:txt,files:[file]}).catch(function(err){
+    if(err&&err.name==="AbortError")return;
+    alert("사진 공유가 완료되지 않았어요. Safari에서 열고 다시 시도하거나 사진을 저장해 공유해 주세요.");
+   });return;
+  }
+  alert("이 브라우저는 사진 파일 직접 공유를 지원하지 않아요. 아이폰 Safari에서 열고 다시 시도해 주세요.");
+ }catch(err){alert("사진 공유 준비에 실패했어요: "+(err.message||"사진 형식을 확인해 주세요."));}
 }
 function sendKakaoPhotoCard(){
  var p=places.find(function(x){return x.id===currentId;});if(!p)return;
  var opts=getShareOptions(),photoSelected=opts.photo&&!!sharePhotoSource(p);
  var url=photoSelected?cloudReadyUrl:buildSharedPlaceUrl(p,opts);
- if(!url){alert("먼저 사진 포함 링크를 준비해 주세요.");return;}
  if(!window.Kakao||!window.Kakao.Share||typeof window.Kakao.Share.sendDefault!=="function"){
-  alert("카카오톡 공유 기능을 불러오지 못했어요. 일반 공유 또는 링크 복사를 사용해 주세요.");return;
+  directPhotoShare();return;
  }
+ if(!url){alert("사진 카드로 공유하려면 먼저 「사진 포함 링크 준비」를 눌러주세요. 바로 사진을 보내려면 초록색 버튼을 사용하세요.");return;}
  try{
   if(!window.Kakao.isInitialized())window.Kakao.init("51ce171d297689b74c119e403b8eaf87");
   var snap=snapshotForShare(p,opts),pieces=["내가 직접 가본 "+(p.category||"장소")];
@@ -1073,6 +1102,7 @@ $("navigateBtn").addEventListener("click",function(){var p=places.find(function(
 
 $("shareBtn").addEventListener("click",openShareSheet);
 $("kakaoCardSend").addEventListener("click",sendKakaoPhotoCard);
+$("nativePhotoSend").addEventListener("click",directPhotoShare);
 ["shareAddress","sharePhone","shareReview","shareNaver","sharePhoto"].forEach(function(id){$(id).addEventListener("change",updateShareOptions);});
 $("cloudPrepare").addEventListener("click",async function(){
  var p=places.find(function(q){return q.id===currentId;});if(!p)return;
