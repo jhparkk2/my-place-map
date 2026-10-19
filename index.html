@@ -496,6 +496,15 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 .my-location-btn:disabled{opacity:.7;cursor:wait}
 .my-location-status{font-size:12px;line-height:1.6;margin:9px 2px 4px;color:#426d83}
 .my-location-status[hidden]{display:none}
+/* v4.0 — favorites, independent of revisit */
+.place,#recentPlaces .recent-place-card{position:relative}
+.place .details{padding-right:28px}
+.favorite-card-toggle{position:absolute;top:9px;right:9px;z-index:2;display:grid;place-items:center;width:40px;height:40px;min-width:40px;padding:0;border:1px solid #e6ddd2;border-radius:13px;background:#ffffffec;color:#9a958c;font-size:26px;font-weight:850;line-height:1;box-shadow:0 3px 9px #493b2823}
+.favorite-card-toggle.active{color:#d99b21;border-color:#f0d7a0;background:#fff8e7}
+#recentPlaces .favorite-card-toggle{top:17px;right:17px}
+.favorite-card-toggle:focus-visible,.detail-favorite:focus-visible{outline:3px solid #edbc5b;outline-offset:2px}
+.detail-favorite{width:100%;border:1px solid #ecd8b1;border-radius:14px;background:#fffaf0;color:#a46d0b;font-size:14px;font-weight:800;padding:13px 14px;min-height:47px;margin:9px 0 0}
+.detail-favorite.active{background:#fff1cd;color:#976013;border-color:#e9bd69}
 </style></head>
 <body><div class="app">
 <header class="header"><div class="brand"><span class="brandicon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
@@ -510,10 +519,10 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 <section class="home-search"><strong>🔎 가본 장소 검색해서 기록하기</strong><div class="home-search-row"><input id="quickSearch" placeholder="식당·카페 이름 또는 동네 + 장소명" aria-label="기록할 장소 검색" enterkeyhint="search"><button type="button" class="btn secondary" id="quickSearchBtn">찾기</button></div></section><section class="stats"><div class="stat"><div class="num" id="countPlaces">0</div><small>기록한 장소</small></div><div class="stat"><div class="num" id="countRegions">0</div><small>기록한 지역</small></div><div class="stat"><div class="num" id="countRevisits">0</div><small>다시 갈 곳</small></div></section>
 <nav class="tabs" aria-label="보기 선택"><button class="tab active" data-tab="mapPanel">🗺 지도</button><button class="tab" data-tab="regionPanel">🗂 지역별</button><button class="tab" data-tab="listPanel">📒 내 기록</button><button class="tab" data-tab="managePanel">⚙ 관리</button></nav>
 <section class="panel active" id="mapPanel"><div class="sectiontitle recent-heading"><div><span class="section-eyebrow">MY RECENT PLACES</span><h2>최근 기록한 장소</h2></div><button class="topaction" id="morePlaces">전체 보기 →</button></div><div class="places" id="recentPlaces" aria-label="최근 기록한 장소 목록"></div><div class="sectiontitle map-heading"><div><span class="section-eyebrow">MY PLACE MAP</span><h2>나만의 장소 지도</h2></div><span class="subtle" id="mapCount">0개 장소</span></div><div class="map-canvas-wrap"><div id="map" role="application" aria-label="저장한 장소와 내 위치 지도"></div><button type="button" id="myLocationBtn" class="my-location-btn" aria-label="내 현재 위치를 지도에 표시">⌖ 내 위치</button></div><p id="myLocationStatus" class="my-location-status" role="status" aria-live="polite" hidden></p><div class="map-legend"><span>🍜 맛집</span><span>☕ 카페</span><span>🌿 명소</span><span>🏡 숙소</span></div><p class="mapnote">📍 지도에서 핀을 누르면 그 장소의 사진과 후기를 볼 수 있어요.</p></section>
-<section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="재방문">❤️ 재방문</button></div><div class="places" id="allPlaces"></div></section>
+<section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="재방문">❤️ 재방문</button><button class="chip" data-filter="즐겨찾기">⭐ 즐겨찾기 <span id="favoriteCount">0</span></button></div><div class="places" id="allPlaces"></div></section>
 <section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 기록</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
 <section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존 발자국 또는 나와봄 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다.</div></section>
-<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v3.7</div></div>
+<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.0</div></div>
 <button class="btn cta" id="addBtn">＋ 내가 가본 장소 기록하기</button>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새 장소 기록</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
 <form id="placeForm"><div class="form-intro">🔎 <strong>장소 이름만 입력해서 검색</strong>해 보세요.<br>검색 결과를 선택한 다음 사진과 후기를 남기면 돼요.</div>
@@ -616,9 +625,13 @@ function openOverlay(id){$(id).classList.add("open");$(id).setAttribute("aria-hi
 function closeOverlay(id){$(id).classList.remove("open");$(id).setAttribute("aria-hidden","true");document.body.style.overflow=document.querySelector(".overlay.open")?"hidden":"";}
 function selectTab(id){document.querySelectorAll(".tab").forEach(function(el){el.classList.toggle("active",el.dataset.tab===id);});document.querySelectorAll(".panel").forEach(function(el){el.classList.toggle("active",el.id===id);});if(id==="mapPanel"&&map)setTimeout(function(){map.invalidateSize();},120);if(id==="regionPanel")renderRegions();}
 function emptyHtml(){return '<div class="empty"><div class="emoji">🗺️</div><strong>아직 기록한 장소가 없어요</strong>직접 다녀온 맛집, 카페, 명소를<br>하나씩 기록해 보세요!</div>';}
+function favoriteEmptyHtml(){return '<div class="empty"><div class="emoji">⭐</div><strong>즐겨찾기한 장소가 아직 없어요</strong>장소 카드나 상세 화면의 ☆을 눌러 추가해 보세요.</div>';}
+function favoriteCardHtml(p){
+ return '<button type="button" class="favorite-card-toggle'+(p.favorite?' active':'')+'" data-favorite-id="'+esc(p.id)+'" aria-label="'+esc(p.name)+' '+(p.favorite?'즐겨찾기 해제':'즐겨찾기 추가')+'" aria-pressed="'+(p.favorite?'true':'false')+'">'+(p.favorite?'★':'☆')+'</button>';
+}
 function cardHtml(p){var entries=visitEntries(p),photo="";for(var k=0;k<entries.length;k++){if(entries[k].photos&&entries[k].photos.length){photo=entries[k].photos[0];break;}}
  var last=entries[0],count=entries.length;
- return '<article class="place" data-id="'+esc(p.id)+'" tabindex="0" role="button"><div class="thumb">'+(photo?'<img alt="" src="'+esc(photo)+'" style="width:100%;height:100%;object-fit:cover;border-radius:13px">':emoji(p.category))+'</div><div class="details"><span class="pill">'+esc(p.category)+' · '+('★'.repeat(last.rating||5))+(count>1?' · 👣 '+count+'회 방문':'')+(p.revisit?' · ❤️ 다시 갈 곳':'')+'</span><h3>'+esc(p.name)+'</h3><p>'+esc(regionLabel(p))+'</p><p class="note">'+esc(last.review||p.review||"방문 기록 보기")+'</p></div></article>';
+ return '<article class="place" data-id="'+esc(p.id)+'" tabindex="0" role="button">'+favoriteCardHtml(p)+'<div class="thumb">'+(photo?'<img alt="" src="'+esc(photo)+'" style="width:100%;height:100%;object-fit:cover;border-radius:13px">':emoji(p.category))+'</div><div class="details"><span class="pill">'+esc(p.category)+' · '+('★'.repeat(last.rating||5))+(count>1?' · 👣 '+count+'회 방문':'')+(p.revisit?' · ❤️ 다시 갈 곳':'')+'</span><h3>'+esc(p.name)+'</h3><p>'+esc(regionLabel(p))+'</p><p class="note">'+esc(last.review||p.review||"방문 기록 보기")+'</p></div></article>';
 }
 function recentCardHtml(p){
  var entries=visitEntries(p),photo="";
@@ -630,13 +643,24 @@ function recentCardHtml(p){
   '<div class="recent-photo-frame"><img class="recent-place-photo" src="'+esc(photo)+'" alt="'+esc(p.name)+' 방문 사진" loading="eager" decoding="async"></div>':
   '<div class="recent-place-empty-photo" aria-hidden="true">'+emoji(p.category)+'</div>';
  return '<article class="recent-place-card" data-id="'+esc(p.id)+'" tabindex="0" role="button" aria-label="'+esc(p.name)+' 방문 기록 열기">'+
-  photoMarkup+
+  photoMarkup+favoriteCardHtml(p)+
   '<div class="recent-place-details"><span class="recent-place-tag">'+esc(p.category)+' · '+('★'.repeat(last.rating||5))+
   (count>1?' · 👣 '+count+'회 방문':'')+(p.revisit?' · ❤️ 다시 갈 곳':'')+'</span>'+
   '<h3>'+esc(p.name)+'</h3><p class="recent-place-area">'+esc(regionLabel(p))+'</p>'+
   '<p class="recent-place-review">'+esc(last.review||p.review||"방문 기록 보기")+'</p></div></article>';
 }
-function redraw(){sortPlaces();$("countPlaces").textContent=places.length;$("countRevisits").textContent=places.filter(function(p){return !!p.revisit;}).length;$("countRegions").textContent=new Set(places.map(function(p){var r=placeRegion(p);return r.city+"|"+r.town;})).size;$("mapCount").textContent=places.length+"개 장소";$("listCount").textContent=places.length+"개";$("recentPlaces").innerHTML=places.length?places.slice(0,3).map(recentCardHtml).join(""):emptyHtml();var shown=places.filter(function(p){return activeFilter==="전체"||activeFilter==="재방문"&&p.revisit||p.category===activeFilter;});$("allPlaces").innerHTML=shown.length?shown.map(cardHtml).join(""):emptyHtml();renderMarkers();renderRegions();}
+function redraw(options){
+ sortPlaces();
+ $("countPlaces").textContent=places.length;
+ $("countRevisits").textContent=places.filter(function(p){return !!p.revisit;}).length;
+ $("favoriteCount").textContent=places.filter(function(p){return !!p.favorite;}).length;
+ $("countRegions").textContent=new Set(places.map(function(p){var r=placeRegion(p);return r.city+"|"+r.town;})).size;
+ $("mapCount").textContent=places.length+"개 장소";$("listCount").textContent=places.length+"개";
+ $("recentPlaces").innerHTML=places.length?places.slice(0,3).map(recentCardHtml).join(""):emptyHtml();
+ var shown=places.filter(function(p){return activeFilter==="전체"||activeFilter==="재방문"&&p.revisit||activeFilter==="즐겨찾기"&&p.favorite||p.category===activeFilter;});
+ $("allPlaces").innerHTML=shown.length?shown.map(cardHtml).join(""):(activeFilter==="즐겨찾기"?favoriteEmptyHtml():emptyHtml());
+ renderMarkers(!!(options&&options.keepMapView));renderRegions();
+}
 
 var REGION_NAMES=["서울특별시","부산광역시","대구광역시","인천광역시","광주광역시","대전광역시","울산광역시","세종특별자치시","경기도","강원특별자치도","충청북도","충청남도","전북특별자치도","전라남도","경상북도","경상남도","제주특별자치도"];
 var REGION_ALIASES={
@@ -714,7 +738,28 @@ function locateOnMainMap(){
 }
 $("myLocationBtn").addEventListener("click",locateOnMainMap);
 
-function renderMarkers(){
+var favoriteSavingIds=new Set();
+async function toggleFavorite(id){
+ if(!id||favoriteSavingIds.has(id))return;
+ var item=places.find(function(p){return p.id===id;});if(!item)return;
+ favoriteSavingIds.add(id);
+ try{
+  var next=Object.assign({},item,{favorite:!item.favorite});
+  await put(next);
+  places=await getAll();
+  redraw({keepMapView:true});
+  if(currentId===id&&$("detailOverlay").classList.contains("open")){
+   var button=$("detailBody").querySelector("[data-toggle-favorite]");
+   if(button){
+    button.classList.toggle("active",!!next.favorite);
+    button.setAttribute("aria-pressed",next.favorite?"true":"false");
+    button.textContent=next.favorite?"⭐ 즐겨찾기에 저장됨 · 눌러서 해제":"☆ 즐겨찾기에 추가하기";
+   }
+  }
+ }catch(err){alert("즐겨찾기를 저장하지 못했어요. 다시 시도해 주세요.");}
+ finally{favoriteSavingIds.delete(id);}
+}
+function renderMarkers(keepMapView){
  if(!map||!markers)return;markers.clearLayers();var coords=[];
  var categoryClass={맛집:"pin-food",카페:"pin-cafe",명소:"pin-nature",숙소:"pin-stay",기타:"pin-other"};
  places.forEach(function(p){
@@ -729,12 +774,12 @@ function renderMarkers(){
   if(photo){var img=document.createElement("img");img.src=photo;img.alt="";img.style.cssText="width:55px;height:55px;border-radius:11px;object-fit:cover";headline.appendChild(img);}
   var summary=document.createElement("div");
   var title=document.createElement("strong");title.style.cssText="display:block;font-size:14px;line-height:1.4";title.textContent=p.name;
-  var sub=document.createElement("small");sub.style.cssText="color:#617b6b";sub.textContent=emoji(p.category)+" "+p.category+(p.revisit?" · ❤️":"");
+  var sub=document.createElement("small");sub.style.cssText="color:#617b6b";sub.textContent=emoji(p.category)+" "+p.category+(p.revisit?" · ❤️":"")+(p.favorite?" · ⭐ 즐겨찾기":"");
   summary.appendChild(title);summary.appendChild(sub);headline.appendChild(summary);card.appendChild(headline);
   var button=document.createElement("button");button.type="button";button.textContent="내 방문 후기 보기 →";button.style.cssText="border:0;background:#e7f4ec;color:#18624d;font-weight:750;margin-top:11px;padding:9px;border-radius:9px;width:100%";button.addEventListener("click",function(){showDetail(p.id);});card.appendChild(button);
   m.bindPopup(card,{maxWidth:230});
  });
- if(coords.length===1)map.setView(coords[0],14);else if(coords.length>1)map.fitBounds(coords,{padding:[40,40],maxZoom:13});
+ if(!keepMapView){if(coords.length===1)map.setView(coords[0],14);else if(coords.length>1)map.fitBounds(coords,{padding:[40,40],maxZoom:13});}
 }
 function resetForm(){editingId=null;selectedCoords=null;photosForSave=[];$("phoneSearchResults").innerHTML="";$("placeForm").reset();$("placeDate").value=new Date().toLocaleDateString("en-CA");$("formTitle").textContent="새 장소 기록";$("saveBtn").textContent="장소 저장하기";$("selectedLocation").style.display="none";$("searchResults").innerHTML="";$("searchMore").open=false;$("pickBox").style.display="none";candidatePoint=null;$("confirmPick").disabled=true;$("pickStatus").textContent="먼저 지도에서 위치를 눌러 주세요.";$("photoPreview").innerHTML="";$("regionCity").value="";$("regionTown").value="";}
 function setLocation(lat,lon,address){selectedCoords={lat:+lat,lon:+lon,address:String(address||"위치 지정"),area:areaFromAddress(address)};var r=detectRegion(String(address||"")+" "+$("placeSearch").value+" "+$("placeName").value);if(r.city)$("regionCity").value=r.city;if(r.town)$("regionTown").value=r.town;$("selectedLocation").textContent="✅ 선택한 위치: "+selectedCoords.address;$("selectedLocation").style.display="block";$("searchResults").innerHTML="";}
@@ -756,6 +801,7 @@ function showDetail(id){
  '<a class="detail-phone-link" href="tel:'+esc(digits)+'">'+esc(p.phone)+'</a>':
  '<span class="phone-hint">등록된 번호가 없어요</span> <button class="phone-add" type="button" data-add-phone="1">＋ 번호 추가</button>';
  info=info.slice(0,-6)+'<div class="detail-info-line"><span class="info-icon">☎️</span><div><small>장소 전화번호</small><strong>'+phoneDisplay+'</strong></div></div></div>';
+ var favorite='<button type="button" class="detail-favorite'+(p.favorite?' active':'')+'" data-toggle-favorite="1" aria-pressed="'+(p.favorite?'true':'false')+'">'+(p.favorite?'⭐ 즐겨찾기에 저장됨 · 눌러서 해제':'☆ 즐겨찾기에 추가하기')+'</button>';
  var heart='<button type="button" class="detail-heart'+(p.revisit?' active':'')+'" data-toggle-revisit="1" aria-pressed="'+(p.revisit?'true':'false')+'">'+(p.revisit?'❤️ 다시 가고 싶은 장소로 저장됨':'🤍 다음에 또 가고 싶은 장소로 표시')+'</button>';
  var photoCursor=0;
  var timeline='<div class="visit-summary"><h3>📒 나의 방문 기록</h3><span class="visit-count">총 '+entries.length+'회 방문</span></div><button type="button" class="visit-add" data-add-visit="1">＋ 재방문 기록 추가하기</button>'+entries.map(function(v){
@@ -763,7 +809,7 @@ function showDetail(id){
  var actions=v.original?'<div class="visit-record-actions"><button type="button" data-edit-first="1">첫 방문 수정</button></div>':'<div class="visit-record-actions"><button type="button" data-edit-visit="'+esc(v.id)+'">이 방문 수정</button><button type="button" class="visit-record-delete" data-remove-visit="'+esc(v.id)+'">삭제</button></div>';
  return '<div class="visit-record"><div class="visit-record-top"><strong>📅 '+esc(dateText(v.date))+' <span class="visit-record-label">'+(v.original?'첫 방문':'재방문')+'</span></strong><span>'+"★".repeat(v.rating||5)+'</span></div><p>'+esc(v.review||"작성한 후기가 없어요.")+'</p>'+photos+actions+'</div>';
  }).join("");
- $("detailBody").innerHTML=gallery+'<div class="detail-kicker"><span class="detail-category">'+esc(emoji(p.category)+" "+p.category)+'</span><div class="detail-score">'+stars+'<strong>'+rating+'.0</strong><span>/ 5점</span></div></div>'+info+heart+timeline+commentSectionHtml(p);
+ $("detailBody").innerHTML=gallery+'<div class="detail-kicker"><span class="detail-category">'+esc(emoji(p.category)+" "+p.category)+'</span><div class="detail-score">'+stars+'<strong>'+rating+'.0</strong><span>/ 5점</span></div></div>'+info+favorite+heart+timeline+commentSectionHtml(p);
  openOverlay("detailOverlay");
 }
 
@@ -1322,7 +1368,7 @@ function sendKakaoPhotoCard(){
  }
 }
 async function exportBackup(){if(!places.length){alert("아직 백업할 기록이 없어요.");return;}var blob=new Blob([JSON.stringify({app:"footprint",version:3,exportedAt:new Date().toISOString(),places:places},null,2)],{type:"application/json"});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="나와봄_백업_"+new Date().toISOString().slice(0,10)+".json";document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},2000);}
-function normalized(raw){if(!raw||typeof raw!=="object"||!raw.name||!Number.isFinite(+raw.lat)||!Number.isFinite(+raw.lon))return null;return {id:String(raw.id||uid()).slice(0,80),name:String(raw.name).slice(0,100),category:["맛집","카페","명소","숙소","기타"].includes(raw.category)?raw.category:"기타",address:String(raw.address||"").slice(0,400),phone:String(raw.phone||"").replace(/[^0-9+\-()\s]/g,"").slice(0,30),area:String(raw.area||"").slice(0,100),regionCity:REGION_NAMES.includes(raw.regionCity)?raw.regionCity:"",regionTown:String(raw.regionTown||"").slice(0,40),lat:+raw.lat,lon:+raw.lon,date:String(raw.date||"").slice(0,10),rating:Math.max(1,Math.min(5,+raw.rating||5)),review:String(raw.review||"").slice(0,2000),revisit:!!raw.revisit,photos:Array.isArray(raw.photos)?raw.photos.filter(function(s){return typeof s==="string"&&s.startsWith("data:image/");}).slice(0,3):[],comments:Array.isArray(raw.comments)?raw.comments.filter(function(c){return c&&c.id&&c.text;}).slice(0,500).map(function(c){return {id:String(c.id).slice(0,80),parentId:String(c.parentId||"").slice(0,80),author:String(c.author||"").slice(0,30),text:String(c.text||"").slice(0,500),createdAt:Number(c.createdAt)||Date.now()};}):[],visits:Array.isArray(raw.visits)?raw.visits.filter(function(v){return v&&typeof v==="object";}).map(function(v){return {id:String(v.id||uid()).slice(0,80),date:String(v.date||"").slice(0,10),rating:Math.max(1,Math.min(5,+v.rating||5)),review:String(v.review||"").slice(0,2000),photos:Array.isArray(v.photos)?v.photos.filter(function(src){return typeof src==="string"&&src.startsWith("data:image/");}).slice(0,3):[],createdAt:Number(v.createdAt)||0};}):[],updatedAt:Number(raw.updatedAt)||Date.now()};}
+function normalized(raw){if(!raw||typeof raw!=="object"||!raw.name||!Number.isFinite(+raw.lat)||!Number.isFinite(+raw.lon))return null;return {id:String(raw.id||uid()).slice(0,80),name:String(raw.name).slice(0,100),category:["맛집","카페","명소","숙소","기타"].includes(raw.category)?raw.category:"기타",address:String(raw.address||"").slice(0,400),phone:String(raw.phone||"").replace(/[^0-9+\-()\s]/g,"").slice(0,30),area:String(raw.area||"").slice(0,100),regionCity:REGION_NAMES.includes(raw.regionCity)?raw.regionCity:"",regionTown:String(raw.regionTown||"").slice(0,40),lat:+raw.lat,lon:+raw.lon,date:String(raw.date||"").slice(0,10),rating:Math.max(1,Math.min(5,+raw.rating||5)),review:String(raw.review||"").slice(0,2000),revisit:!!raw.revisit,favorite:!!raw.favorite,photos:Array.isArray(raw.photos)?raw.photos.filter(function(s){return typeof s==="string"&&s.startsWith("data:image/");}).slice(0,3):[],comments:Array.isArray(raw.comments)?raw.comments.filter(function(c){return c&&c.id&&c.text;}).slice(0,500).map(function(c){return {id:String(c.id).slice(0,80),parentId:String(c.parentId||"").slice(0,80),author:String(c.author||"").slice(0,30),text:String(c.text||"").slice(0,500),createdAt:Number(c.createdAt)||Date.now()};}):[],visits:Array.isArray(raw.visits)?raw.visits.filter(function(v){return v&&typeof v==="object";}).map(function(v){return {id:String(v.id||uid()).slice(0,80),date:String(v.date||"").slice(0,10),rating:Math.max(1,Math.min(5,+v.rating||5)),review:String(v.review||"").slice(0,2000),photos:Array.isArray(v.photos)?v.photos.filter(function(src){return typeof src==="string"&&src.startsWith("data:image/");}).slice(0,3):[],createdAt:Number(v.createdAt)||0};}):[],updatedAt:Number(raw.updatedAt)||Date.now()};}
 REGION_NAMES.forEach(function(name){var o=document.createElement("option");o.value=name;o.textContent=name;$("regionCity").appendChild(o);});
 $("regionContent").addEventListener("click",function(e){var b=e.target.closest("[data-rname]");if(b){if(!regionViewCity){regionViewCity=b.dataset.rname;regionViewTown="";}else regionViewTown=b.dataset.rname;renderRegions();return;}if(e.target.closest("[data-rhome]")){regionViewCity="";regionViewTown="";renderRegions();return;}if(e.target.closest("[data-rback]")){regionViewTown="";renderRegions();return;}var p=e.target.closest("[data-id]");if(p)showDetail(p.dataset.id);});
 $("addBtn").addEventListener("click",function(){resetForm();openOverlay("formOverlay");});
@@ -1331,7 +1377,17 @@ $("morePlaces").addEventListener("click",function(){selectTab("listPanel");});
 document.querySelectorAll(".tab").forEach(function(b){b.addEventListener("click",function(){selectTab(b.dataset.tab);});});
 $("filters").addEventListener("click",function(e){var b=e.target.closest("[data-filter]");if(!b)return;activeFilter=b.dataset.filter;document.querySelectorAll(".chip").forEach(function(x){x.classList.toggle("active",x===b);});redraw();});
 document.querySelectorAll("[data-close]").forEach(function(b){b.addEventListener("click",function(){var id=b.dataset.close;closeOverlay(id);if(id==="photoOverlay"&&lastPhotoTrigger)lastPhotoTrigger.focus();if(id==="sharedPlaceOverlay"&&location.hash.indexOf("#place=")===0)history.replaceState(null,"",location.pathname+location.search);});});
-["recentPlaces","allPlaces"].forEach(function(id){$(id).addEventListener("click",function(e){var card=e.target.closest("[data-id]");if(card)showDetail(card.dataset.id);});$(id).addEventListener("keydown",function(e){if(e.key==="Enter"){var card=e.target.closest("[data-id]");if(card)showDetail(card.dataset.id);}});});
+["recentPlaces","allPlaces"].forEach(function(id){
+ $(id).addEventListener("click",async function(e){
+  var star=e.target.closest("[data-favorite-id]");
+  if(star){e.stopPropagation();star.disabled=true;await toggleFavorite(star.dataset.favoriteId);return;}
+  var card=e.target.closest("[data-id]");if(card)showDetail(card.dataset.id);
+ });
+ $(id).addEventListener("keydown",function(e){
+  if(e.target.closest("[data-favorite-id]"))return;
+  if(e.key==="Enter"){var card=e.target.closest("[data-id]");if(card)showDetail(card.dataset.id);}
+ });
+});
 
 function searchKey(s){return String(s||"").toLowerCase().replace(/\s+/g,"").replace(/[(){}\[\],.]/g,"");}
 function suggestName(name){if(!$("placeName").value.trim()&&name&&name.length<100)$("placeName").value=name;}
@@ -1500,8 +1556,10 @@ $("locateMe").addEventListener("click",function(){if(!navigator.geolocation){ale
 $("placeSearch").addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();$("searchBtn").click();}});
 $("photoPreview").addEventListener("click",function(e){var b=e.target.closest(".remove-photo");if(!b)return;var i=Number(b.dataset.index);if(Number.isInteger(i)&&i>=0&&i<photosForSave.length){photosForSave.splice(i,1);showPhotos();}});
 $("placePhotos").addEventListener("change",async function(e){var files=Array.from(e.target.files||[]);if(files.length+photosForSave.length>3){alert("사진은 총 3장까지 등록할 수 있어요. 수정 화면에서 기존 사진의 ×를 눌러 삭제할 수 있어요.");e.target.value="";return;}try{for(var i=0;i<files.length;i++){photosForSave.push(await compress(files[i]));}showPhotos();}catch(err){alert(err.message||"사진을 처리하지 못했어요.");}e.target.value="";});
-$("placeForm").addEventListener("submit",async function(e){e.preventDefault();if(!selectedCoords){alert("위치 검색 후 결과에서 장소를 선택해 주세요.");return;}var btn=$("saveBtn");btn.disabled=true;try{var p=normalized({id:editingId||uid(),name:$("placeName").value.trim(),category:$("placeCategory").value,address:selectedCoords.address,area:selectedCoords.area,regionCity:$("regionCity").value,regionTown:$("regionTown").value.trim(),lat:selectedCoords.lat,lon:selectedCoords.lon,date:$("placeDate").value,rating:+$("placeRating").value,review:$("placeReview").value.trim(),revisit:$("placeRevisit").checked,photos:photosForSave,phone:$("placePhone").value.trim(),comments:editingId?((places.find(function(q){return q.id===editingId;})||{}).comments||[]):[],visits:editingId?((places.find(function(q){return q.id===editingId;})||{}).visits||[]):[],updatedAt:Date.now()});if(!p||!p.name){alert("장소 이름을 입력해 주세요.");return;}await put(p);places=await getAll();redraw();closeOverlay("formOverlay");if(editingId){showDetail(p.id);}else{selectTab("mapPanel");alert("장소를 저장했어요! 🎉");}}catch(err){alert("저장에 실패했어요. 브라우저 저장 공간을 확인해 주세요.");}finally{btn.disabled=false;}});
+$("placeForm").addEventListener("submit",async function(e){e.preventDefault();if(!selectedCoords){alert("위치 검색 후 결과에서 장소를 선택해 주세요.");return;}var btn=$("saveBtn");btn.disabled=true;try{var p=normalized({id:editingId||uid(),name:$("placeName").value.trim(),category:$("placeCategory").value,address:selectedCoords.address,area:selectedCoords.area,regionCity:$("regionCity").value,regionTown:$("regionTown").value.trim(),lat:selectedCoords.lat,lon:selectedCoords.lon,date:$("placeDate").value,rating:+$("placeRating").value,review:$("placeReview").value.trim(),revisit:$("placeRevisit").checked,favorite:editingId?!!((places.find(function(q){return q.id===editingId;})||{}).favorite):false,photos:photosForSave,phone:$("placePhone").value.trim(),comments:editingId?((places.find(function(q){return q.id===editingId;})||{}).comments||[]):[],visits:editingId?((places.find(function(q){return q.id===editingId;})||{}).visits||[]):[],updatedAt:Date.now()});if(!p||!p.name){alert("장소 이름을 입력해 주세요.");return;}await put(p);places=await getAll();redraw();closeOverlay("formOverlay");if(editingId){showDetail(p.id);}else{selectTab("mapPanel");alert("장소를 저장했어요! 🎉");}}catch(err){alert("저장에 실패했어요. 브라우저 저장 공간을 확인해 주세요.");}finally{btn.disabled=false;}});
 $("detailBody").addEventListener("click",async function(e){
+ var favoriteButton=e.target.closest("[data-toggle-favorite]");
+ if(favoriteButton){favoriteButton.disabled=true;await toggleFavorite(currentId);favoriteButton.disabled=false;return;}
  if(e.target.closest("[data-add-phone]")){
   editCurrent();
   $("placePhone").scrollIntoView({block:"center",behavior:"smooth"});
