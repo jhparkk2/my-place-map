@@ -594,6 +594,16 @@ button.memory-day[aria-pressed="true"] .memory-day-count{color:#effff4}
 /* v4.8 - highlight the exact calendar visit */
 .visit-record.calendar-picked{border:2px solid #72ac8a;background:#f6fbf6;box-shadow:0 5px 16px rgba(30,108,72,.10)}
 .calendar-picked-note{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:#237452;font-weight:800;margin-bottom:9px}
+
+/* v4.9 — unobtrusive duplicate-place guard in the existing save form */
+.duplicate-guard{background:#f6faf6;border:1px solid #cfe3d6;border-radius:16px;padding:15px;margin:14px 0 5px;color:#285e47;line-height:1.55}
+.duplicate-guard[hidden]{display:none!important}
+.duplicate-guard strong{font-size:14px;display:block;margin-bottom:5px}
+.duplicate-guard p{font-size:12px;margin:5px 0 10px;color:#526e5e}
+.duplicate-guard .duplicate-actions{display:grid;gap:8px}
+.duplicate-guard .duplicate-actions button{width:100%;border-radius:12px;padding:12px 8px;border:1px solid #d5e6dc;background:#fff;color:#236a4d;font-size:13px;font-weight:800}
+.duplicate-guard .duplicate-actions .duplicate-main{background:#247354;border-color:#247354;color:#fff}
+.duplicate-guard .duplicate-actions .duplicate-cancel{border:0;background:transparent;color:#75867e;padding:7px}
 </style></head>
 <body><div class="app">
 <header class="header"><div class="brand"><span class="brandicon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
@@ -611,7 +621,7 @@ button.memory-day[aria-pressed="true"] .memory-day-count{color:#effff4}
 <section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="record-view-switch" role="group" aria-label="내 기록 보기 방식"><button type="button" id="recordListMode" aria-pressed="true">📒 목록 보기</button><button type="button" id="recordAlbumMode" aria-pressed="false">📸 사진 앨범</button><button type="button" id="recordCalendarMode" aria-pressed="false">📅 추억 달력</button></div><div class="record-search" role="search"><input id="recordSearch" type="search" placeholder="저장한 장소명·지역·후기 검색" aria-label="내 기록 검색" autocomplete="off"><button id="recordSearchClear" type="button" aria-label="내 기록 검색어 지우기" hidden>지우기 ✕</button></div><p id="recordSearchInfo" class="record-search-info" aria-live="polite" hidden></p><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="재방문">❤️ 재방문</button><button class="chip" data-filter="즐겨찾기">⭐ 즐겨찾기 <span id="favoriteCount">0</span></button></div><div class="record-sort-row" id="recordSortRow"><label for="recordSort">내 기록 정렬</label><select id="recordSort" aria-label="내 기록 정렬 방식"><option value="updated">최근 기록순</option><option value="visit">방문일 최신순</option><option value="rating">별점 높은순</option><option value="name">이름 가나다순</option></select></div><div class="places" id="allPlaces"></div><div class="album-head" id="albumHead" hidden><strong id="albumTotal">📷 사진 0장</strong><span>사진을 누르면 방문 기록으로 이동해요</span></div><div class="album-grid" id="albumGrid" aria-label="방문 사진 앨범" hidden></div><button type="button" class="album-more" id="albumMore" hidden>사진 더 보기 ↓</button><section class="memory-calendar" id="memoryCalendar" aria-label="추억 달력" hidden><div class="memory-calendar-head"><button type="button" class="memory-month-nav" id="memoryPrev" aria-label="이전 달">‹</button><div class="memory-calendar-heading"><strong id="memoryMonthLabel"></strong><span id="memoryMonthCount"></span></div><button type="button" class="memory-month-nav" id="memoryNext" aria-label="다음 달">›</button></div><div class="memory-weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div class="memory-calendar-grid" id="memoryGrid" role="group" aria-label="방문한 날짜 선택"></div><p class="memory-calendar-hint">색이 표시된 날짜를 누르면 그날의 방문 기록을 볼 수 있어요.</p><div class="memory-day-summary"><strong id="memoryDayTitle"></strong><span id="memoryDayCount"></span></div><div class="memory-day-places" id="memoryDayPlaces" aria-live="polite"></div></section></section>
 <section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 기록</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
 <section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존 발자국 또는 나와봄 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다.</div></section>
-<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.8</div></div>
+<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.9</div></div>
 <button class="btn cta" id="addBtn">＋ 내가 가본 장소 기록하기</button>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새 장소 기록</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
 <form id="placeForm"><div class="form-intro">🔎 <strong>장소 이름만 입력해서 검색</strong>해 보세요.<br>검색 결과를 선택한 다음 사진과 후기를 남기면 돼요.</div>
@@ -619,7 +629,7 @@ button.memory-day[aria-pressed="true"] .memory-day-count{color:#effff4}
 <label class="field"><span>내 기록에 표시할 이름 *</span><input id="placeName" required maxlength="100" placeholder="예: 정동진횟집"></label><div class="field"><span>장소 전화번호 (선택)</span><input id="placePhone" type="tel" inputmode="tel" maxlength="30" placeholder="예: 032-123-4567"><div class="phone-search-actions"><button type="button" id="findPhoneBtn" class="btn light">🔎 카카오에서 전화번호 찾기</button></div><div id="phoneSearchResults" class="phone-search-status" role="status" aria-live="polite"></div></div><label class="field"><span>장소 종류</span><select id="placeCategory"><option>맛집</option><option>카페</option><option>명소</option><option>숙소</option><option>기타</option></select></label><div class="row"><label class="field"><span>시·도</span><select id="regionCity"><option value="">시·도 선택</option></select></label><label class="field"><span>동네</span><input id="regionTown" maxlength="40" placeholder="예: 옥련동"></label></div><p class="searchhelp">지역별 보기를 위한 분류예요. 자동 입력된 값도 직접 수정할 수 있어요.</p>
 <div class="row"><label class="field"><span>방문한 날짜</span><input id="placeDate" type="date"></label><label class="field"><span>나만의 별점</span><select id="placeRating"><option value="5">★★★★★ 5점</option><option value="4">★★★★☆ 4점</option><option value="3">★★★☆☆ 3점</option><option value="2">★★☆☆☆ 2점</option><option value="1">★☆☆☆☆ 1점</option></select></label></div>
 <label class="field"><span>솔직한 방문 후기</span><textarea id="placeReview" maxlength="2000" placeholder="무엇이 좋았나요? 다음에 다시 오면 무엇을 주문할까요?"></textarea></label><label class="field"><span>방문 사진 (최대 3장)</span><input id="placePhotos" type="file" accept="image/*" multiple><small class="subtle">사진은 기기 내에 저장돼요. 용량을 줄여 자동 압축합니다.</small><div class="photoPreview" id="photoPreview"></div></label><label class="switchline"><input id="placeRevisit" type="checkbox"> ❤️ 다음에 또 가고 싶은 장소</label>
-<div class="actions"><button class="btn" type="submit" id="saveBtn">장소 저장하기</button></div></form></div></div>
+<div id="duplicateGuard" class="duplicate-guard" hidden role="status" aria-live="polite"><strong>👣 이미 기록한 장소 같아요</strong><p id="duplicateGuardText"></p><p>재방문으로 추가하면 지금 입력한 방문일·별점·후기·사진만 기존 장소에 추가돼요. 기존 장소 정보는 그대로 남아요.</p><div class="duplicate-actions"><button type="button" class="duplicate-main" id="duplicateRevisit">기존 장소에 재방문 추가</button><button type="button" id="duplicateSeparate">새 장소로 따로 저장</button><button type="button" class="duplicate-cancel" id="duplicateBack">취소하고 수정하기</button></div></div><div class="actions"><button class="btn" type="submit" id="saveBtn">장소 저장하기</button></div></form></div></div>
 <div class="overlay" id="detailOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><div class="sheethead"><h2 id="detailTitle">장소</h2><button class="x" data-close="detailOverlay" aria-label="닫기">×</button></div><div id="detailBody"></div><div class="actions"><button class="btn secondary" id="naverSearchBtn">🟢 네이버에서 이 장소 검색 ↗</button></div><div class="actions"><button class="btn secondary" id="navigateBtn">지도 길찾기 ↗</button><button class="btn light" id="shareBtn">공유하기</button></div><div class="actions"><button class="btn light" id="editBtn">장소 · 첫 방문 수정</button><button class="btn danger" id="deleteBtn">삭제</button></div></div></div>
 
 
@@ -1034,8 +1044,21 @@ function renderMarkers(keepMapView){
  });
  if(!keepMapView){if(coords.length===1)map.setView(coords[0],14);else if(coords.length>1)map.fitBounds(coords,{padding:[40,40],maxZoom:13});}
 }
-function resetForm(){editingId=null;selectedCoords=null;photosForSave=[];$("phoneSearchResults").innerHTML="";$("placeForm").reset();$("placeDate").value=new Date().toLocaleDateString("en-CA");$("formTitle").textContent="새 장소 기록";$("saveBtn").textContent="장소 저장하기";$("selectedLocation").style.display="none";$("searchResults").innerHTML="";$("searchMore").open=false;$("pickBox").style.display="none";candidatePoint=null;$("confirmPick").disabled=true;$("pickStatus").textContent="먼저 지도에서 위치를 눌러 주세요.";$("photoPreview").innerHTML="";$("regionCity").value="";$("regionTown").value="";}
-function setLocation(lat,lon,address){selectedCoords={lat:+lat,lon:+lon,address:String(address||"위치 지정"),area:areaFromAddress(address)};var r=detectRegion(String(address||"")+" "+$("placeSearch").value+" "+$("placeName").value);if(r.city)$("regionCity").value=r.city;if(r.town)$("regionTown").value=r.town;$("selectedLocation").textContent="✅ 선택한 위치: "+selectedCoords.address;$("selectedLocation").style.display="block";$("searchResults").innerHTML="";}
+function resetForm(){hideDuplicateGuard();editingId=null;selectedCoords=null;photosForSave=[];$("phoneSearchResults").innerHTML="";$("placeForm").reset();$("placeDate").value=new Date().toLocaleDateString("en-CA");$("formTitle").textContent="새 장소 기록";$("saveBtn").textContent="장소 저장하기";$("selectedLocation").style.display="none";$("searchResults").innerHTML="";$("searchMore").open=false;$("pickBox").style.display="none";candidatePoint=null;$("confirmPick").disabled=true;$("pickStatus").textContent="먼저 지도에서 위치를 눌러 주세요.";$("photoPreview").innerHTML="";$("regionCity").value="";$("regionTown").value="";}
+
+var pendingDuplicateId="";
+function hideDuplicateGuard(){pendingDuplicateId="";$("duplicateGuard").hidden=true;}
+function findDuplicatePlace(name,coords){
+ if(!coords)return null;
+ var key=normalizeRecordSearch(name);
+ if(!key)return null;
+ return places.find(function(p){
+  if(normalizeRecordSearch(p.name)!==key)return false;
+  var lat=Number(p.lat),lon=Number(p.lon);
+  return Number.isFinite(lat)&&Number.isFinite(lon)&&directDistanceKm(lat,lon,Number(coords.lat),Number(coords.lon))<=0.12;
+ })||null;
+}
+function setLocation(lat,lon,address){hideDuplicateGuard();selectedCoords={lat:+lat,lon:+lon,address:String(address||"위치 지정"),area:areaFromAddress(address)};var r=detectRegion(String(address||"")+" "+$("placeSearch").value+" "+$("placeName").value);if(r.city)$("regionCity").value=r.city;if(r.town)$("regionTown").value=r.town;$("selectedLocation").textContent="✅ 선택한 위치: "+selectedCoords.address;$("selectedLocation").style.display="block";$("searchResults").innerHTML="";}
 function areaFromAddress(address){var x=String(address||"").trim();var ar=x.split(/[\s,]+/).filter(Boolean);return ar.slice(0,2).join(" ")||"기타";}
 function showPhotos(){var box=$("photoPreview");box.innerHTML="";photosForSave.forEach(function(src,i){var item=document.createElement("div");item.className="preview-item";var im=document.createElement("img");im.src=src;im.alt="등록한 사진 "+(i+1);var removeBtn=document.createElement("button");removeBtn.type="button";removeBtn.className="remove-photo";removeBtn.dataset.index=String(i);removeBtn.setAttribute("aria-label","사진 "+(i+1)+" 삭제");removeBtn.textContent="×";item.appendChild(im);item.appendChild(removeBtn);box.appendChild(item);});var label=document.createElement("div");label.className="photo-preview-count";label.textContent="사진 "+photosForSave.length+" / 3장 · 사진의 ×를 눌러 삭제할 수 있어요.";box.appendChild(label);}
 function compress(file){return new Promise(function(resolve,reject){if(!file.type.startsWith("image/")){reject(new Error("이미지 파일만 등록할 수 있어요."));return;}var reader=new FileReader();reader.onerror=function(){reject(new Error("사진을 읽지 못했어요."));};reader.onload=function(){var img=new Image();img.onerror=function(){reject(new Error("이미지 형식이 지원되지 않아요."));};img.onload=function(){var max=1280,scale=Math.min(1,max/Math.max(img.width,img.height));var canvas=document.createElement("canvas");canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);var ctx=canvas.getContext("2d");ctx.fillStyle="#fff";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL("image/jpeg",.76));};img.src=reader.result;};reader.readAsDataURL(file);});}
@@ -1837,7 +1860,66 @@ $("locateMe").addEventListener("click",function(){if(!navigator.geolocation){ale
 $("placeSearch").addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();$("searchBtn").click();}});
 $("photoPreview").addEventListener("click",function(e){var b=e.target.closest(".remove-photo");if(!b)return;var i=Number(b.dataset.index);if(Number.isInteger(i)&&i>=0&&i<photosForSave.length){photosForSave.splice(i,1);showPhotos();}});
 $("placePhotos").addEventListener("change",async function(e){var files=Array.from(e.target.files||[]);if(files.length+photosForSave.length>3){alert("사진은 총 3장까지 등록할 수 있어요. 수정 화면에서 기존 사진의 ×를 눌러 삭제할 수 있어요.");e.target.value="";return;}try{for(var i=0;i<files.length;i++){photosForSave.push(await compress(files[i]));}showPhotos();}catch(err){alert(err.message||"사진을 처리하지 못했어요.");}e.target.value="";});
-$("placeForm").addEventListener("submit",async function(e){e.preventDefault();if(!selectedCoords){alert("위치 검색 후 결과에서 장소를 선택해 주세요.");return;}var btn=$("saveBtn");btn.disabled=true;try{var p=normalized({id:editingId||uid(),name:$("placeName").value.trim(),category:$("placeCategory").value,address:selectedCoords.address,area:selectedCoords.area,regionCity:$("regionCity").value,regionTown:$("regionTown").value.trim(),lat:selectedCoords.lat,lon:selectedCoords.lon,date:$("placeDate").value,rating:+$("placeRating").value,review:$("placeReview").value.trim(),revisit:$("placeRevisit").checked,favorite:editingId?!!((places.find(function(q){return q.id===editingId;})||{}).favorite):false,photos:photosForSave,phone:$("placePhone").value.trim(),comments:editingId?((places.find(function(q){return q.id===editingId;})||{}).comments||[]):[],visits:editingId?((places.find(function(q){return q.id===editingId;})||{}).visits||[]):[],updatedAt:Date.now()});if(!p||!p.name){alert("장소 이름을 입력해 주세요.");return;}await put(p);places=await getAll();redraw();closeOverlay("formOverlay");if(editingId){showDetail(p.id);}else{selectTab("mapPanel");alert("장소를 저장했어요! 🎉");}}catch(err){alert("저장에 실패했어요. 브라우저 저장 공간을 확인해 주세요.");}finally{btn.disabled=false;}});
+async function savePlaceRecord(separateOnPurpose){
+ if(!selectedCoords){alert("위치 검색 후 결과에서 장소를 선택해 주세요.");return;}
+ var name=$("placeName").value.trim();
+ if(!name){alert("장소 이름을 입력해 주세요.");$("placeName").focus();return;}
+ if(!editingId&&!separateOnPurpose){
+  var match=findDuplicatePlace(name,selectedCoords);
+  if(match){
+   pendingDuplicateId=match.id;
+   $("duplicateGuardText").textContent="저장된 '"+match.name+"' 기록이 있어요. 새 장소로 만들지, 다시 방문한 기록으로 남길지 선택해 주세요.";
+   $("duplicateGuard").hidden=false;
+   $("duplicateGuard").scrollIntoView({block:"nearest",behavior:"smooth"});
+   return;
+  }
+ }
+ var btn=$("saveBtn");btn.disabled=true;
+ try{
+  var editing=!!editingId;
+  var originalPlace=editing?places.find(function(q){return q.id===editingId;}):null;
+  var p=normalized({
+   id:editingId||uid(),
+   name:name,category:$("placeCategory").value,
+   address:selectedCoords.address,area:selectedCoords.area,
+   regionCity:$("regionCity").value,regionTown:$("regionTown").value.trim(),
+   lat:selectedCoords.lat,lon:selectedCoords.lon,
+   date:$("placeDate").value,rating:+$("placeRating").value,
+   review:$("placeReview").value.trim(),revisit:$("placeRevisit").checked,
+   favorite:originalPlace?!!originalPlace.favorite:false,
+   photos:photosForSave,phone:$("placePhone").value.trim(),
+   comments:originalPlace?(originalPlace.comments||[]):[],
+   visits:originalPlace?(originalPlace.visits||[]):[],
+   updatedAt:Date.now()
+  });
+  if(!p||!p.name){alert("장소 이름을 입력해 주세요.");return;}
+  await put(p);places=await getAll();redraw();
+  hideDuplicateGuard();closeOverlay("formOverlay");
+  if(editing){showDetail(p.id);}
+  else{selectTab("mapPanel");alert("장소를 저장했어요! 🎉");}
+ }catch(err){alert("저장에 실패했어요. 브라우저 저장 공간을 확인해 주세요.");}
+ finally{btn.disabled=false;}
+}
+$("placeForm").addEventListener("submit",function(e){e.preventDefault();savePlaceRecord(false);});
+$("placeName").addEventListener("input",hideDuplicateGuard);
+$("duplicateBack").addEventListener("click",function(){hideDuplicateGuard();$("placeName").focus();});
+$("duplicateSeparate").addEventListener("click",function(){savePlaceRecord(true);});
+$("duplicateRevisit").addEventListener("click",async function(){
+ var match=places.find(function(p){return p.id===pendingDuplicateId;});
+ if(!match||editingId||findDuplicatePlace($("placeName").value.trim(),selectedCoords)!==match){
+  hideDuplicateGuard();alert("장소 정보를 다시 확인한 후 저장해 주세요.");return;
+ }
+ var date=$("placeDate").value;
+ if(!date){alert("재방문 날짜를 선택해 주세요.");$("placeDate").focus();return;}
+ var button=$("duplicateRevisit");button.disabled=true;
+ try{
+  var visit={id:uid(),date:date,rating:+$("placeRating").value||5,review:$("placeReview").value.trim(),photos:photosForSave.slice(),createdAt:Date.now()};
+  var updated=Object.assign({},match,{visits:(Array.isArray(match.visits)?match.visits:[]).concat([visit]),revisit:!!match.revisit||$("placeRevisit").checked,updatedAt:Date.now()});
+  await put(updated);places=await getAll();redraw();
+  hideDuplicateGuard();closeOverlay("formOverlay");showDetail(updated.id,visit.id);
+ }catch(err){alert("재방문 기록을 저장하지 못했어요. 저장 공간을 확인해 주세요.");}
+ finally{button.disabled=false;}
+});
 $("detailBody").addEventListener("click",async function(e){
  var favoriteButton=e.target.closest("[data-toggle-favorite]");
  if(favoriteButton){favoriteButton.disabled=true;await toggleFavorite(currentId);favoriteButton.disabled=false;return;}
