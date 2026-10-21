@@ -1287,9 +1287,10 @@ function openLinkedShare(){
   if(!$("linkedShareOverlay").classList.contains("open"))return;
   if(!same)return;
   $("linkedShareMain").textContent="💬 카카오톡에 장소 보내기";
- }).catch(function(){
+ }).catch(function(err){
   if(!$("linkedShareOverlay").classList.contains("open"))return;
-  if(same){$("linkedShareMain").textContent="🔗 장소 링크 공유하기";$("linkedShareStatus").textContent="카카오 카드 기능을 사용할 수 없어 링크로 공유할 수 있어요. 상대방이 누르면 방문 사진과 후기가 열려요.";}
+  $("linkedShareStatus").textContent="⚠️ 카카오톡 사진 카드 준비 실패: "+String(err&&err.message||err||"SDK 로드 오류").slice(0,100)+" · 카카오 개발자센터의 JavaScript SDK 도메인에 https://jhparkk2.github.io 등록을 확인해 주세요. 일반 링크는 대표 로고만 나옵니다.";
+  if(same)$("linkedShareMain").textContent="💬 카카오톡 사진 카드 재시도";
  });
 }
 function sendLinkedKakaoShare(p,url){
@@ -1338,8 +1339,16 @@ function shareLinkedPlaceUrl(p,url){
 async function runLinkedShare(){
  var p=places.find(function(x){return x.id===currentId;});if(!p)return;
  if(linkedShareId===p.id&&linkedShareStamp===String(p.updatedAt||0)&&linkedShareUrl){
-  if(window.Kakao&&window.Kakao.Share&&typeof window.Kakao.Share.sendDefault==="function")sendLinkedKakaoShare(p,linkedShareUrl);
-  else shareLinkedPlaceUrl(p,linkedShareUrl);
+  if(window.Kakao&&window.Kakao.Share&&typeof window.Kakao.Share.sendDefault==="function"){
+   sendLinkedKakaoShare(p,linkedShareUrl);
+  }else{
+   $("linkedShareStatus").textContent="⚠️ 카카오톡 사진 카드 기능을 아직 사용할 수 없어요. 일반 링크를 공유하면 장소 사진 대신 앱 로고만 표시됩니다. 카카오 개발자센터의 JavaScript SDK 도메인 및 제품 링크 웹 도메인을 확인해 주세요. 아래에서 링크만 복사할 수도 있어요.";
+   loadLinkedKakaoSdk().then(function(){
+    if($("linkedShareOverlay").classList.contains("open"))$("linkedShareStatus").textContent="✅ 카카오 공유 프로그램을 불러왔어요. 위 버튼을 다시 눌러 사진 카드를 보내보세요.";
+   }).catch(function(err){
+    if($("linkedShareOverlay").classList.contains("open"))$("linkedShareStatus").textContent="⚠️ 카카오 공유 오류: "+String(err&&err.message||err||"연결 실패").slice(0,120)+" · 카카오 개발자센터의 도메인 등록 상태를 확인해 주세요.";
+   });
+  }
   return;
  }
  var btn=$("linkedShareMain");btn.disabled=true;btn.textContent="사진 링크 만드는 중…";
@@ -1349,8 +1358,8 @@ async function runLinkedShare(){
   var url=await uploadSharedPhoto(p,opts);
   linkedShareId=p.id;linkedShareStamp=String(p.updatedAt||0);linkedShareUrl=url;
   $("linkedShareCopy").disabled=false;
-  btn.textContent=window.Kakao&&window.Kakao.Share&&typeof window.Kakao.Share.sendDefault==="function"?"💬 카카오톡에 장소 보내기":"🔗 장소 링크 공유하기";
-  $("linkedShareStatus").textContent="✅ 장소 링크 준비 완료! 위 버튼을 한 번 더 누르면 보낼 수 있어요.";
+  btn.textContent="💬 카카오톡에 사진 카드 보내기";
+  $("linkedShareStatus").textContent="✅ 장소 링크 준비 완료! 위 버튼을 다시 눌러 사진 카드를 보내세요. 카카오 공유 기능이 준비되지 않았다면 원인 안내가 표시돼요.";
  }catch(err){
   btn.textContent="↻ 연결 카드 다시 준비하기";
   $("linkedShareStatus").textContent="링크 준비 실패: "+String(err&&err.message||err||"다시 시도").slice(0,160);
