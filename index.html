@@ -661,7 +661,7 @@ button.memory-day[aria-pressed="true"] .memory-day-count{color:#effff4}
 </div></div>
 
 <div class="overlay" id="linkedShareOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="linkedShareTitle">
-<div class="sheethead"><h2 id="linkedShareTitle">나와봄 장소 공유</h2><button class="x" data-close="linkedShareOverlay" aria-label="닫기">×</button></div>
+<div class="sheethead"><h2 id="linkedShareTitle">나와봄 장소 공유 <span style="font-size:11px;font-weight:600;color:#927f73;vertical-align:middle">v4.13</span></h2><button class="x" data-close="linkedShareOverlay" aria-label="닫기">×</button></div>
 <div class="link-share-preview"><img id="linkedShareImg" alt="공유할 장소 사진"><div id="linkedShareFallback" class="link-share-fallback">🌱</div><div class="link-share-info"><h3 id="linkedSharePlace">장소 이름</h3><p id="linkedShareAddress"></p><p id="linkedShareReview" class="link-share-stars"></p></div></div>
 <button id="linkedShareMain" type="button" class="btn link-share-primary">🔗 장소 링크 준비하기</button>
 <p id="linkedShareStatus" class="link-share-status" role="status" aria-live="polite">사진·후기를 보고 장소를 열 수 있는 링크를 만들어요.</p>
@@ -1306,7 +1306,7 @@ function openLinkedShare(){
   $("linkedShareMain").textContent="💬 카카오톡에 장소 보내기";
  }).catch(function(err){
   if(!$("linkedShareOverlay").classList.contains("open"))return;
-  $("linkedShareStatus").textContent="⚠️ 카카오톡 사진 카드 준비 실패: "+String(err&&err.message||err||"SDK 로드 오류").slice(0,145)+" · 먼저 SDK 연결과 초기화를 확인해 주세요. 이후 카카오 개발자센터의 JavaScript SDK 도메인·웹 도메인을 확인해 주세요.";
+  $("linkedShareStatus").textContent="⚠️ 사진 카드 오류 (v4.13): "+String(err&&err.message||err||"SDK 로드 오류").slice(0,180)+" · 카카오 SDK 파일·초기화 상태를 먼저 확인하고, 도메인 설정은 그다음 확인해 주세요.";
   if(same)$("linkedShareMain").textContent="💬 카카오톡 사진 카드 재시도";
  });
 }
