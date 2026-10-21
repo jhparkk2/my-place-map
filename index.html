@@ -507,6 +507,15 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 .detail-favorite{width:100%;border:1px solid #ecd8b1;border-radius:14px;background:#fffaf0;color:#a46d0b;font-size:14px;font-weight:800;padding:13px 14px;min-height:47px;margin:9px 0 0}
 .detail-favorite.active{background:#fff1cd;color:#976013;border-color:#e9bd69}
 
+
+/* v4.16 — small shared place reaction line; existing layout unchanged */
+.social-compact{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:10px 2px 15px;font-size:13px;line-height:1.5;color:#60766b}
+.social-compact .social-like{appearance:none;border:0;background:transparent;color:#b85d4b;font:inherit;font-weight:750;padding:5px 0;cursor:pointer}
+.social-compact .social-like[aria-pressed="true"]{color:#b74453}
+.social-compact .social-like:disabled{opacity:.58;cursor:default}
+.social-compact .social-views{color:#677c72}
+.social-compact .social-msg{font-size:11px;color:#829187}
+
 /* v4.2 — show favorite places only on the main map */
 .map-view-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;flex-wrap:wrap}
 .map-fav-filter{min-height:38px;padding:7px 11px;border:1px solid #e8cf9e;border-radius:12px;background:#fff9ed;color:#926613;font-weight:800;font-size:12px;white-space:nowrap;cursor:pointer}
@@ -621,7 +630,7 @@ button.memory-day[aria-pressed="true"] .memory-day-count{color:#effff4}
 <section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="record-view-switch" role="group" aria-label="내 기록 보기 방식"><button type="button" id="recordListMode" aria-pressed="true">📒 목록 보기</button><button type="button" id="recordAlbumMode" aria-pressed="false">📸 사진 앨범</button><button type="button" id="recordCalendarMode" aria-pressed="false">📅 추억 달력</button></div><div class="record-search" role="search"><input id="recordSearch" type="search" placeholder="저장한 장소명·지역·후기 검색" aria-label="내 기록 검색" autocomplete="off"><button id="recordSearchClear" type="button" aria-label="내 기록 검색어 지우기" hidden>지우기 ✕</button></div><p id="recordSearchInfo" class="record-search-info" aria-live="polite" hidden></p><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="즐겨찾기">⭐ 즐겨찾기 <span id="favoriteCount">0</span></button></div><div class="record-sort-row" id="recordSortRow"><label for="recordSort">내 기록 정렬</label><select id="recordSort" aria-label="내 기록 정렬 방식"><option value="updated">최근 기록순</option><option value="visit">방문일 최신순</option><option value="rating">별점 높은순</option><option value="name">이름 가나다순</option></select></div><div class="places" id="allPlaces"></div><div class="album-head" id="albumHead" hidden><strong id="albumTotal">📷 사진 0장</strong><span>사진을 누르면 방문 기록으로 이동해요</span></div><div class="album-grid" id="albumGrid" aria-label="방문 사진 앨범" hidden></div><button type="button" class="album-more" id="albumMore" hidden>사진 더 보기 ↓</button><section class="memory-calendar" id="memoryCalendar" aria-label="추억 달력" hidden><div class="memory-calendar-head"><button type="button" class="memory-month-nav" id="memoryPrev" aria-label="이전 달">‹</button><div class="memory-calendar-heading"><strong id="memoryMonthLabel"></strong><span id="memoryMonthCount"></span></div><button type="button" class="memory-month-nav" id="memoryNext" aria-label="다음 달">›</button></div><div class="memory-weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div class="memory-calendar-grid" id="memoryGrid" role="group" aria-label="방문한 날짜 선택"></div><p class="memory-calendar-hint">색이 표시된 날짜를 누르면 그날의 방문 기록을 볼 수 있어요.</p><div class="memory-day-summary"><strong id="memoryDayTitle"></strong><span id="memoryDayCount"></span></div><div class="memory-day-places" id="memoryDayPlaces" aria-live="polite"></div></section></section>
 <section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 기록</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
 <section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존 발자국 또는 나와봄 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다.</div></section>
-<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.10</div></div>
+<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.16</div></div>
 <button class="btn cta" id="addBtn">＋ 내가 가본 장소 기록하기</button>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새 장소 기록</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
 <form id="placeForm"><div class="form-intro">🔎 <strong>장소 이름만 입력해서 검색</strong>해 보세요.<br>검색 결과를 선택한 다음 사진과 후기를 남기면 돼요.</div>
@@ -675,7 +684,7 @@ button.memory-day[aria-pressed="true"] .memory-day-count{color:#effff4}
 <div class="shared-hero" id="sharedHero"></div><p class="shared-caption" id="sharedPhotoCaption"></p>
 <div class="shared-kicker" id="sharedKicker"></div>
 <div class="shared-detail-info" id="sharedPlaceMeta"></div>
-<div id="sharedRevisit"></div><div class="shared-visit-card" id="sharedVisit"></div>
+<div id="sharedRevisit"></div><div id="sharedSocial"></div><div class="shared-visit-card" id="sharedVisit"></div>
 <div class="shared-readonly">👣 친구·가족이 공유한 장소의 읽기 전용 화면입니다. 작성자의 다른 기록과 댓글에는 접근할 수 없어요.</div>
 <div class="shared-actions actions"><button class="btn secondary" type="button" id="sharedNaverBtn">🟢 네이버 검색 ↗</button><button class="btn light" type="button" id="sharedMapBtn">📍 길찾기 ↗</button></div>
 <div class="actions"><button class="btn" type="button" id="sharedBackBtn">나와봄 홈으로 가기</button></div>
@@ -1065,6 +1074,76 @@ function setLocation(lat,lon,address){hideDuplicateGuard();selectedCoords={lat:+
 function areaFromAddress(address){var x=String(address||"").trim();var ar=x.split(/[\s,]+/).filter(Boolean);return ar.slice(0,2).join(" ")||"기타";}
 function showPhotos(){var box=$("photoPreview");box.innerHTML="";photosForSave.forEach(function(src,i){var item=document.createElement("div");item.className="preview-item";var im=document.createElement("img");im.src=src;im.alt="등록한 사진 "+(i+1);var removeBtn=document.createElement("button");removeBtn.type="button";removeBtn.className="remove-photo";removeBtn.dataset.index=String(i);removeBtn.setAttribute("aria-label","사진 "+(i+1)+" 삭제");removeBtn.textContent="×";item.appendChild(im);item.appendChild(removeBtn);box.appendChild(item);});var label=document.createElement("div");label.className="photo-preview-count";label.textContent="사진 "+photosForSave.length+" / 3장 · 사진의 ×를 눌러 삭제할 수 있어요.";box.appendChild(label);}
 function compress(file){return new Promise(function(resolve,reject){if(!file.type.startsWith("image/")){reject(new Error("이미지 파일만 등록할 수 있어요."));return;}var reader=new FileReader();reader.onerror=function(){reject(new Error("사진을 읽지 못했어요."));};reader.onload=function(){var img=new Image();img.onerror=function(){reject(new Error("이미지 형식이 지원되지 않아요."));};img.onload=function(){var max=1280,scale=Math.min(1,max/Math.max(img.width,img.height));var canvas=document.createElement("canvas");canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);var ctx=canvas.getContext("2d");ctx.fillStyle="#fff";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL("image/jpeg",.76));};img.src=reader.result;};reader.readAsDataURL(file);});}
+
+/* v4.16: Global, per-place aggregate. No private visit data is uploaded. */
+function socialPlaceKey(p){
+ if(!p)return "";
+ var name=String(p.name||p.n||"").normalize("NFKC").trim().toLocaleLowerCase("ko-KR").replace(/\s+/g," ");
+ var lat=Number(p.lat===undefined?p.y:p.lat),lon=Number(p.lon===undefined?p.x:p.lon);
+ if(!name||!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180)return "";
+ return (lat.toFixed(4)+":"+lon.toFixed(4)+":"+name).slice(0,240);
+}
+function socialMarkup(key){
+ return key?'<div class="social-compact" data-social-key="'+esc(key)+'" aria-live="polite"><button type="button" class="social-like" data-social-like="'+esc(key)+'" disabled aria-label="좋아요 누르기" aria-pressed="false"><span data-social-like-label>♡ 좋아요</span> <span data-social-likes>—</span></button><span class="social-views">👁 조회 <span data-social-views>—</span></span></div>':"";
+}
+function socialRows(result){return Array.isArray(result)?result[0]:result;}
+function socialFill(key,result,canLike){
+ var data=socialRows(result);if(!data)return;
+ document.querySelectorAll("[data-social-key]").forEach(function(el){
+  if(el.dataset.socialKey!==key)return;
+  var likes=el.querySelector("[data-social-likes]"),views=el.querySelector("[data-social-views]"),btn=el.querySelector("[data-social-like]"),name=el.querySelector("[data-social-like-label]");
+  var a=Number(data.likes),b=Number(data.views);
+  if(likes)likes.textContent=data.likes==null||!Number.isFinite(a)?"—":String(Math.max(0,a));
+  if(views)views.textContent=data.views==null||!Number.isFinite(b)?"—":String(Math.max(0,b));
+  if(btn){btn.disabled=!canLike;if(typeof data.my_like==="boolean"){btn.setAttribute("aria-pressed",String(data.my_like));if(name)name.textContent=data.my_like?"♥ 좋아요":"♡ 좋아요";}}
+ });
+}
+function socialUnavailable(key){
+ document.querySelectorAll("[data-social-key]").forEach(function(el){
+  if(el.dataset.socialKey===key){el.innerHTML='<span class="social-msg">좋아요·조회수 연결 확인 중</span>';}
+ });
+}
+async function socialClient(){
+ var c=getSbClient(),session=await c.auth.getSession();
+ if(session.error)throw session.error;
+ if(!session.data.session){
+  var login=await c.auth.signInAnonymously();
+  if(login.error)throw login.error;
+ }
+ return c;
+}
+async function socialShow(p){
+ var key=socialPlaceKey(p);if(!key)return;
+ try{
+  var c=await socialClient();
+  var r=await c.rpc("nawabom_react",{p_key:key,p_kind:"view"});
+  if(r.error)throw r.error;
+  socialFill(key,r.data,true);
+ }catch(err){
+  try{
+   var client=getSbClient(),r2=await client.rpc("nawabom_stats",{p_key:key});
+   if(r2.error)throw r2.error;
+   socialFill(key,r2.data,true);
+  }catch(other){socialUnavailable(key);}
+ }
+}
+document.addEventListener("click",async function(e){
+ var btn=e.target.closest("[data-social-like]");if(!btn)return;
+ e.preventDefault();e.stopPropagation();
+ var key=btn.dataset.socialLike;
+ if(!key||btn.disabled)return;
+ btn.disabled=true;
+ try{
+  var c=await socialClient();
+  var r=await c.rpc("nawabom_react",{p_key:key,p_kind:"like"});
+  if(r.error)throw r.error;
+  socialFill(key,r.data,true);
+ }catch(err){
+  btn.disabled=false;
+  alert("좋아요를 저장하지 못했어요. Supabase 익명 로그인 설정을 확인해 주세요.");
+ }
+});
+
 function showDetail(id,focusVisitId){
  var p=places.find(function(q){return q.id===id;});if(!p)return;
  currentId=id;commentReplyId=null;$("detailTitle").textContent=p.name;
@@ -1089,7 +1168,8 @@ function showDetail(id,focusVisitId){
  var picked=focusVisitId&&String(focusVisitId)===String(v.id||"initial");
  return '<div class="visit-record'+(picked?' calendar-picked':'')+'" data-visit-id="'+esc(v.id||"initial")+'">'+(picked?'<span class="calendar-picked-note">📍 선택한 방문 기록</span>':'')+'<div class="visit-record-top"><strong>📅 '+esc(dateText(v.date))+' <span class="visit-record-label">'+(v.original?'첫 방문':'재방문')+'</span></strong><span>'+"★".repeat(v.rating||5)+'</span></div><p>'+esc(v.review||"작성한 후기가 없어요.")+'</p>'+photos+actions+'</div>';
  }).join("");
- $("detailBody").innerHTML=gallery+'<div class="detail-kicker"><span class="detail-category">'+esc(emoji(p.category)+" "+p.category)+'</span><div class="detail-score">'+stars+'<strong>'+rating+'.0</strong><span>/ 5점</span></div></div>'+info+favorite+timeline+commentSectionHtml(p);
+ $("detailBody").innerHTML=gallery+'<div class="detail-kicker"><span class="detail-category">'+esc(emoji(p.category)+" "+p.category)+'</span><div class="detail-score">'+stars+'<strong>'+rating+'.0</strong><span>/ 5점</span></div></div>'+info+favorite+socialMarkup(socialPlaceKey(p))+timeline+commentSectionHtml(p);
+ socialShow(p);
  openOverlay("detailOverlay");
  var detailSheet=$("detailOverlay").querySelector(".sheet");
  if(detailSheet)detailSheet.scrollTop=0;
@@ -1528,6 +1608,8 @@ function showIncomingSharedPlace(cloudData,cloudPhoto){
   }
  }
  if(!box.children.length)field("📍","장소",d.n);
+ var sharedSocial=$("sharedSocial");sharedSocial.innerHTML=socialMarkup(socialPlaceKey(d));
+ socialShow(d);
  var revisit=$("sharedRevisit");revisit.innerHTML="";
  if(d.rv){var heart=document.createElement("div");heart.className="detail-heart active";heart.textContent="⭐ 즐겨찾기한 장소";revisit.appendChild(heart);}
  var history=$("sharedVisit");history.innerHTML="";
