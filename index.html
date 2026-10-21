@@ -727,7 +727,8 @@ function emptyHtml(){return '<div class="empty"><div class="emoji">🗺️</div>
 function isFavoritePlace(p){return !!(p&&(p.favorite||p.revisit));}
 function favoriteEmptyHtml(){return '<div class="empty"><div class="emoji">⭐</div><strong>즐겨찾기한 장소가 아직 없어요</strong>장소 카드나 상세 화면의 ☆을 눌러 추가해 보세요.</div>';}
 function favoriteCardHtml(p){
- return '<button type="button" class="favorite-card-toggle'+(p.favorite?' active':'')+'" data-favorite-id="'+esc(p.id)+'" aria-label="'+esc(p.name)+' '+(p.favorite?'즐겨찾기 해제':'즐겨찾기 추가')+'" aria-pressed="'+(p.favorite?'true':'false')+'">'+(p.favorite?'★':'☆')+'</button>';
+ var selected=isFavoritePlace(p);
+ return '<button type="button" class="favorite-card-toggle'+(selected?' active':'')+'" data-favorite-id="'+esc(p.id)+'" aria-label="'+esc(p.name)+' '+(selected?'즐겨찾기 해제':'즐겨찾기 추가')+'" aria-pressed="'+(selected?'true':'false')+'">'+(selected?'★':'☆')+'</button>';
 }
 function cardHtml(p){var entries=visitEntries(p),photo="";for(var k=0;k<entries.length;k++){if(entries[k].photos&&entries[k].photos.length){photo=entries[k].photos[0];break;}}
  var last=entries[0],count=entries.length;
@@ -1031,15 +1032,15 @@ function renderMarkers(keepMapView){
   var lat=Number(p.lat),lon=Number(p.lon);if(!Number.isFinite(lat)||!Number.isFinite(lon))return;
   var ll=[lat,lon];coords.push(ll);
   var cls=categoryClass[p.category]||"pin-other";
-  var markerIcon=L.divIcon({className:"footprint-pin",html:'<div class="pin-marker '+cls+'"><span>'+emoji(p.category)+'</span></div>'+(p.favorite?'<span class="pin-favorite" aria-hidden="true">⭐</span>':'')+(p.revisit?'<span class="pin-heart" aria-hidden="true">❤️</span>':''),iconSize:[46,51],iconAnchor:[19,44],popupAnchor:[4,-38]});
-  var m=L.marker(ll,{icon:markerIcon,title:p.name+(p.favorite?" · 즐겨찾기":"")}).addTo(markers);
+  var markerIcon=L.divIcon({className:"footprint-pin",html:'<div class="pin-marker '+cls+'"><span>'+emoji(p.category)+'</span></div>'+(isFavoritePlace(p)?'<span class="pin-favorite" aria-hidden="true">⭐</span>':''),iconSize:[46,51],iconAnchor:[19,44],popupAnchor:[4,-38]});
+  var m=L.marker(ll,{icon:markerIcon,title:p.name+(isFavoritePlace(p)?" · 즐겨찾기":"")}).addTo(markers);
   var card=document.createElement("div");
   var photo=p.photos&&p.photos[0];
   var headline=document.createElement("div");headline.style.cssText="display:flex;gap:10px;align-items:center";
   if(photo){var img=document.createElement("img");img.src=photo;img.alt="";img.style.cssText="width:55px;height:55px;border-radius:11px;object-fit:cover";headline.appendChild(img);}
   var summary=document.createElement("div");
   var title=document.createElement("strong");title.style.cssText="display:block;font-size:14px;line-height:1.4";title.textContent=p.name;
-  var sub=document.createElement("small");sub.style.cssText="color:#617b6b";sub.textContent=emoji(p.category)+" "+p.category+(p.revisit?" · ❤️":"")+(p.favorite?" · ⭐ 즐겨찾기":"");
+  var sub=document.createElement("small");sub.style.cssText="color:#617b6b";sub.textContent=emoji(p.category)+" "+p.category+(isFavoritePlace(p)?" · ⭐ 즐겨찾기":"");
   summary.appendChild(title);summary.appendChild(sub);headline.appendChild(summary);card.appendChild(headline);
   var button=document.createElement("button");button.type="button";button.textContent="내 방문 후기 보기 →";button.style.cssText="border:0;background:#e7f4ec;color:#18624d;font-weight:750;margin-top:11px;padding:9px;border-radius:9px;width:100%";button.addEventListener("click",function(){showDetail(p.id);});card.appendChild(button);
   m.bindPopup(card,{maxWidth:230});
@@ -1079,8 +1080,8 @@ function showDetail(id,focusVisitId){
  '<a class="detail-phone-link" href="tel:'+esc(digits)+'">'+esc(p.phone)+'</a>':
  '<span class="phone-hint">등록된 번호가 없어요</span> <button class="phone-add" type="button" data-add-phone="1">＋ 번호 추가</button>';
  info=info.slice(0,-6)+'<div class="detail-info-line"><span class="info-icon">☎️</span><div><small>장소 전화번호</small><strong>'+phoneDisplay+'</strong></div></div></div>';
- var favorite='<button type="button" class="detail-favorite'+(p.favorite?' active':'')+'" data-toggle-favorite="1" aria-pressed="'+(p.favorite?'true':'false')+'">'+(p.favorite?'⭐ 즐겨찾기에 저장됨 · 눌러서 해제':'☆ 즐겨찾기에 추가하기')+'</button>';
- var heart='<button type="button" class="detail-heart'+(p.revisit?' active':'')+'" data-toggle-revisit="1" aria-pressed="'+(p.revisit?'true':'false')+'">'+(p.revisit?'❤️ 다시 가고 싶은 장소로 저장됨':'🤍 다음에 또 가고 싶은 장소로 표시')+'</button>';
+ var selected=isFavoritePlace(p);
+ var favorite='<button type="button" class="detail-favorite'+(selected?' active':'')+'" data-toggle-favorite="1" aria-pressed="'+(selected?'true':'false')+'">'+(selected?'⭐ 즐겨찾기 저장됨 · 눌러서 해제':'☆ 즐겨찾기에 추가하기')+'</button>';
  var photoCursor=0;
  var timeline='<div class="visit-summary"><h3>📒 나의 방문 기록</h3><span class="visit-count">총 '+entries.length+'회 방문</span></div><button type="button" class="visit-add" data-add-visit="1">＋ 재방문 기록 추가하기</button>'+entries.map(function(v){
  var photos=(v.photos||[]).length?'<div class="visit-record-photos">'+v.photos.map(function(src,i){var index=photoCursor++;return '<button type="button" class="visit-photo-btn" data-photo-index="'+index+'" aria-label="'+esc(dateText(v.date))+' 사진 '+(i+1)+' 크게 보기"><img src="'+esc(src)+'" loading="lazy" alt="'+esc(dateText(v.date))+' 사진 '+(i+1)+'"></button>';}).join("")+'</div>':"";
@@ -1088,7 +1089,7 @@ function showDetail(id,focusVisitId){
  var picked=focusVisitId&&String(focusVisitId)===String(v.id||"initial");
  return '<div class="visit-record'+(picked?' calendar-picked':'')+'" data-visit-id="'+esc(v.id||"initial")+'">'+(picked?'<span class="calendar-picked-note">📍 선택한 방문 기록</span>':'')+'<div class="visit-record-top"><strong>📅 '+esc(dateText(v.date))+' <span class="visit-record-label">'+(v.original?'첫 방문':'재방문')+'</span></strong><span>'+"★".repeat(v.rating||5)+'</span></div><p>'+esc(v.review||"작성한 후기가 없어요.")+'</p>'+photos+actions+'</div>';
  }).join("");
- $("detailBody").innerHTML=gallery+'<div class="detail-kicker"><span class="detail-category">'+esc(emoji(p.category)+" "+p.category)+'</span><div class="detail-score">'+stars+'<strong>'+rating+'.0</strong><span>/ 5점</span></div></div>'+info+favorite+heart+timeline+commentSectionHtml(p);
+ $("detailBody").innerHTML=gallery+'<div class="detail-kicker"><span class="detail-category">'+esc(emoji(p.category)+" "+p.category)+'</span><div class="detail-score">'+stars+'<strong>'+rating+'.0</strong><span>/ 5점</span></div></div>'+info+favorite+timeline+commentSectionHtml(p);
  openOverlay("detailOverlay");
  var detailSheet=$("detailOverlay").querySelector(".sheet");
  if(detailSheet)detailSheet.scrollTop=0;
@@ -1993,8 +1994,7 @@ $("detailBody").addEventListener("click",async function(e){
   try{var next=Object.assign({},record,{visits:record.visits.filter(function(v){return v.id!==del.dataset.removeVisit;}),updatedAt:Date.now()});await put(next);places=await getAll();redraw();showDetail(next.id);}catch(err){alert("방문 기록 삭제에 실패했어요.");}
   return;
  }
- var b=e.target.closest("[data-toggle-revisit]");if(!b||!currentId)return;var p=places.find(function(x){return x.id===currentId;});if(!p)return;b.disabled=true;
- try{var updated=Object.assign({},p,{revisit:!p.revisit,updatedAt:Date.now()});await put(updated);places=await getAll();redraw();showDetail(updated.id);}catch(err){b.disabled=false;alert("재방문 표시를 저장하지 못했어요.");}
+
 });
 
 $("detailBody").addEventListener("submit",async function(e){
