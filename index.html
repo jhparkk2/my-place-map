@@ -678,7 +678,7 @@ button.memory-day[aria-pressed="true"] .memory-day-count{color:#effff4}
 <div id="sharedRevisit"></div><div class="shared-visit-card" id="sharedVisit"></div>
 <div class="shared-readonly">👣 친구·가족이 공유한 장소의 읽기 전용 화면입니다. 작성자의 다른 기록과 댓글에는 접근할 수 없어요.</div>
 <div class="shared-actions actions"><button class="btn secondary" type="button" id="sharedNaverBtn">🟢 네이버 검색 ↗</button><button class="btn light" type="button" id="sharedMapBtn">📍 길찾기 ↗</button></div>
-<div class="actions"><button class="btn" type="button" id="sharedBackBtn">내 장소 지도 보기</button></div>
+<div class="actions"><button class="btn" type="button" id="sharedBackBtn">나와봄 홈으로 가기</button></div>
 </div></div>
 <div class="overlay" id="visitOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="visitTitle"><div class="sheethead"><h2 id="visitTitle">👣 재방문 기록 남기기</h2><button class="x" data-close="visitOverlay" aria-label="닫기">×</button></div>
 <p class="visit-form-note" id="visitFormInfo">이전에 남긴 방문 기록은 그대로 보관돼요. 이번 방문의 사진과 후기를 새로 추가해 보세요.</p>
@@ -2087,8 +2087,13 @@ $("shareSend").addEventListener("click",function(){
  else window.prompt("이 링크를 복사해 주세요.",url);
 });
 $("sharedBackBtn").addEventListener("click",function(){
+ var received=/^#(?:place|cloud)=/.test(location.hash);
+ if(received||(location.pathname!=="/my-place-map/"&&location.pathname!=="/my-place-map/index.html")){
+  window.location.assign("https://jhparkk2.github.io/my-place-map/");
+  return;
+ }
  closeOverlay("sharedPlaceOverlay");
- if(location.hash.indexOf("#place=")===0||location.hash.indexOf("#cloud=")===0)history.replaceState(null,"",location.pathname+location.search);
+ selectTab("mapPanel");
 });
 $("exportBtn").addEventListener("click",exportBackup);
 $("importFile").addEventListener("change",async function(e){var file=e.target.files[0];if(!file)return;try{var raw=JSON.parse(await file.text());if(raw.app!=="footprint"||!Array.isArray(raw.places))throw Error("지원되지 않는 백업 파일이에요.");if(!confirm(raw.places.length+"개 기록을 불러올까요? 같은 ID의 기록은 덮어씁니다."))return;var count=0;for(var i=0;i<raw.places.length;i++){var p=normalized(raw.places[i]);if(p){await put(p);count++;}}places=await getAll();redraw();alert(count+"개 장소를 불러왔어요.");selectTab("listPanel");}catch(err){alert("백업 파일을 불러오지 못했어요: "+err.message);}finally{e.target.value="";}});
