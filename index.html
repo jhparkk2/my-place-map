@@ -591,6 +591,9 @@ button.memory-day[aria-pressed="true"] .memory-day-count{color:#effff4}
 .memory-visit-review{font-size:11px;color:#77867d;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .memory-calendar-empty{padding:22px 12px;text-align:center;color:#829187;font-size:12px;line-height:1.6}
 @media(max-width:350px){.record-view-switch button{font-size:11px}.memory-day{height:41px}.memory-calendar{padding-left:8px;padding-right:8px}.memory-day-count{font-size:8px}}
+/* v4.8 - highlight the exact calendar visit */
+.visit-record.calendar-picked{border:2px solid #72ac8a;background:#f6fbf6;box-shadow:0 5px 16px rgba(30,108,72,.10)}
+.calendar-picked-note{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:#237452;font-weight:800;margin-bottom:9px}
 </style></head>
 <body><div class="app">
 <header class="header"><div class="brand"><span class="brandicon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
@@ -766,7 +769,7 @@ function drawMemoryCalendar(filteredPlaces){
  var events=[];
  filteredPlaces.forEach(function(p){
   visitEntries(p).forEach(function(v){
-   if(validMemoryDate(v.date))events.push({id:p.id,name:p.name,category:p.category,date:v.date,rating:v.rating,review:v.review||"",photo:Array.isArray(v.photos)&&v.photos.length?v.photos[0]:"",createdAt:Number(v.createdAt)||0});
+   if(validMemoryDate(v.date))events.push({id:p.id,name:p.name,category:p.category,date:v.date,visitId:String(v.id||"initial"),rating:v.rating,review:v.review||"",photo:Array.isArray(v.photos)&&v.photos.length?v.photos[0]:"",createdAt:Number(v.createdAt)||0});
   });
  });
  events.sort(function(a,b){return b.date.localeCompare(a.date)||b.createdAt-a.createdAt;});
@@ -796,7 +799,7 @@ function drawMemoryCalendar(filteredPlaces){
  var selected=byDay[memorySelectedDate]||[];
  $("memoryDayCount").textContent=selected.length?selected.length+"회":"";
  $("memoryDayPlaces").innerHTML=selected.length?selected.map(function(v){
-  return '<button type="button" class="memory-visit-card" data-memory-place-id="'+esc(v.id)+'" aria-label="'+esc(v.name)+' 방문 기록 열기">'+
+  return '<button type="button" class="memory-visit-card" data-memory-place-id="'+esc(v.id)+'" data-memory-visit-id="'+esc(v.visitId)+'" aria-label="'+esc(v.name)+' 방문 기록 열기">'+
   '<span class="memory-visit-thumb">'+(typeof v.photo==="string"&&v.photo.startsWith("data:image/")?'<img src="'+esc(v.photo)+'" alt="" loading="lazy">':emoji(v.category))+'</span>'+
   '<span class="memory-visit-info"><span class="memory-visit-name">'+esc(v.name)+'</span><span class="memory-visit-meta">'+esc(v.category)+' · '+('★'.repeat(Math.max(1,Math.min(5,+v.rating||5))))+'</span><span class="memory-visit-review">'+esc(v.review||"방문 기록 보기")+'</span></span></button>';
  }).join(""):'<div class="memory-calendar-empty">이 달에는 날짜가 등록된 방문 기록이 없어요.<br>방문일을 추가하면 달력에 표시돼요.</div>';
@@ -1036,7 +1039,7 @@ function setLocation(lat,lon,address){selectedCoords={lat:+lat,lon:+lon,address:
 function areaFromAddress(address){var x=String(address||"").trim();var ar=x.split(/[\s,]+/).filter(Boolean);return ar.slice(0,2).join(" ")||"기타";}
 function showPhotos(){var box=$("photoPreview");box.innerHTML="";photosForSave.forEach(function(src,i){var item=document.createElement("div");item.className="preview-item";var im=document.createElement("img");im.src=src;im.alt="등록한 사진 "+(i+1);var removeBtn=document.createElement("button");removeBtn.type="button";removeBtn.className="remove-photo";removeBtn.dataset.index=String(i);removeBtn.setAttribute("aria-label","사진 "+(i+1)+" 삭제");removeBtn.textContent="×";item.appendChild(im);item.appendChild(removeBtn);box.appendChild(item);});var label=document.createElement("div");label.className="photo-preview-count";label.textContent="사진 "+photosForSave.length+" / 3장 · 사진의 ×를 눌러 삭제할 수 있어요.";box.appendChild(label);}
 function compress(file){return new Promise(function(resolve,reject){if(!file.type.startsWith("image/")){reject(new Error("이미지 파일만 등록할 수 있어요."));return;}var reader=new FileReader();reader.onerror=function(){reject(new Error("사진을 읽지 못했어요."));};reader.onload=function(){var img=new Image();img.onerror=function(){reject(new Error("이미지 형식이 지원되지 않아요."));};img.onload=function(){var max=1280,scale=Math.min(1,max/Math.max(img.width,img.height));var canvas=document.createElement("canvas");canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);var ctx=canvas.getContext("2d");ctx.fillStyle="#fff";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL("image/jpeg",.76));};img.src=reader.result;};reader.readAsDataURL(file);});}
-function showDetail(id){
+function showDetail(id,focusVisitId){
  var p=places.find(function(q){return q.id===id;});if(!p)return;
  currentId=id;commentReplyId=null;$("detailTitle").textContent=p.name;
  var entries=visitEntries(p),last=entries[0],rating=last.rating,pics=[];
@@ -1057,10 +1060,20 @@ function showDetail(id){
  var timeline='<div class="visit-summary"><h3>📒 나의 방문 기록</h3><span class="visit-count">총 '+entries.length+'회 방문</span></div><button type="button" class="visit-add" data-add-visit="1">＋ 재방문 기록 추가하기</button>'+entries.map(function(v){
  var photos=(v.photos||[]).length?'<div class="visit-record-photos">'+v.photos.map(function(src,i){var index=photoCursor++;return '<button type="button" class="visit-photo-btn" data-photo-index="'+index+'" aria-label="'+esc(dateText(v.date))+' 사진 '+(i+1)+' 크게 보기"><img src="'+esc(src)+'" loading="lazy" alt="'+esc(dateText(v.date))+' 사진 '+(i+1)+'"></button>';}).join("")+'</div>':"";
  var actions=v.original?'<div class="visit-record-actions"><button type="button" data-edit-first="1">첫 방문 수정</button></div>':'<div class="visit-record-actions"><button type="button" data-edit-visit="'+esc(v.id)+'">이 방문 수정</button><button type="button" class="visit-record-delete" data-remove-visit="'+esc(v.id)+'">삭제</button></div>';
- return '<div class="visit-record"><div class="visit-record-top"><strong>📅 '+esc(dateText(v.date))+' <span class="visit-record-label">'+(v.original?'첫 방문':'재방문')+'</span></strong><span>'+"★".repeat(v.rating||5)+'</span></div><p>'+esc(v.review||"작성한 후기가 없어요.")+'</p>'+photos+actions+'</div>';
+ var picked=focusVisitId&&String(focusVisitId)===String(v.id||"initial");
+ return '<div class="visit-record'+(picked?' calendar-picked':'')+'" data-visit-id="'+esc(v.id||"initial")+'">'+(picked?'<span class="calendar-picked-note">📅 달력에서 선택한 방문</span>':'')+'<div class="visit-record-top"><strong>📅 '+esc(dateText(v.date))+' <span class="visit-record-label">'+(v.original?'첫 방문':'재방문')+'</span></strong><span>'+"★".repeat(v.rating||5)+'</span></div><p>'+esc(v.review||"작성한 후기가 없어요.")+'</p>'+photos+actions+'</div>';
  }).join("");
  $("detailBody").innerHTML=gallery+'<div class="detail-kicker"><span class="detail-category">'+esc(emoji(p.category)+" "+p.category)+'</span><div class="detail-score">'+stars+'<strong>'+rating+'.0</strong><span>/ 5점</span></div></div>'+info+favorite+heart+timeline+commentSectionHtml(p);
  openOverlay("detailOverlay");
+ var detailSheet=$("detailOverlay").querySelector(".sheet");
+ if(detailSheet)detailSheet.scrollTop=0;
+ if(focusVisitId&&detailSheet){
+  var selectedRecord=$("detailBody").querySelector(".visit-record.calendar-picked");
+  if(selectedRecord)requestAnimationFrame(function(){
+   var delta=selectedRecord.getBoundingClientRect().top-detailSheet.getBoundingClientRect().top;
+   detailSheet.scrollTo({top:Math.max(0,detailSheet.scrollTop+delta-85),behavior:"smooth"});
+  });
+ }
 }
 
 function getPlaceComments(p){return Array.isArray(p.comments)?p.comments.filter(function(c){return c&&c.id&&c.text;}):[];}
@@ -1631,7 +1644,7 @@ $("recordCalendarMode").addEventListener("click",function(){if(recordViewMode===
 $("memoryPrev").addEventListener("click",function(){memoryMonthShift(-1);});
 $("memoryNext").addEventListener("click",function(){memoryMonthShift(1);});
 $("memoryGrid").addEventListener("click",function(e){var b=e.target.closest("[data-memory-date]");if(!b)return;memorySelectedDate=b.dataset.memoryDate;drawMemoryCalendar(memoryFilteredPlaces);});
-$("memoryDayPlaces").addEventListener("click",function(e){var b=e.target.closest("[data-memory-place-id]");if(b)showDetail(b.dataset.memoryPlaceId);});
+$("memoryDayPlaces").addEventListener("click",function(e){var b=e.target.closest("[data-memory-place-id]");if(b)showDetail(b.dataset.memoryPlaceId,b.dataset.memoryVisitId);});
 $("albumGrid").addEventListener("click",function(e){var b=e.target.closest("[data-album-place-id]");if(b)showDetail(b.dataset.albumPlaceId);});
 $("albumMore").addEventListener("click",function(){albumVisibleLimit+=24;drawAlbum(places.filter(function(p){
  if(!(activeFilter==="전체"||activeFilter==="재방문"&&p.revisit||activeFilter==="즐겨찾기"&&p.favorite||p.category===activeFilter))return false;
