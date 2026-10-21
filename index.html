@@ -1128,7 +1128,9 @@ function rememberLikeSync(key){
 async function setSharedLike(key, selected){
  if(!key)throw Error("장소 위치를 확인할 수 없어요.");
  var c=await socialClient();
- var r=await c.rpc("nawabom_stats",{p_key:key});
+ // nawabom_stats gives totals only; view returns the user's current like state.
+ // Each anonymous user contributes at most one view.
+ var r=await c.rpc("nawabom_react",{p_key:key,p_kind:"view"});
  if(r.error)throw r.error;
  var data=socialRows(r.data);
  if(!data||typeof data.my_like!=="boolean")throw Error("좋아요 상태를 확인하지 못했어요.");
