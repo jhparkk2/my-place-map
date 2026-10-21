@@ -526,6 +526,11 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 .nearby-place small{grid-column:1;color:#748980;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nearby-place b{grid-column:2;grid-row:1/span 2;color:#166354;font-size:12px;white-space:nowrap}
 .nearby-empty{margin:0;color:#72867a;font-size:12px;line-height:1.6}
+.record-search{display:flex;gap:8px;align-items:center;margin:13px 0 9px}
+.record-search input{flex:1;min-width:0;min-height:45px;padding:11px 13px;border:1px solid #dce6df;background:#fff;border-radius:13px;font-size:14px;color:#193e32}
+.record-search button{flex:none;min-height:43px;border:1px solid #e1e8e1;background:#f4f8f4;color:#356e5a;border-radius:12px;padding:9px 13px;font-size:12px;font-weight:800}
+.record-search-info{font-size:12px;color:#688074;margin:4px 2px 10px;line-height:1.5}
+.record-search-info[hidden],.record-search button[hidden]{display:none}
 </style></head>
 <body><div class="app">
 <header class="header"><div class="brand"><span class="brandicon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
@@ -540,10 +545,10 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 <section class="home-search"><strong>🔎 가본 장소 검색해서 기록하기</strong><div class="home-search-row"><input id="quickSearch" placeholder="식당·카페 이름 또는 동네 + 장소명" aria-label="기록할 장소 검색" enterkeyhint="search"><button type="button" class="btn secondary" id="quickSearchBtn">찾기</button></div></section><section class="stats"><div class="stat"><div class="num" id="countPlaces">0</div><small>기록한 장소</small></div><div class="stat"><div class="num" id="countRegions">0</div><small>기록한 지역</small></div><div class="stat"><div class="num" id="countRevisits">0</div><small>다시 갈 곳</small></div></section>
 <nav class="tabs" aria-label="보기 선택"><button class="tab active" data-tab="mapPanel">🗺 지도</button><button class="tab" data-tab="regionPanel">🗂 지역별</button><button class="tab" data-tab="listPanel">📒 내 기록</button><button class="tab" data-tab="managePanel">⚙ 관리</button></nav>
 <section class="panel active" id="mapPanel"><div class="sectiontitle recent-heading"><div><span class="section-eyebrow">MY RECENT PLACES</span><h2>최근 기록한 장소</h2></div><button class="topaction" id="morePlaces">전체 보기 →</button></div><div class="places" id="recentPlaces" aria-label="최근 기록한 장소 목록"></div><div class="sectiontitle map-heading"><div><span class="section-eyebrow">MY PLACE MAP</span><h2>나만의 장소 지도</h2></div><div class="map-view-actions"><span class="subtle" id="mapCount">0개 장소</span><button type="button" id="mapFavoriteToggle" class="map-fav-filter" aria-pressed="false">⭐ 즐겨찾기만</button></div></div><div class="map-canvas-wrap"><div id="map" role="application" aria-label="저장한 장소와 내 위치 지도"></div><button type="button" id="myLocationBtn" class="my-location-btn" aria-label="내 현재 위치를 지도에 표시">⌖ 내 위치</button></div><p id="myLocationStatus" class="my-location-status" role="status" aria-live="polite" hidden></p><p id="mapFavoriteStatus" class="map-favorite-status" role="status" aria-live="polite" hidden>⭐ 아직 즐겨찾기한 장소가 없어요. 장소 카드에서 ☆을 눌러 추가해 보세요.</p><div id="nearbyPlaces" class="nearby-places" aria-live="polite" hidden></div><div class="map-legend"><span>🍜 맛집</span><span>☕ 카페</span><span>🌿 명소</span><span>🏡 숙소</span><span>⭐ 즐겨찾기</span></div><p class="mapnote">📍 지도에서 핀을 누르면 그 장소의 사진과 후기를 볼 수 있어요.</p></section>
-<section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="재방문">❤️ 재방문</button><button class="chip" data-filter="즐겨찾기">⭐ 즐겨찾기 <span id="favoriteCount">0</span></button></div><div class="places" id="allPlaces"></div></section>
+<section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="record-search" role="search"><input id="recordSearch" type="search" placeholder="저장한 장소명·지역·후기 검색" aria-label="내 기록 검색" autocomplete="off"><button id="recordSearchClear" type="button" aria-label="내 기록 검색어 지우기" hidden>지우기 ✕</button></div><p id="recordSearchInfo" class="record-search-info" aria-live="polite" hidden></p><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="재방문">❤️ 재방문</button><button class="chip" data-filter="즐겨찾기">⭐ 즐겨찾기 <span id="favoriteCount">0</span></button></div><div class="places" id="allPlaces"></div></section>
 <section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 기록</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
 <section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존 발자국 또는 나와봄 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다.</div></section>
-<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.3</div></div>
+<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.4</div></div>
 <button class="btn cta" id="addBtn">＋ 내가 가본 장소 기록하기</button>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새 장소 기록</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
 <form id="placeForm"><div class="form-intro">🔎 <strong>장소 이름만 입력해서 검색</strong>해 보세요.<br>검색 결과를 선택한 다음 사진과 후기를 남기면 돼요.</div>
@@ -670,6 +675,8 @@ function recentCardHtml(p){
   '<h3>'+esc(p.name)+'</h3><p class="recent-place-area">'+esc(regionLabel(p))+'</p>'+
   '<p class="recent-place-review">'+esc(last.review||p.review||"방문 기록 보기")+'</p></div></article>';
 }
+var recordSearchValue="";
+function normalizeRecordSearch(s){return String(s||"").normalize("NFKC").toLocaleLowerCase("ko-KR").replace(/\s+/g,"").replace(/[.,()\[\]{}·\-]/g,"");}
 var mapFavoritesOnly=false;
 var lastMyLocation=null; // Memory only, not saved or shared.
 function directDistanceKm(lat1,lon1,lat2,lon2){
@@ -705,8 +712,19 @@ function redraw(options){
  $("countRegions").textContent=new Set(places.map(function(p){var r=placeRegion(p);return r.city+"|"+r.town;})).size;
  syncMapFavoriteUi();$("listCount").textContent=places.length+"개";
  $("recentPlaces").innerHTML=places.length?places.slice(0,3).map(recentCardHtml).join(""):emptyHtml();
- var shown=places.filter(function(p){return activeFilter==="전체"||activeFilter==="재방문"&&p.revisit||activeFilter==="즐겨찾기"&&p.favorite||p.category===activeFilter;});
- $("allPlaces").innerHTML=shown.length?shown.map(cardHtml).join(""):(activeFilter==="즐겨찾기"?favoriteEmptyHtml():emptyHtml());
+ var q=recordSearchValue;
+ var shown=places.filter(function(p){
+  if(!(activeFilter==="전체"||activeFilter==="재방문"&&p.revisit||activeFilter==="즐겨찾기"&&p.favorite||p.category===activeFilter))return false;
+  if(!q)return true;
+  var parts=[p.name,p.address,p.area,p.regionCity,p.regionTown,p.category,p.review,regionLabel(p)];
+  if(Array.isArray(p.visits))p.visits.forEach(function(v){parts.push(v.review);});
+  return normalizeRecordSearch(parts.join(" ")).includes(q);
+ });
+ $("allPlaces").innerHTML=shown.length?shown.map(cardHtml).join(""):(q?'<div class="empty"><div class="emoji">🔎</div><strong>검색 결과가 없어요</strong>다른 장소명이나 동네 이름을 입력해 보세요.</div>':activeFilter==="즐겨찾기"?favoriteEmptyHtml():emptyHtml());
+ $("listCount").textContent=q||activeFilter!=="전체"?shown.length+"개 / 전체 "+places.length+"개":places.length+"개";
+ $("recordSearchInfo").hidden=!q;
+ $("recordSearchInfo").textContent=q?"저장한 기록 중 "+shown.length+"곳을 찾았어요.":"";
+ $("recordSearchClear").hidden=!q;
  renderMarkers(!!(options&&options.keepMapView));renderNearbyPlaces();renderRegions();
 }
 
@@ -1440,6 +1458,8 @@ $("addBtn").addEventListener("click",function(){resetForm();openOverlay("formOve
 $("backupTop").addEventListener("click",function(){selectTab("managePanel");});
 $("morePlaces").addEventListener("click",function(){selectTab("listPanel");});
 document.querySelectorAll(".tab").forEach(function(b){b.addEventListener("click",function(){selectTab(b.dataset.tab);});});
+$("recordSearch").addEventListener("input",function(e){recordSearchValue=normalizeRecordSearch(e.target.value.trim());redraw({keepMapView:true});});
+$("recordSearchClear").addEventListener("click",function(){recordSearchValue="";$("recordSearch").value="";redraw({keepMapView:true});$("recordSearch").focus();});
 $("filters").addEventListener("click",function(e){var b=e.target.closest("[data-filter]");if(!b)return;activeFilter=b.dataset.filter;document.querySelectorAll(".chip").forEach(function(x){x.classList.toggle("active",x===b);});redraw();});
 document.querySelectorAll("[data-close]").forEach(function(b){b.addEventListener("click",function(){var id=b.dataset.close;closeOverlay(id);if(id==="photoOverlay"&&lastPhotoTrigger)lastPhotoTrigger.focus();if(id==="sharedPlaceOverlay"&&location.hash.indexOf("#place=")===0)history.replaceState(null,"",location.pathname+location.search);});});
 ["recentPlaces","allPlaces"].forEach(function(id){
