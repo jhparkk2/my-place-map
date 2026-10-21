@@ -556,6 +556,41 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 .record-sort-row label{color:#73847a;font-size:12px;font-weight:700}
 .record-sort-row select{max-width:180px;min-height:37px;background:#fff;color:#215844;border:1px solid #dce6df;border-radius:11px;padding:8px 10px;font-size:12px;font-weight:750}
 .record-sort-row[hidden]{display:none!important}
+
+/* v4.7 — light monthly memory calendar inside My Records */
+.record-view-switch button{font-size:12px;padding:9px 4px}
+.memory-calendar{background:#fff;border:1px solid #e9e3da;border-radius:20px;padding:14px 11px 16px;margin:1px 0 20px;box-shadow:0 3px 14px #533c2609}
+.memory-calendar[hidden]{display:none!important}
+.memory-calendar-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+.memory-calendar-heading{display:flex;flex-direction:column;gap:3px;align-items:center;min-width:0}
+.memory-calendar-heading strong{font-size:16px;letter-spacing:-.4px;color:#235d4b;white-space:nowrap}
+.memory-calendar-heading span{font-size:11px;color:#849389}
+.memory-month-nav{border:1px solid #e0e8df;background:#f8faf7;color:#366e5b;border-radius:11px;width:37px;height:37px;font-size:22px;display:grid;place-items:center;flex:none}
+.memory-weekdays,.memory-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
+.memory-weekdays{color:#819087;font-size:11px;text-align:center;margin-bottom:6px;font-weight:700}
+.memory-weekdays span{padding:3px 0}
+.memory-calendar-grid{margin-bottom:12px}
+.memory-day{width:100%;height:46px;min-width:0;border:1px solid transparent;border-radius:10px;display:flex;flex-direction:column;gap:2px;align-items:center;justify-content:center;background:#fff;color:#59685f;padding:3px 0;font-size:13px}
+.memory-day-blank{visibility:hidden}
+button.memory-day{cursor:pointer;background:#eef7f1;border-color:#cde4d4;color:#1e6b50;font-weight:850}
+button.memory-day[aria-pressed="true"]{background:#317d61;border-color:#317d61;color:#fff}
+.memory-day-count{font-size:9px;line-height:1.2;white-space:nowrap;font-weight:700;color:#478b6b}
+button.memory-day[aria-pressed="true"] .memory-day-count{color:#effff4}
+.memory-day:focus-visible,.memory-month-nav:focus-visible{outline:3px solid #a3c7ae;outline-offset:2px}
+.memory-calendar-hint{font-size:11px;color:#7a8b7f;text-align:center;margin:5px 0 12px}
+.memory-day-summary{border-top:1px solid #e9eee8;padding-top:13px;display:flex;justify-content:space-between;align-items:center;gap:8px;margin:10px 2px}
+.memory-day-summary strong{font-size:13px;color:#275a49}
+.memory-day-summary span{font-size:11px;color:#809086}
+.memory-day-places{display:grid;gap:9px}
+.memory-visit-card{display:flex;align-items:center;gap:11px;width:100%;background:#fbfdfb;border:1px solid #e4ebe5;border-radius:13px;padding:9px;text-align:left;color:#294d3d;min-width:0}
+.memory-visit-thumb{width:63px;height:63px;flex:none;border-radius:11px;background:#f7ece4;display:grid;place-items:center;font-size:28px;overflow:hidden}
+.memory-visit-thumb img{height:100%;width:100%;object-fit:contain}
+.memory-visit-info{min-width:0;display:flex;flex-direction:column;gap:4px}
+.memory-visit-name{font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.memory-visit-meta{font-size:11px;color:#45826c}
+.memory-visit-review{font-size:11px;color:#77867d;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.memory-calendar-empty{padding:22px 12px;text-align:center;color:#829187;font-size:12px;line-height:1.6}
+@media(max-width:350px){.record-view-switch button{font-size:11px}.memory-day{height:41px}.memory-calendar{padding-left:8px;padding-right:8px}.memory-day-count{font-size:8px}}
 </style></head>
 <body><div class="app">
 <header class="header"><div class="brand"><span class="brandicon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
@@ -570,10 +605,10 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 <section class="home-search"><strong>🔎 가본 장소 검색해서 기록하기</strong><div class="home-search-row"><input id="quickSearch" placeholder="식당·카페 이름 또는 동네 + 장소명" aria-label="기록할 장소 검색" enterkeyhint="search"><button type="button" class="btn secondary" id="quickSearchBtn">찾기</button></div></section><section class="stats"><div class="stat"><div class="num" id="countPlaces">0</div><small>기록한 장소</small></div><div class="stat"><div class="num" id="countRegions">0</div><small>기록한 지역</small></div><div class="stat"><div class="num" id="countRevisits">0</div><small>다시 갈 곳</small></div></section>
 <nav class="tabs" aria-label="보기 선택"><button class="tab active" data-tab="mapPanel">🗺 지도</button><button class="tab" data-tab="regionPanel">🗂 지역별</button><button class="tab" data-tab="listPanel">📒 내 기록</button><button class="tab" data-tab="managePanel">⚙ 관리</button></nav>
 <section class="panel active" id="mapPanel"><div class="sectiontitle recent-heading"><div><span class="section-eyebrow">MY RECENT PLACES</span><h2>최근 기록한 장소</h2></div><button class="topaction" id="morePlaces">전체 보기 →</button></div><div class="places" id="recentPlaces" aria-label="최근 기록한 장소 목록"></div><div class="sectiontitle map-heading"><div><span class="section-eyebrow">MY PLACE MAP</span><h2>나만의 장소 지도</h2></div><div class="map-view-actions"><span class="subtle" id="mapCount">0개 장소</span><button type="button" id="mapFavoriteToggle" class="map-fav-filter" aria-pressed="false">⭐ 즐겨찾기만</button></div></div><div class="map-canvas-wrap"><div id="map" role="application" aria-label="저장한 장소와 내 위치 지도"></div><button type="button" id="myLocationBtn" class="my-location-btn" aria-label="내 현재 위치를 지도에 표시">⌖ 내 위치</button></div><p id="myLocationStatus" class="my-location-status" role="status" aria-live="polite" hidden></p><p id="mapFavoriteStatus" class="map-favorite-status" role="status" aria-live="polite" hidden>⭐ 아직 즐겨찾기한 장소가 없어요. 장소 카드에서 ☆을 눌러 추가해 보세요.</p><div id="nearbyPlaces" class="nearby-places" aria-live="polite" hidden></div><div class="map-legend"><span>🍜 맛집</span><span>☕ 카페</span><span>🌿 명소</span><span>🏡 숙소</span><span>⭐ 즐겨찾기</span></div><p class="mapnote">📍 지도에서 핀을 누르면 그 장소의 사진과 후기를 볼 수 있어요.</p></section>
-<section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="record-view-switch" role="group" aria-label="내 기록 보기 방식"><button type="button" id="recordListMode" aria-pressed="true">📒 목록 보기</button><button type="button" id="recordAlbumMode" aria-pressed="false">📸 사진 앨범</button></div><div class="record-search" role="search"><input id="recordSearch" type="search" placeholder="저장한 장소명·지역·후기 검색" aria-label="내 기록 검색" autocomplete="off"><button id="recordSearchClear" type="button" aria-label="내 기록 검색어 지우기" hidden>지우기 ✕</button></div><p id="recordSearchInfo" class="record-search-info" aria-live="polite" hidden></p><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="재방문">❤️ 재방문</button><button class="chip" data-filter="즐겨찾기">⭐ 즐겨찾기 <span id="favoriteCount">0</span></button></div><div class="record-sort-row" id="recordSortRow"><label for="recordSort">내 기록 정렬</label><select id="recordSort" aria-label="내 기록 정렬 방식"><option value="updated">최근 기록순</option><option value="visit">방문일 최신순</option><option value="rating">별점 높은순</option><option value="name">이름 가나다순</option></select></div><div class="places" id="allPlaces"></div><div class="album-head" id="albumHead" hidden><strong id="albumTotal">📷 사진 0장</strong><span>사진을 누르면 방문 기록으로 이동해요</span></div><div class="album-grid" id="albumGrid" aria-label="방문 사진 앨범" hidden></div><button type="button" class="album-more" id="albumMore" hidden>사진 더 보기 ↓</button></section>
+<section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="record-view-switch" role="group" aria-label="내 기록 보기 방식"><button type="button" id="recordListMode" aria-pressed="true">📒 목록 보기</button><button type="button" id="recordAlbumMode" aria-pressed="false">📸 사진 앨범</button><button type="button" id="recordCalendarMode" aria-pressed="false">📅 추억 달력</button></div><div class="record-search" role="search"><input id="recordSearch" type="search" placeholder="저장한 장소명·지역·후기 검색" aria-label="내 기록 검색" autocomplete="off"><button id="recordSearchClear" type="button" aria-label="내 기록 검색어 지우기" hidden>지우기 ✕</button></div><p id="recordSearchInfo" class="record-search-info" aria-live="polite" hidden></p><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="재방문">❤️ 재방문</button><button class="chip" data-filter="즐겨찾기">⭐ 즐겨찾기 <span id="favoriteCount">0</span></button></div><div class="record-sort-row" id="recordSortRow"><label for="recordSort">내 기록 정렬</label><select id="recordSort" aria-label="내 기록 정렬 방식"><option value="updated">최근 기록순</option><option value="visit">방문일 최신순</option><option value="rating">별점 높은순</option><option value="name">이름 가나다순</option></select></div><div class="places" id="allPlaces"></div><div class="album-head" id="albumHead" hidden><strong id="albumTotal">📷 사진 0장</strong><span>사진을 누르면 방문 기록으로 이동해요</span></div><div class="album-grid" id="albumGrid" aria-label="방문 사진 앨범" hidden></div><button type="button" class="album-more" id="albumMore" hidden>사진 더 보기 ↓</button><section class="memory-calendar" id="memoryCalendar" aria-label="추억 달력" hidden><div class="memory-calendar-head"><button type="button" class="memory-month-nav" id="memoryPrev" aria-label="이전 달">‹</button><div class="memory-calendar-heading"><strong id="memoryMonthLabel"></strong><span id="memoryMonthCount"></span></div><button type="button" class="memory-month-nav" id="memoryNext" aria-label="다음 달">›</button></div><div class="memory-weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div class="memory-calendar-grid" id="memoryGrid" role="group" aria-label="방문한 날짜 선택"></div><p class="memory-calendar-hint">색이 표시된 날짜를 누르면 그날의 방문 기록을 볼 수 있어요.</p><div class="memory-day-summary"><strong id="memoryDayTitle"></strong><span id="memoryDayCount"></span></div><div class="memory-day-places" id="memoryDayPlaces" aria-live="polite"></div></section></section>
 <section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 기록</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
 <section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존 발자국 또는 나와봄 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다.</div></section>
-<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.6</div></div>
+<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.7</div></div>
 <button class="btn cta" id="addBtn">＋ 내가 가본 장소 기록하기</button>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새 장소 기록</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
 <form id="placeForm"><div class="form-intro">🔎 <strong>장소 이름만 입력해서 검색</strong>해 보세요.<br>검색 결과를 선택한 다음 사진과 후기를 남기면 돼요.</div>
@@ -710,6 +745,63 @@ function sortedRecords(filtered){
  return copy;
 }
 var recordViewMode="list", albumVisibleLimit=24, albumResults=[];
+var memoryMonthKey="", memorySelectedDate="", memoryFilteredPlaces=[];
+function validMemoryDate(value){
+ if(typeof value!=="string"||!/^\d{4}-\d{2}-\d{2}$/.test(value))return false;
+ var y=+value.slice(0,4),m=+value.slice(5,7),d=+value.slice(8,10);
+ if(y<1900||y>2100)return false;
+ var checked=new Date(y,m-1,d);
+ return checked.getFullYear()===y&&checked.getMonth()===m-1&&checked.getDate()===d;
+}
+function memoryMonthFromDate(d){return d.slice(0,7);}
+function memoryMonthShift(direction){
+ if(!memoryMonthKey)return;
+ var p=memoryMonthKey.split("-"),d=new Date(+p[0],+p[1]-1+direction,1);
+ memoryMonthKey=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");
+ memorySelectedDate="";
+ drawMemoryCalendar(memoryFilteredPlaces);
+}
+function drawMemoryCalendar(filteredPlaces){
+ memoryFilteredPlaces=filteredPlaces;
+ var events=[];
+ filteredPlaces.forEach(function(p){
+  visitEntries(p).forEach(function(v){
+   if(validMemoryDate(v.date))events.push({id:p.id,name:p.name,category:p.category,date:v.date,rating:v.rating,review:v.review||"",photo:Array.isArray(v.photos)&&v.photos.length?v.photos[0]:"",createdAt:Number(v.createdAt)||0});
+  });
+ });
+ events.sort(function(a,b){return b.date.localeCompare(a.date)||b.createdAt-a.createdAt;});
+ if(!memoryMonthKey){
+  var current=new Date(),initial=events[0]&&events[0].date;
+  memoryMonthKey=initial?memoryMonthFromDate(initial):current.getFullYear()+"-"+String(current.getMonth()+1).padStart(2,"0");
+ }
+ var y=+memoryMonthKey.slice(0,4),month=+memoryMonthKey.slice(5,7);
+ var monthEvents=events.filter(function(v){return memoryMonthFromDate(v.date)===memoryMonthKey;});
+ var byDay=Object.create(null);
+ monthEvents.forEach(function(v){(byDay[v.date]||(byDay[v.date]=[])).push(v);});
+ if(!memorySelectedDate||!byDay[memorySelectedDate])memorySelectedDate=monthEvents.length?monthEvents[0].date:"";
+ $("memoryMonthLabel").textContent=y+"년 "+month+"월";
+ $("memoryMonthCount").textContent=monthEvents.length+"회 방문 · "+Object.keys(byDay).length+"일의 추억";
+ var firstDay=new Date(y,month-1,1).getDay(),days=new Date(y,month,0).getDate(),total=Math.ceil((firstDay+days)/7)*7;
+ var cells=[];
+ for(var i=0;i<total;i++){
+  var day=i-firstDay+1;
+  if(day<1||day>days){cells.push('<span class="memory-day memory-day-blank" aria-hidden="true"></span>');continue;}
+  var date=memoryMonthKey+"-"+String(day).padStart(2,"0"),dayVisits=byDay[date]||[];
+  if(!dayVisits.length){cells.push('<span class="memory-day">'+day+'</span>');continue;}
+  var chosen=date===memorySelectedDate;
+  cells.push('<button type="button" class="memory-day" data-memory-date="'+date+'" aria-pressed="'+(chosen?'true':'false')+'" aria-label="'+month+'월 '+day+'일 방문 '+dayVisits.length+'회"><span>'+day+'</span><span class="memory-day-count">'+dayVisits.length+'회</span></button>');
+ }
+ $("memoryGrid").innerHTML=cells.join("");
+ $("memoryDayTitle").textContent=memorySelectedDate?memorySelectedDate.replace(/-/g,".")+" 방문 기록":"이번 달의 방문 기록";
+ var selected=byDay[memorySelectedDate]||[];
+ $("memoryDayCount").textContent=selected.length?selected.length+"회":"";
+ $("memoryDayPlaces").innerHTML=selected.length?selected.map(function(v){
+  return '<button type="button" class="memory-visit-card" data-memory-place-id="'+esc(v.id)+'" aria-label="'+esc(v.name)+' 방문 기록 열기">'+
+  '<span class="memory-visit-thumb">'+(typeof v.photo==="string"&&v.photo.startsWith("data:image/")?'<img src="'+esc(v.photo)+'" alt="" loading="lazy">':emoji(v.category))+'</span>'+
+  '<span class="memory-visit-info"><span class="memory-visit-name">'+esc(v.name)+'</span><span class="memory-visit-meta">'+esc(v.category)+' · '+('★'.repeat(Math.max(1,Math.min(5,+v.rating||5))))+'</span><span class="memory-visit-review">'+esc(v.review||"방문 기록 보기")+'</span></span></button>';
+ }).join(""):'<div class="memory-calendar-empty">이 달에는 날짜가 등록된 방문 기록이 없어요.<br>방문일을 추가하면 달력에 표시돼요.</div>';
+}
+
 function albumPhotosFromPlaces(filteredPlaces){
  var result=[];
  filteredPlaces.forEach(function(p){
@@ -724,13 +816,16 @@ function albumPhotosFromPlaces(filteredPlaces){
  return result.sort(function(a,b){return String(b.date).localeCompare(String(a.date))||b.updatedAt-a.updatedAt||a.photoIndex-b.photoIndex;});
 }
 function drawAlbum(filteredPlaces){
- var active=recordViewMode==="album";
- $("recordListMode").setAttribute("aria-pressed",active?"false":"true");
+ var active=recordViewMode==="album",calendarActive=recordViewMode==="calendar";
+ $("recordListMode").setAttribute("aria-pressed",recordViewMode==="list"?"true":"false");
  $("recordAlbumMode").setAttribute("aria-pressed",active?"true":"false");
- $("allPlaces").hidden=active;
-  $("recordSortRow").hidden=active;
+ $("recordCalendarMode").setAttribute("aria-pressed",calendarActive?"true":"false");
+ $("allPlaces").hidden=recordViewMode!=="list";
+ $("recordSortRow").hidden=recordViewMode!=="list";
  $("albumHead").hidden=!active;
  $("albumGrid").hidden=!active;
+ $("memoryCalendar").hidden=!calendarActive;
+ if(calendarActive){$("albumMore").hidden=true;$("albumGrid").innerHTML="";albumResults=[];drawMemoryCalendar(filteredPlaces);return;}
  if(!active){$("albumMore").hidden=true;$("albumGrid").innerHTML="";albumResults=[];return;}
  albumResults=albumPhotosFromPlaces(filteredPlaces);
  $("albumTotal").textContent="📷 사진 "+albumResults.length+"장";
@@ -1532,6 +1627,11 @@ $("morePlaces").addEventListener("click",function(){selectTab("listPanel");});
 document.querySelectorAll(".tab").forEach(function(b){b.addEventListener("click",function(){selectTab(b.dataset.tab);});});
 $("recordListMode").addEventListener("click",function(){if(recordViewMode==="list")return;recordViewMode="list";redraw({keepMapView:true});});
 $("recordAlbumMode").addEventListener("click",function(){if(recordViewMode==="album")return;recordViewMode="album";albumVisibleLimit=24;redraw({keepMapView:true});});
+$("recordCalendarMode").addEventListener("click",function(){if(recordViewMode==="calendar")return;recordViewMode="calendar";redraw({keepMapView:true});});
+$("memoryPrev").addEventListener("click",function(){memoryMonthShift(-1);});
+$("memoryNext").addEventListener("click",function(){memoryMonthShift(1);});
+$("memoryGrid").addEventListener("click",function(e){var b=e.target.closest("[data-memory-date]");if(!b)return;memorySelectedDate=b.dataset.memoryDate;drawMemoryCalendar(memoryFilteredPlaces);});
+$("memoryDayPlaces").addEventListener("click",function(e){var b=e.target.closest("[data-memory-place-id]");if(b)showDetail(b.dataset.memoryPlaceId);});
 $("albumGrid").addEventListener("click",function(e){var b=e.target.closest("[data-album-place-id]");if(b)showDetail(b.dataset.albumPlaceId);});
 $("albumMore").addEventListener("click",function(){albumVisibleLimit+=24;drawAlbum(places.filter(function(p){
  if(!(activeFilter==="전체"||activeFilter==="재방문"&&p.revisit||activeFilter==="즐겨찾기"&&p.favorite||p.category===activeFilter))return false;
