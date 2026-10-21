@@ -515,6 +515,17 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 .map-favorite-status{font-size:12px;line-height:1.55;margin:8px 3px;color:#805d1c}
 .map-favorite-status[hidden]{display:none}
 @media(max-width:390px){.map-heading{flex-wrap:wrap;gap:8px}.map-view-actions{width:100%;justify-content:space-between}}
+/* v4.3 — nearest saved places after an explicit location request */
+.nearby-places{margin:12px 0 17px;padding:13px;background:#f4f9f7;border:1px solid #dfebe6;border-radius:17px}
+.nearby-header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.nearby-header strong{font-size:13px;color:#245b4b}
+.nearby-header span{font-size:11px;color:#6c867b}
+.nearby-list{display:grid;gap:7px}
+.nearby-place{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px 10px;text-align:left;width:100%;min-height:56px;padding:10px 12px;background:white;border:1px solid #e1ebe4;border-radius:12px;color:#214b3e}
+.nearby-title{font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nearby-place small{grid-column:1;color:#748980;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nearby-place b{grid-column:2;grid-row:1/span 2;color:#166354;font-size:12px;white-space:nowrap}
+.nearby-empty{margin:0;color:#72867a;font-size:12px;line-height:1.6}
 </style></head>
 <body><div class="app">
 <header class="header"><div class="brand"><span class="brandicon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
@@ -528,11 +539,11 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 <section class="intro"><div class="eyebrow">MY PLACES, MY MEMORIES</div><h1>내가 와본 곳,<br>오래 남을 기억.</h1><p>직접 다녀온 장소와 추억을 하나씩 담아요. 🌱</p></section>
 <section class="home-search"><strong>🔎 가본 장소 검색해서 기록하기</strong><div class="home-search-row"><input id="quickSearch" placeholder="식당·카페 이름 또는 동네 + 장소명" aria-label="기록할 장소 검색" enterkeyhint="search"><button type="button" class="btn secondary" id="quickSearchBtn">찾기</button></div></section><section class="stats"><div class="stat"><div class="num" id="countPlaces">0</div><small>기록한 장소</small></div><div class="stat"><div class="num" id="countRegions">0</div><small>기록한 지역</small></div><div class="stat"><div class="num" id="countRevisits">0</div><small>다시 갈 곳</small></div></section>
 <nav class="tabs" aria-label="보기 선택"><button class="tab active" data-tab="mapPanel">🗺 지도</button><button class="tab" data-tab="regionPanel">🗂 지역별</button><button class="tab" data-tab="listPanel">📒 내 기록</button><button class="tab" data-tab="managePanel">⚙ 관리</button></nav>
-<section class="panel active" id="mapPanel"><div class="sectiontitle recent-heading"><div><span class="section-eyebrow">MY RECENT PLACES</span><h2>최근 기록한 장소</h2></div><button class="topaction" id="morePlaces">전체 보기 →</button></div><div class="places" id="recentPlaces" aria-label="최근 기록한 장소 목록"></div><div class="sectiontitle map-heading"><div><span class="section-eyebrow">MY PLACE MAP</span><h2>나만의 장소 지도</h2></div><div class="map-view-actions"><span class="subtle" id="mapCount">0개 장소</span><button type="button" id="mapFavoriteToggle" class="map-fav-filter" aria-pressed="false">⭐ 즐겨찾기만</button></div></div><div class="map-canvas-wrap"><div id="map" role="application" aria-label="저장한 장소와 내 위치 지도"></div><button type="button" id="myLocationBtn" class="my-location-btn" aria-label="내 현재 위치를 지도에 표시">⌖ 내 위치</button></div><p id="myLocationStatus" class="my-location-status" role="status" aria-live="polite" hidden></p><p id="mapFavoriteStatus" class="map-favorite-status" role="status" aria-live="polite" hidden>⭐ 아직 즐겨찾기한 장소가 없어요. 장소 카드에서 ☆을 눌러 추가해 보세요.</p><div class="map-legend"><span>🍜 맛집</span><span>☕ 카페</span><span>🌿 명소</span><span>🏡 숙소</span><span>⭐ 즐겨찾기</span></div><p class="mapnote">📍 지도에서 핀을 누르면 그 장소의 사진과 후기를 볼 수 있어요.</p></section>
+<section class="panel active" id="mapPanel"><div class="sectiontitle recent-heading"><div><span class="section-eyebrow">MY RECENT PLACES</span><h2>최근 기록한 장소</h2></div><button class="topaction" id="morePlaces">전체 보기 →</button></div><div class="places" id="recentPlaces" aria-label="최근 기록한 장소 목록"></div><div class="sectiontitle map-heading"><div><span class="section-eyebrow">MY PLACE MAP</span><h2>나만의 장소 지도</h2></div><div class="map-view-actions"><span class="subtle" id="mapCount">0개 장소</span><button type="button" id="mapFavoriteToggle" class="map-fav-filter" aria-pressed="false">⭐ 즐겨찾기만</button></div></div><div class="map-canvas-wrap"><div id="map" role="application" aria-label="저장한 장소와 내 위치 지도"></div><button type="button" id="myLocationBtn" class="my-location-btn" aria-label="내 현재 위치를 지도에 표시">⌖ 내 위치</button></div><p id="myLocationStatus" class="my-location-status" role="status" aria-live="polite" hidden></p><p id="mapFavoriteStatus" class="map-favorite-status" role="status" aria-live="polite" hidden>⭐ 아직 즐겨찾기한 장소가 없어요. 장소 카드에서 ☆을 눌러 추가해 보세요.</p><div id="nearbyPlaces" class="nearby-places" aria-live="polite" hidden></div><div class="map-legend"><span>🍜 맛집</span><span>☕ 카페</span><span>🌿 명소</span><span>🏡 숙소</span><span>⭐ 즐겨찾기</span></div><p class="mapnote">📍 지도에서 핀을 누르면 그 장소의 사진과 후기를 볼 수 있어요.</p></section>
 <section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="재방문">❤️ 재방문</button><button class="chip" data-filter="즐겨찾기">⭐ 즐겨찾기 <span id="favoriteCount">0</span></button></div><div class="places" id="allPlaces"></div></section>
 <section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 기록</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
 <section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존 발자국 또는 나와봄 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다.</div></section>
-<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.2</div></div>
+<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.3</div></div>
 <button class="btn cta" id="addBtn">＋ 내가 가본 장소 기록하기</button>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새 장소 기록</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
 <form id="placeForm"><div class="form-intro">🔎 <strong>장소 이름만 입력해서 검색</strong>해 보세요.<br>검색 결과를 선택한 다음 사진과 후기를 남기면 돼요.</div>
@@ -660,6 +671,32 @@ function recentCardHtml(p){
   '<p class="recent-place-review">'+esc(last.review||p.review||"방문 기록 보기")+'</p></div></article>';
 }
 var mapFavoritesOnly=false;
+var lastMyLocation=null; // Memory only, not saved or shared.
+function directDistanceKm(lat1,lon1,lat2,lon2){
+ var rad=Math.PI/180,dLat=(lat2-lat1)*rad,dLon=(lon2-lon1)*rad;
+ var h=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*rad)*Math.cos(lat2*rad)*Math.sin(dLon/2)*Math.sin(dLon/2);
+ return 6371*2*Math.asin(Math.sqrt(Math.min(1,Math.max(0,h))));
+}
+function nearbyDistanceText(km){return km<1?Math.round(km*1000)+"m":km.toFixed(1)+"km";}
+function renderNearbyPlaces(){
+ var host=$("nearbyPlaces");
+ if(!lastMyLocation){host.hidden=true;host.innerHTML="";return;}
+ var candidates=(mapFavoritesOnly?places.filter(function(p){return !!p.favorite;}):places).map(function(p){
+  return {place:p,distance:directDistanceKm(lastMyLocation.lat,lastMyLocation.lon,Number(p.lat),Number(p.lon))};
+ }).filter(function(x){return Number.isFinite(x.distance);}).sort(function(a,b){return a.distance-b.distance;}).slice(0,3);
+ host.hidden=false;
+ var header='<div class="nearby-header"><strong>📍 내 위치와 가까운 기록</strong><span>직선거리 기준</span></div>';
+ if(!candidates.length){
+  host.innerHTML=header+'<p class="nearby-empty">'+(mapFavoritesOnly?'즐겨찾기한 장소가 없어요. ⭐을 눌러 추가해 보세요.':'아직 저장한 장소가 없어요. 방문 장소를 기록해 보세요.')+'</p>';
+  return;
+ }
+ host.innerHTML=header+'<div class="nearby-list">'+candidates.map(function(x){
+  var p=x.place;
+  return '<button type="button" class="nearby-place" data-nearby-id="'+esc(p.id)+'" aria-label="'+esc(p.name)+' 방문 기록 보기">'+
+   '<span class="nearby-title">'+esc(emoji(p.category)+' '+p.name)+(p.favorite?' ⭐':'')+'</span>'+
+   '<small>'+esc(regionLabel(p))+'</small><b>'+nearbyDistanceText(x.distance)+'</b></button>';
+ }).join("")+'</div>';
+}
 function redraw(options){
  sortPlaces();
  $("countPlaces").textContent=places.length;
@@ -670,7 +707,7 @@ function redraw(options){
  $("recentPlaces").innerHTML=places.length?places.slice(0,3).map(recentCardHtml).join(""):emptyHtml();
  var shown=places.filter(function(p){return activeFilter==="전체"||activeFilter==="재방문"&&p.revisit||activeFilter==="즐겨찾기"&&p.favorite||p.category===activeFilter;});
  $("allPlaces").innerHTML=shown.length?shown.map(cardHtml).join(""):(activeFilter==="즐겨찾기"?favoriteEmptyHtml():emptyHtml());
- renderMarkers(!!(options&&options.keepMapView));renderRegions();
+ renderMarkers(!!(options&&options.keepMapView));renderNearbyPlaces();renderRegions();
 }
 
 function syncMapFavoriteUi(){
@@ -740,6 +777,8 @@ function locateOnMainMap(){
   var lat=Number(pos.coords.latitude),lon=Number(pos.coords.longitude),accuracy=Number(pos.coords.accuracy);
   if(!Number.isFinite(lat)||!Number.isFinite(lon)){status.textContent="현재 위치 좌표를 확인하지 못했어요. 다시 눌러 주세요.";return;}
   var ll=[lat,lon];
+  lastMyLocation={lat:lat,lon:lon};
+  renderNearbyPlaces();
   userPositionLayer.clearLayers();
   if(Number.isFinite(accuracy)&&accuracy>0){
    L.circle(ll,{radius:accuracy,color:"#2678d5",weight:1,fillColor:"#2678d5",fillOpacity:.09,interactive:false}).addTo(userPositionLayer);
@@ -756,10 +795,12 @@ function locateOnMainMap(){
  },{enableHighAccuracy:true,timeout:15000,maximumAge:30000});
 }
 $("myLocationBtn").addEventListener("click",locateOnMainMap);
+$("nearbyPlaces").addEventListener("click",function(e){var b=e.target.closest("[data-nearby-id]");if(b)showDetail(b.dataset.nearbyId);});
 $("mapFavoriteToggle").addEventListener("click",function(){
  mapFavoritesOnly=!mapFavoritesOnly;
  syncMapFavoriteUi();
  renderMarkers(false);
+ renderNearbyPlaces();
 });
 
 var favoriteSavingIds=new Set();
