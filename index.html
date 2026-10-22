@@ -514,7 +514,9 @@ body{background:linear-gradient(180deg,#fff5ed 0,#fffbf7 350px)}
 .social-compact .social-like[aria-pressed="true"]{color:#b74453}
 .social-compact .social-like:disabled{opacity:.58;cursor:default}
 .social-compact .social-views{color:#677c72}
-.social-compact .social-msg{font-size:11px;color:#829187}
+.social-compact .social-msg{font-size:11px;color:#9a6658}
+.social-compact .social-retry{appearance:none;border:1px solid #e2dad3;border-radius:8px;background:#fff;color:#876856;padding:3px 9px;font:inherit;font-size:11px;font-weight:700;cursor:pointer}
+.social-compact .social-retry:disabled{opacity:.5;cursor:wait}
 
 /* v4.2 — show favorite places only on the main map */
 .map-view-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;flex-wrap:wrap}
@@ -1103,14 +1105,33 @@ function socialFill(key,result,canLike){
   if(el.dataset.socialKey!==key)return;
   var likes=el.querySelector("[data-social-likes]"),views=el.querySelector("[data-social-views]"),btn=el.querySelector("[data-social-like]"),name=el.querySelector("[data-social-like-label]");
   var a=Number(data.likes),b=Number(data.views);
+  el.querySelectorAll(".social-msg,.social-retry").forEach(function(msg){msg.remove();});
   if(likes)likes.textContent=data.likes==null||!Number.isFinite(a)?"—":String(Math.max(0,a));
   if(views)views.textContent=data.views==null||!Number.isFinite(b)?"—":String(Math.max(0,b));
   if(btn){btn.disabled=!canLike;if(typeof data.my_like==="boolean"){btn.setAttribute("aria-pressed",String(data.my_like));if(name)name.textContent=data.my_like?"♥ 좋아요":"♡ 좋아요";}}
  });
 }
-function socialUnavailable(key){
+function socialFailureText(err){
+ var raw=String([err&&err.message,err&&err.code,err&&err.error_description].filter(Boolean).join(" ")).toLowerCase();
+ if(typeof navigator!=="undefined"&&navigator.onLine===false)return "인터넷 연결을 확인해 주세요.";
+ if(/anonymous|signup|signups|auth.*disabled|authentication/.test(raw))return "좋아요 집계를 위한 익명 로그인 설정을 확인해 주세요.";
+ if(/pgrst202|42883|does not exist|could not find the function|schema cache/.test(raw))return "좋아요 집계 서버의 SQL 설정을 확인해 주세요.";
+ if(/permission denied|42501/.test(raw))return "좋아요 서버의 접근 권한을 확인해 주세요.";
+ if(/failed to fetch|network|load failed|timeout/.test(raw))return "인터넷 연결을 확인해 주세요.";
+ return "전체 좋아요 서버에 연결하지 못했어요.";
+}
+function socialUnavailable(key,err){
  document.querySelectorAll("[data-social-key]").forEach(function(el){
-  if(el.dataset.socialKey===key){el.innerHTML='<span class="social-msg">좋아요·조회수 연결 확인 중</span>';}
+  if(el.dataset.socialKey!==key)return;
+  var message=el.querySelector(".social-msg");
+  if(!message){message=document.createElement("span");message.className="social-msg";el.appendChild(message);}
+  message.textContent=socialFailureText(err);
+  var retry=el.querySelector("[data-social-retry]");
+  if(!retry){
+   retry=document.createElement("button");retry.type="button";retry.className="social-retry";
+   retry.dataset.socialRetry=key;el.appendChild(retry);
+  }
+  retry.textContent="다시 시도";retry.disabled=false;
  });
 }
 async function socialClient(){
@@ -1153,22 +1174,31 @@ async function adoptOldFavorite(p,key,data){
  }catch(err){/* Preserve the personal selection if the cloud is temporarily unavailable. */}
 }
 async function socialShow(p){
- var key=socialPlaceKey(p);if(!key)return;
+ var key=typeof p==="string"?p:socialPlaceKey(p);if(!key)return;
  try{
   var c=await socialClient();
   var r=await c.rpc("nawabom_react",{p_key:key,p_kind:"view"});
   if(r.error)throw r.error;
   socialFill(key,r.data,true);
-  await adoptOldFavorite(p,key,socialRows(r.data));
+  if(typeof p!=="string")await adoptOldFavorite(p,key,socialRows(r.data));
  }catch(err){
   try{
    var client=getSbClient(),r2=await client.rpc("nawabom_stats",{p_key:key});
    if(r2.error)throw r2.error;
    socialFill(key,r2.data,true);
-   await adoptOldFavorite(p,key,socialRows(r2.data));
-  }catch(other){socialUnavailable(key);}
+   if(typeof p!=="string")await adoptOldFavorite(p,key,socialRows(r2.data));
+  }catch(other){socialUnavailable(key,other);}
  }
 }
+document.addEventListener("click",function(e){
+ var retry=e.target.closest("[data-social-retry]");if(!retry)return;
+ e.preventDefault();e.stopPropagation();
+ if(retry.disabled)return;
+ retry.disabled=true;retry.textContent="연결 중…";
+ var key=retry.dataset.socialRetry;
+ var local=places.find(function(p){return socialPlaceKey(p)===key;});
+ socialShow(local||key);
+});
 document.addEventListener("click",async function(e){
  var btn=e.target.closest("[data-social-like]");if(!btn)return;
  e.preventDefault();e.stopPropagation();
@@ -1191,7 +1221,7 @@ document.addEventListener("click",async function(e){
   rememberLikeSync(key);
  }catch(err){
   btn.disabled=false;
-  alert("좋아요를 저장하지 못했어요. Supabase 익명 로그인 설정을 확인해 주세요.");
+  alert("좋아요를 저장하지 못했어요. "+socialFailureText(err));
  }
 });
 
