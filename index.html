@@ -648,7 +648,7 @@ button.memory-day[aria-pressed="true"] .memory-day-count{color:#effff4}
 <section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="record-view-switch" role="group" aria-label="내 기록 보기 방식"><button type="button" id="recordListMode" aria-pressed="true">📒 목록 보기</button><button type="button" id="recordAlbumMode" aria-pressed="false">📸 사진 앨범</button><button type="button" id="recordCalendarMode" aria-pressed="false">📅 추억 달력</button></div><div class="record-search" role="search"><input id="recordSearch" type="search" placeholder="저장한 장소명·지역·후기 검색" aria-label="내 기록 검색" autocomplete="off"><button id="recordSearchClear" type="button" aria-label="내 기록 검색어 지우기" hidden>지우기 ✕</button></div><p id="recordSearchInfo" class="record-search-info" aria-live="polite" hidden></p><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="좋아요">❤️ 좋아요 <span id="favoriteCount">0</span></button></div><div class="record-sort-row" id="recordSortRow"><label for="recordSort">내 기록 정렬</label><select id="recordSort" aria-label="내 기록 정렬 방식"><option value="updated">최근 기록순</option><option value="visit">방문일 최신순</option><option value="rating">별점 높은순</option><option value="name">이름 가나다순</option></select></div><div class="places" id="allPlaces"></div><div class="album-head" id="albumHead" hidden><strong id="albumTotal">📷 사진 0장</strong><span>사진을 누르면 방문 기록으로 이동해요</span></div><div class="album-grid" id="albumGrid" aria-label="방문 사진 앨범" hidden></div><button type="button" class="album-more" id="albumMore" hidden>사진 더 보기 ↓</button><section class="memory-calendar" id="memoryCalendar" aria-label="추억 달력" hidden><div class="memory-calendar-head"><button type="button" class="memory-month-nav" id="memoryPrev" aria-label="이전 달">‹</button><div class="memory-calendar-heading"><strong id="memoryMonthLabel"></strong><span id="memoryMonthCount"></span></div><button type="button" class="memory-month-nav" id="memoryNext" aria-label="다음 달">›</button></div><div class="memory-weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div class="memory-calendar-grid" id="memoryGrid" role="group" aria-label="방문한 날짜 선택"></div><p class="memory-calendar-hint">색이 표시된 날짜를 누르면 그날의 방문 기록을 볼 수 있어요.</p><div class="memory-day-summary"><strong id="memoryDayTitle"></strong><span id="memoryDayCount"></span></div><div class="memory-day-places" id="memoryDayPlaces" aria-live="polite"></div></section></section>
 <section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 기록</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
 <section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존 발자국 또는 나와봄 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다.</div></section>
-<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.20</div></div>
+<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.21</div></div>
 <button class="btn cta" id="addBtn">＋ 내가 가본 장소 기록하기</button>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새 장소 기록</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
 <form id="placeForm"><div class="form-intro">🔎 <strong>장소 이름만 입력해서 검색</strong>해 보세요.<br>검색 결과를 선택한 다음 사진과 후기를 남기면 돼요.</div>
@@ -1500,7 +1500,7 @@ function sendLinkedKakaoShare(p,url){
   if(!window.Kakao.isInitialized())window.Kakao.init("51ce171d297689b74c119e403b8eaf87");
   var image="https://jhparkk2.github.io/my-place-map/apple-touch-icon.png?v=28";
   var cloud=/^https:\/\/[^#]+#cloud=([a-f0-9-]{36})\/([a-f0-9-]{36})$/i.exec(url);
-  if(cloud)image=SB_URL+"/storage/v1/object/public/"+SB_BUCKET+"/shares/"+cloud[1]+"/"+cloud[2]+"/photo.jpg";
+  if(cloud&&sharePhotoSource(p))image=SB_URL+"/storage/v1/object/public/"+SB_BUCKET+"/shares/"+cloud[1]+"/"+cloud[2]+"/photo.jpg";
   var v=latestVisit(p),detail=[p.address||p.area||"",v.rating?"★ "+v.rating+" / 5":"",v.review||""].filter(Boolean).join(" · ").slice(0,145);
   var link={mobileWebUrl:url,webUrl:url};
   var result=window.Kakao.Share.sendDefault({
@@ -1736,8 +1736,9 @@ function getSbClient(){
  return sbClient;
 }
 async function uploadSharedPhoto(p,options){
- var src=sharePhotoSource(p);
- if(!options.photo||!src)return buildSharedPlaceUrl(p,options);
+ // v4.21: Even places without photos use a short cloud link for Kakao.
+ // This avoids passing a long #place= data fragment to the Kakao share request.
+ var src=sharePhotoSource(p),hasPhoto=!!(options.photo&&src);
  var client=getSbClient(),sessionResult=await client.auth.getSession();
  if(sessionResult.error)throw sessionResult.error;
  var user=sessionResult.data.session&&sessionResult.data.session.user;
@@ -1748,14 +1749,19 @@ async function uploadSharedPhoto(p,options){
  }
  if(!user||!user.id)throw Error("로그인 정보를 확인할 수 없어요.");
  var key=crypto.randomUUID(),dir="shares/"+user.id+"/"+key,storage=client.storage.from(SB_BUCKET);
- var blob=await(await fetch(src)).blob();
- if(blob.size>5*1024*1024)throw Error("사진 크기가 5MB를 넘어요.");
  var photoPath=dir+"/photo.jpg",jsonPath=dir+"/record.json";
- var photo=await storage.upload(photoPath,blob,{contentType:"image/jpeg",upsert:false});
- if(photo.error)throw Error("사진 업로드 실패: "+photo.error.message+" (Storage 권한 설정을 확인해 주세요.)");
+ if(hasPhoto){
+  var blob=await(await fetch(src)).blob();
+  if(blob.size>5*1024*1024)throw Error("사진 크기가 5MB를 넘어요.");
+  var photo=await storage.upload(photoPath,blob,{contentType:"image/jpeg",upsert:false});
+  if(photo.error)throw Error("사진 업로드 실패: "+photo.error.message+" (Storage 권한 설정을 확인해 주세요.)");
+ }
  var record=new Blob([JSON.stringify(snapshotForShare(p,options))],{type:"application/json"});
  var uploaded=await storage.upload(jsonPath,record,{contentType:"application/json",upsert:false});
- if(uploaded.error){try{await storage.remove([photoPath]);}catch(ignore){}throw Error("장소 정보 업로드 실패: "+uploaded.error.message);}
+ if(uploaded.error){
+  if(hasPhoto){try{await storage.remove([photoPath]);}catch(ignore){}}
+  throw Error("장소 정보 업로드 실패: "+uploaded.error.message);
+ }
  return location.origin+location.pathname+"#cloud="+user.id+"/"+key;
 }
 async function showCloudShare(){
