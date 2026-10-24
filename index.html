@@ -640,6 +640,7 @@ button.memory-day[aria-pressed="true"] .memory-day-count{color:#effff4}
 .beta-note{font-size:12px;color:#897c6f;line-height:1.7;margin-top:11px}
 #betaStatus,#betaFeedbackStatus{font-size:12px;line-height:1.6;color:#386c56;margin-top:11px;white-space:pre-wrap}
 #betaFeedbackText{min-height:145px}
+#betaHealthResult{white-space:pre-wrap;margin:9px 0;padding:11px 12px;border-radius:11px;background:#f6faf5;color:#536c59;font-size:12px;line-height:1.75}#betaHealthResult[hidden]{display:none}
 </style></head>
 <body><div class="app">
 <header class="header"><div class="brand"><span class="brandicon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
@@ -656,8 +657,8 @@ button.memory-day[aria-pressed="true"] .memory-day-count{color:#effff4}
 <section class="panel active" id="mapPanel"><div class="sectiontitle recent-heading"><div><span class="section-eyebrow">MY RECENT PLACES</span><h2>최근 기록한 장소</h2></div><button class="topaction" id="morePlaces">전체 보기 →</button></div><div class="places" id="recentPlaces" aria-label="최근 기록한 장소 목록"></div><div class="sectiontitle map-heading"><div><span class="section-eyebrow">MY PLACE MAP</span><h2>나만의 장소 지도</h2></div><div class="map-view-actions"><span class="subtle" id="mapCount">0개 장소</span><button type="button" id="mapFavoriteToggle" class="map-fav-filter" aria-pressed="false">❤️ 좋아요만</button></div></div><div class="map-canvas-wrap"><div id="map" role="application" aria-label="저장한 장소와 내 위치 지도"></div><button type="button" id="myLocationBtn" class="my-location-btn" aria-label="내 현재 위치를 지도에 표시">⌖ 내 위치</button></div><p id="myLocationStatus" class="my-location-status" role="status" aria-live="polite" hidden></p><p id="mapFavoriteStatus" class="map-favorite-status" role="status" aria-live="polite" hidden>❤️ 아직 좋아요한 장소가 없어요. 장소 카드에서 ♡을 눌러 표시해 보세요.</p><div id="nearbyPlaces" class="nearby-places" aria-live="polite" hidden></div><div class="map-legend"><span>🍜 맛집</span><span>☕ 카페</span><span>🌿 명소</span><span>🏡 숙소</span><span>❤️ 좋아요</span></div><p class="mapnote">📍 지도에서 핀을 누르면 그 장소의 사진과 후기를 볼 수 있어요.</p></section>
 <section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="record-view-switch" role="group" aria-label="내 기록 보기 방식"><button type="button" id="recordListMode" aria-pressed="true">📒 목록 보기</button><button type="button" id="recordAlbumMode" aria-pressed="false">📸 사진 앨범</button><button type="button" id="recordCalendarMode" aria-pressed="false">📅 추억 달력</button></div><div class="record-search" role="search"><input id="recordSearch" type="search" placeholder="저장한 장소명·지역·후기 검색" aria-label="내 기록 검색" autocomplete="off"><button id="recordSearchClear" type="button" aria-label="내 기록 검색어 지우기" hidden>지우기 ✕</button></div><p id="recordSearchInfo" class="record-search-info" aria-live="polite" hidden></p><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="좋아요">❤️ 좋아요 <span id="favoriteCount">0</span></button></div><div class="record-sort-row" id="recordSortRow"><label for="recordSort">내 기록 정렬</label><select id="recordSort" aria-label="내 기록 정렬 방식"><option value="updated">최근 기록순</option><option value="visit">방문일 최신순</option><option value="rating">별점 높은순</option><option value="name">이름 가나다순</option></select></div><div class="places" id="allPlaces"></div><div class="album-head" id="albumHead" hidden><strong id="albumTotal">📷 사진 0장</strong><span>사진을 누르면 방문 기록으로 이동해요</span></div><div class="album-grid" id="albumGrid" aria-label="방문 사진 앨범" hidden></div><button type="button" class="album-more" id="albumMore" hidden>사진 더 보기 ↓</button><section class="memory-calendar" id="memoryCalendar" aria-label="추억 달력" hidden><div class="memory-calendar-head"><button type="button" class="memory-month-nav" id="memoryPrev" aria-label="이전 달">‹</button><div class="memory-calendar-heading"><strong id="memoryMonthLabel"></strong><span id="memoryMonthCount"></span></div><button type="button" class="memory-month-nav" id="memoryNext" aria-label="다음 달">›</button></div><div class="memory-weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div class="memory-calendar-grid" id="memoryGrid" role="group" aria-label="방문한 날짜 선택"></div><p class="memory-calendar-hint">색이 표시된 날짜를 누르면 그날의 방문 기록을 볼 수 있어요.</p><div class="memory-day-summary"><strong id="memoryDayTitle"></strong><span id="memoryDayCount"></span></div><div class="memory-day-places" id="memoryDayPlaces" aria-live="polite"></div></section></section>
 <section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 기록</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
-<section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup beta-tools"><h3>🌱 나와봄 체험 테스트</h3><p>회원가입 없이 바로 체험할 수 있어요. 처음 사용하는 분에게 아래 순서로 사용해 보도록 안내해 주세요.</p><ol class="beta-steps"><li>가본 장소를 검색해 사진과 후기를 저장하기</li><li>내 기록·지도에서 장소를 다시 열어보기</li><li>❤️ 좋아요와 공유하기 기능을 사용해 보기</li></ol><div class="beta-actions"><button type="button" class="btn secondary" id="betaShareBtn">테스트 링크 보내기</button><button type="button" class="btn light" id="betaFeedbackOpen">사용 의견 보내기</button></div><p class="beta-note">기록·사진은 현재 사용 중인 브라우저에만 저장됩니다. 다른 기기와 자동 동기화되지 않으며, 중요한 기록은 백업해야 해요.</p><p id="betaStatus" role="status" aria-live="polite" hidden></p></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>🛟 기기 내 자동 복원본</h3><p>기록이 바뀌면 같은 브라우저 안에 임시 복원본을 보관합니다. 삭제나 백업 불러오기 직전 기록도 따로 보존해요.</p><p class="subtle" id="recoveryStatus" role="status" aria-live="polite">복원본 확인 중…</p><button type="button" class="btn light" id="recoveryRestoreBtn" disabled>빠진 장소 되살리기</button><p class="subtle">현재 기록은 덮어쓰지 않고, 없는 장소만 복구합니다. 브라우저 데이터를 삭제하면 이 복원본도 함께 사라집니다.</p></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존 발자국 또는 나와봄 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 개인 기록을 저장하는 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다. 기기 분실과 브라우저 데이터 삭제에 대비해 백업 파일을 별도로 보관해 주세요.</div></section>
-<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.24</div></div>
+<section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup beta-tools"><h3>🌱 나와봄 체험 테스트</h3><p>회원가입 없이 바로 체험할 수 있어요. 처음 사용하는 분에게 아래 순서로 사용해 보도록 안내해 주세요.</p><ol class="beta-steps"><li>가본 장소를 검색해 사진과 후기를 저장하기</li><li>내 기록·지도에서 장소를 다시 열어보기</li><li>❤️ 좋아요와 공유하기 기능을 사용해 보기</li></ol><div class="beta-actions"><button type="button" class="btn secondary" id="betaShareBtn">테스트 링크 보내기</button><button type="button" class="btn light" id="betaFeedbackOpen">사용 의견 보내기</button></div><p class="beta-note">기록·사진은 현재 사용 중인 브라우저에만 저장됩니다. 다른 기기와 자동 동기화되지 않으며, 중요한 기록은 백업해야 해요.</p><p id="betaStatus" role="status" aria-live="polite" hidden></p><div class="beta-health"><button type="button" class="btn light" id="betaHealthBtn">🔎 연결 상태 점검</button><p id="betaHealthResult" role="status" aria-live="polite" hidden></p><p class="beta-note">기기 기록·서버·익명 로그인을 확인해요. 좋아요·조회수를 올리거나 사진을 서버에 보내지 않아요.</p></div></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>🛟 기기 내 자동 복원본</h3><p>기록이 바뀌면 같은 브라우저 안에 임시 복원본을 보관합니다. 삭제나 백업 불러오기 직전 기록도 따로 보존해요.</p><p class="subtle" id="recoveryStatus" role="status" aria-live="polite">복원본 확인 중…</p><button type="button" class="btn light" id="recoveryRestoreBtn" disabled>빠진 장소 되살리기</button><p class="subtle">현재 기록은 덮어쓰지 않고, 없는 장소만 복구합니다. 브라우저 데이터를 삭제하면 이 복원본도 함께 사라집니다.</p></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존 발자국 또는 나와봄 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 개인 기록을 저장하는 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다. 기기 분실과 브라우저 데이터 삭제에 대비해 백업 파일을 별도로 보관해 주세요.</div></section>
+<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.25</div></div>
 <button class="btn cta" id="addBtn">＋ 내가 가본 장소 기록하기</button>
 <div class="overlay" id="betaFeedbackOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="betaFeedbackTitle"><div class="sheethead"><h2 id="betaFeedbackTitle">🌱 나와봄 사용 의견</h2><button type="button" class="x" data-close="betaFeedbackOverlay" aria-label="닫기">×</button></div><p class="share-intro">좋았던 점이나 불편한 점을 적어 주세요. 카카오톡·문자 등으로 의견을 전달할 상대를 직접 고르는 방식이에요.</p><label class="field" for="betaFeedbackText"><span>어떤 점을 개선하면 좋을까요?</span><textarea id="betaFeedbackText" maxlength="800" placeholder="예: 아이폰에서 장소 검색은 편리했는데 사진 등록 중 오류가 났어요."></textarea></label><div class="actions"><button type="button" class="btn" id="betaFeedbackShareBtn">카카오톡 등으로 의견 전달</button></div><p class="beta-note">의견은 앱 운영자에게 자동 전송되지 않아요. 공유 메뉴에서 의견을 받을 사람을 선택해야 합니다. 개인정보는 적지 마세요.</p><p id="betaFeedbackStatus" role="status" aria-live="polite" hidden></p></div></div>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새 장소 기록</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
@@ -2075,15 +2076,61 @@ REGION_NAMES.forEach(function(name){var o=document.createElement("option");o.val
 $("regionContent").addEventListener("click",function(e){var b=e.target.closest("[data-rname]");if(b){if(!regionViewCity){regionViewCity=b.dataset.rname;regionViewTown="";}else regionViewTown=b.dataset.rname;renderRegions();return;}if(e.target.closest("[data-rhome]")){regionViewCity="";regionViewTown="";renderRegions();return;}if(e.target.closest("[data-rback]")){regionViewTown="";renderRegions();return;}var p=e.target.closest("[data-id]");if(p)showDetail(p.dataset.id);});
 $("addBtn").addEventListener("click",function(){resetForm();openOverlay("formOverlay");});
 
+
+/* v4.25: read-only smoke check for external beta; never create views or likes. */
+function betaTimeout(promise,milliseconds){
+ var timer;
+ return Promise.race([
+  promise,
+  new Promise(function(resolve,reject){timer=setTimeout(function(){reject(Error("연결 시간 초과"));},milliseconds);})
+ ]).finally(function(){clearTimeout(timer);});
+}
+$("betaHealthBtn").addEventListener("click",async function(){
+ var button=$("betaHealthBtn"),status=$("betaHealthResult"),steps=[];
+ if(button.disabled)return;
+ button.disabled=true;status.hidden=false;
+ status.textContent="연결 상태를 점검하고 있어요…";
+ function show(){status.textContent=steps.join("\n");}
+ try{
+  try{
+   var saved=await betaTimeout(getAll(),9000);
+   steps.push("✅ 기기 기록: "+saved.length+"개 장소를 정상적으로 읽었어요.");
+  }catch(err){
+   steps.push("⚠️ 기기 기록: 읽기 실패. 사파리 일반 모드에서 다시 열어 주세요.");
+  }
+  show();
+  try{
+   var c=getSbClient();
+   var response=await betaTimeout(c.rpc("nawabom_stats",{p_key:"nawabom-beta-healthcheck-v1"}),10000);
+   if(response.error)throw response.error;
+   socialCheckedRow(response.data,false);
+   steps.push("✅ 서버: 전체 좋아요·조회수 조회 기능이 응답했어요.");
+  }catch(err){
+   steps.push("⚠️ 서버: "+socialFailureText(err));
+  }
+  show();
+  try{
+   var client=await betaTimeout(socialClient(),10000);
+   var session=await betaTimeout(client.auth.getSession(),10000);
+   if(session.error||!session.data||!session.data.session)throw session.error||Error("익명 로그인 세션 없음");
+   steps.push("✅ 인증: 익명 로그인 기능이 정상 작동했어요.");
+  }catch(err){
+   steps.push("⚠️ 인증: "+socialFailureText(err)+" 좋아요 등록은 별도 확인이 필요해요.");
+  }
+  steps.push("ℹ️ 카카오톡 공유·사진 업로드는 실제 기기에서 따로 테스트해 주세요.");
+  show();
+ }finally{button.disabled=false;}
+});
+
 /* v4.24: 공개 체험 링크/의견 공유 — 서버에 개인 기록 또는 의견을 저장하지 않음 */
 $("betaShareBtn").addEventListener("click",async function(){
- var status=$("betaStatus"),link="https://jhparkk2.github.io/my-place-map/?v=424";
+ var status=$("betaStatus"),link="https://jhparkk2.github.io/my-place-map/?v=425";
  var message="🌱 나와봄 공개 체험\n직접 가본 장소를 사진과 후기로 기록하는 지도 앱이에요.\n회원가입 없이 사용해 보시고 불편한 점을 알려주세요!\n\n※ 내 기록은 각 기기의 브라우저에 저장됩니다.";
  status.hidden=false;
  try{
   if(navigator.share){
    await navigator.share({title:"나와봄 · 공개 체험",text:message,url:link});
-   status.textContent="공유 메뉴로 테스트 링크를 전달했어요.";
+   status.textContent="공유 메뉴를 닫았어요. 실제 전송 여부는 선택한 앱에서 확인해 주세요.";
   }else if(navigator.clipboard&&window.isSecureContext){
    await navigator.clipboard.writeText(message+"\n"+link);
    status.textContent="테스트 안내와 링크를 복사했어요. 문자나 카카오톡에 붙여넣어 주세요.";
@@ -2105,11 +2152,11 @@ $("betaFeedbackShareBtn").addEventListener("click",async function(){
  var input=$("betaFeedbackText").value.trim(),status=$("betaFeedbackStatus");
  status.hidden=false;
  if(input.length<5){status.textContent="사용 의견을 5글자 이상 적어 주세요.";return;}
- var message="🌱 나와봄 시험판 사용 의견 (v4.24)\n"+input+"\n\n앱 주소: https://jhparkk2.github.io/my-place-map/";
+ var message="🌱 나와봄 시험판 사용 의견 (v4.25)\n"+input+"\n\n앱 주소: https://jhparkk2.github.io/my-place-map/";
  try{
   if(navigator.share){
    await navigator.share({title:"나와봄 사용 의견",text:message});
-   status.textContent="공유 메뉴에서 지정한 상대에게 의견을 전달했어요.";
+   status.textContent="공유 메뉴를 닫았어요. 실제 의견 전달 여부는 선택한 앱에서 확인해 주세요.";
   }else if(navigator.clipboard&&window.isSecureContext){
    await navigator.clipboard.writeText(message);
    status.textContent="의견을 복사했어요. 카카오톡·문자 등에 붙여넣어 전달해 주세요.";
