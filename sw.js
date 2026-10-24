@@ -1,5 +1,5 @@
-// 나와봄 v4.24 — 동일한 앱 주소에 붙는 ?v=... 링크의 중복 캐시 방지
-const CACHE="nawabom-v4.24-public-beta";
+// 나와봄 v4.25 — 동일한 앱 주소에 붙는 ?v=... 링크의 중복 캐시 방지
+const CACHE="nawabom-v4.25-public-beta-diagnostics";
 const CORE=["./","./index.html","./manifest.webmanifest","./icon.svg","./apple-touch-icon.png"];
 const scope=new URL(self.registration.scope);
 const corePaths=new Set(CORE.map(p=>new URL(p,scope).pathname));
