@@ -1,1 +1,34 @@
-const CACHE="nawabom-v4.23-local-recovery";self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(["./","./index.html","./manifest.webmanifest","./icon.svg","./apple-touch-icon.png"])));self.skipWaiting()});self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim()});self.addEventListener("fetch",e=>{if(e.request.method!=="GET"||new URL(e.request.url).origin!==location.origin)return;e.respondWith(fetch(e.request).then(r=>{if(r.ok){const clone=r.clone();caches.open(CACHE).then(c=>c.put(e.request,clone))}return r}).catch(()=>caches.match(e.request)))})
+// 나와봄 v4.24 — 동일한 앱 주소에 붙는 ?v=... 링크의 중복 캐시 방지
+const CACHE="nawabom-v4.24-public-beta";
+const CORE=["./","./index.html","./manifest.webmanifest","./icon.svg","./apple-touch-icon.png"];
+const scope=new URL(self.registration.scope);
+const corePaths=new Set(CORE.map(p=>new URL(p,scope).pathname));
+self.addEventListener("install",event=>{
+ event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)));
+ self.skipWaiting();
+});
+self.addEventListener("activate",event=>{
+ event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith("nawabom-")&&k!==CACHE).map(k=>caches.delete(k)))));
+ self.clients.claim();
+});
+self.addEventListener("fetch",event=>{
+ const request=event.request;
+ if(request.method!=="GET")return;
+ const url=new URL(request.url);
+ if(url.origin!==scope.origin||!url.pathname.startsWith(scope.pathname))return;
+ const navigation=request.mode==="navigate";
+ if(!navigation&&!corePaths.has(url.pathname))return;
+ const cacheKey=new Request(url.origin+url.pathname);
+ event.respondWith(
+  fetch(request).then(response=>{
+   if(response.ok){
+    const copy=response.clone();
+    event.waitUntil(caches.open(CACHE).then(cache=>cache.put(cacheKey,copy)));
+   }
+   return response;
+  }).catch(async()=>{
+   const cache=await caches.open(CACHE);
+   return (await cache.match(cacheKey))||(navigation?await cache.match(new URL("./index.html",scope)):null)||Response.error();
+  })
+ );
+});
