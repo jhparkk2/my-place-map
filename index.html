@@ -647,8 +647,8 @@ button.memory-day[aria-pressed="true"] .memory-day-count{color:#effff4}
 <section class="panel active" id="mapPanel"><div class="sectiontitle recent-heading"><div><span class="section-eyebrow">MY RECENT PLACES</span><h2>최근 기록한 장소</h2></div><button class="topaction" id="morePlaces">전체 보기 →</button></div><div class="places" id="recentPlaces" aria-label="최근 기록한 장소 목록"></div><div class="sectiontitle map-heading"><div><span class="section-eyebrow">MY PLACE MAP</span><h2>나만의 장소 지도</h2></div><div class="map-view-actions"><span class="subtle" id="mapCount">0개 장소</span><button type="button" id="mapFavoriteToggle" class="map-fav-filter" aria-pressed="false">❤️ 좋아요만</button></div></div><div class="map-canvas-wrap"><div id="map" role="application" aria-label="저장한 장소와 내 위치 지도"></div><button type="button" id="myLocationBtn" class="my-location-btn" aria-label="내 현재 위치를 지도에 표시">⌖ 내 위치</button></div><p id="myLocationStatus" class="my-location-status" role="status" aria-live="polite" hidden></p><p id="mapFavoriteStatus" class="map-favorite-status" role="status" aria-live="polite" hidden>❤️ 아직 좋아요한 장소가 없어요. 장소 카드에서 ♡을 눌러 표시해 보세요.</p><div id="nearbyPlaces" class="nearby-places" aria-live="polite" hidden></div><div class="map-legend"><span>🍜 맛집</span><span>☕ 카페</span><span>🌿 명소</span><span>🏡 숙소</span><span>❤️ 좋아요</span></div><p class="mapnote">📍 지도에서 핀을 누르면 그 장소의 사진과 후기를 볼 수 있어요.</p></section>
 <section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="record-view-switch" role="group" aria-label="내 기록 보기 방식"><button type="button" id="recordListMode" aria-pressed="true">📒 목록 보기</button><button type="button" id="recordAlbumMode" aria-pressed="false">📸 사진 앨범</button><button type="button" id="recordCalendarMode" aria-pressed="false">📅 추억 달력</button></div><div class="record-search" role="search"><input id="recordSearch" type="search" placeholder="저장한 장소명·지역·후기 검색" aria-label="내 기록 검색" autocomplete="off"><button id="recordSearchClear" type="button" aria-label="내 기록 검색어 지우기" hidden>지우기 ✕</button></div><p id="recordSearchInfo" class="record-search-info" aria-live="polite" hidden></p><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="좋아요">❤️ 좋아요 <span id="favoriteCount">0</span></button></div><div class="record-sort-row" id="recordSortRow"><label for="recordSort">내 기록 정렬</label><select id="recordSort" aria-label="내 기록 정렬 방식"><option value="updated">최근 기록순</option><option value="visit">방문일 최신순</option><option value="rating">별점 높은순</option><option value="name">이름 가나다순</option></select></div><div class="places" id="allPlaces"></div><div class="album-head" id="albumHead" hidden><strong id="albumTotal">📷 사진 0장</strong><span>사진을 누르면 방문 기록으로 이동해요</span></div><div class="album-grid" id="albumGrid" aria-label="방문 사진 앨범" hidden></div><button type="button" class="album-more" id="albumMore" hidden>사진 더 보기 ↓</button><section class="memory-calendar" id="memoryCalendar" aria-label="추억 달력" hidden><div class="memory-calendar-head"><button type="button" class="memory-month-nav" id="memoryPrev" aria-label="이전 달">‹</button><div class="memory-calendar-heading"><strong id="memoryMonthLabel"></strong><span id="memoryMonthCount"></span></div><button type="button" class="memory-month-nav" id="memoryNext" aria-label="다음 달">›</button></div><div class="memory-weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div class="memory-calendar-grid" id="memoryGrid" role="group" aria-label="방문한 날짜 선택"></div><p class="memory-calendar-hint">색이 표시된 날짜를 누르면 그날의 방문 기록을 볼 수 있어요.</p><div class="memory-day-summary"><strong id="memoryDayTitle"></strong><span id="memoryDayCount"></span></div><div class="memory-day-places" id="memoryDayPlaces" aria-live="polite"></div></section></section>
 <section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 기록</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
-<section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존 발자국 또는 나와봄 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다.</div></section>
-<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.22</div></div>
+<section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>🛟 기기 내 자동 복원본</h3><p>기록이 바뀌면 같은 브라우저 안에 임시 복원본을 보관합니다. 삭제나 백업 불러오기 직전 기록도 따로 보존해요.</p><p class="subtle" id="recoveryStatus" role="status" aria-live="polite">복원본 확인 중…</p><button type="button" class="btn light" id="recoveryRestoreBtn" disabled>빠진 장소 되살리기</button><p class="subtle">현재 기록은 덮어쓰지 않고, 없는 장소만 복구합니다. 브라우저 데이터를 삭제하면 이 복원본도 함께 사라집니다.</p></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존 발자국 또는 나와봄 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 개인 기록을 저장하는 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다. 기기 분실과 브라우저 데이터 삭제에 대비해 백업 파일을 별도로 보관해 주세요.</div></section>
+<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.23</div></div>
 <button class="btn cta" id="addBtn">＋ 내가 가본 장소 기록하기</button>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새 장소 기록</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
 <form id="placeForm"><div class="form-intro">🔎 <strong>장소 이름만 입력해서 검색</strong>해 보세요.<br>검색 결과를 선택한 다음 사진과 후기를 남기면 돼요.</div>
@@ -734,10 +734,139 @@ var $=function(id){return document.getElementById(id);};
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
 function uid(){return "p"+Date.now().toString(36)+Math.random().toString(36).slice(2,10);}
 function openDb(){return new Promise(function(resolve,reject){var req=indexedDB.open(DBNAME,1);req.onupgradeneeded=function(){if(!req.result.objectStoreNames.contains(DBSTORE))req.result.createObjectStore(DBSTORE,{keyPath:"id"});};req.onsuccess=function(){db=req.result;resolve();};req.onerror=function(){reject(req.error);};});}
-function tx(mode,action){return new Promise(function(resolve,reject){var t=db.transaction(DBSTORE,mode),store=t.objectStore(DBSTORE);var r=action(store);r.onsuccess=function(){resolve(r.result);};r.onerror=function(){reject(r.error);};});}
+/* v4.23: wait until the IndexedDB transaction is committed, not just its request. */
+function tx(mode,action){return new Promise(function(resolve,reject){
+ var t,request,result;
+ try{
+  t=db.transaction(DBSTORE,mode);
+  t.oncomplete=function(){resolve(result);};
+  t.onerror=function(){reject(t.error||Error("저장소 처리 오류"));};
+  t.onabort=function(){reject(t.error||Error("저장소 작업 취소"));};
+  request=action(t.objectStore(DBSTORE));
+  request.onsuccess=function(){result=request.result;};
+ }catch(err){if(t){try{t.abort();}catch(ignore){}}reject(err);}
+});}
 function getAll(){return tx("readonly",function(s){return s.getAll();});}
-function put(item){return tx("readwrite",function(s){return s.put(item);});}
-function remove(id){return tx("readwrite",function(s){return s.delete(id);});}
+function put(item){return tx("readwrite",function(s){return s.put(item);}).then(function(result){scheduleRecoverySnapshot();return result;});}
+function remove(id){return tx("readwrite",function(s){return s.delete(id);}).then(function(result){scheduleRecoverySnapshot();return result;});}
+
+/* v4.23: Local, same-browser, best-effort recovery snapshots.
+   This is NOT cloud sync. Data and snapshots both disappear if site data is cleared. */
+var recoveryDbPromise=null,recoveryTimer=null,recoverySaveQueue=Promise.resolve(),recoveryLastError="";
+function recoveryDb(){
+ if(recoveryDbPromise)return recoveryDbPromise;
+ recoveryDbPromise=new Promise(function(resolve,reject){
+  var request=indexedDB.open("nawabom-local-recovery-v1",1);
+  request.onupgradeneeded=function(){
+   if(!request.result.objectStoreNames.contains("points"))request.result.createObjectStore("points",{keyPath:"id"});
+  };
+  request.onsuccess=function(){resolve(request.result);};
+  request.onerror=function(){reject(request.error||Error("자동 복원본 저장소를 열 수 없어요."));};
+  request.onblocked=function(){reject(Error("다른 나와봄 탭을 닫고 다시 확인해 주세요."));};
+ }).catch(function(err){recoveryDbPromise=null;throw err;});
+ return recoveryDbPromise;
+}
+async function recoveryRead(id){
+ var database=await recoveryDb();
+ return new Promise(function(resolve,reject){
+  var t=database.transaction("points","readonly"),request=t.objectStore("points").get(id);
+  request.onsuccess=function(){resolve(request.result||null);};
+  request.onerror=function(){reject(request.error||Error("복원본 읽기 실패"));};
+ });
+}
+async function recoveryWrite(id,items){
+ if(!Array.isArray(items)||!items.length)return;
+ var database=await recoveryDb();
+ return new Promise(function(resolve,reject){
+  var t=database.transaction("points","readwrite");
+  t.oncomplete=function(){resolve();};
+  t.onerror=function(){reject(t.error||Error("자동 복원본 저장 실패"));};
+  t.onabort=function(){reject(t.error||Error("복원본 저장 취소"));};
+  t.objectStore("points").put({id:id,createdAt:Date.now(),places:items});
+ });
+}
+function updateRecoveryUi(){
+ var status=$("recoveryStatus"),button=$("recoveryRestoreBtn");
+ if(!status||!button)return Promise.resolve();
+ return Promise.all([recoveryRead("auto"),recoveryRead("safety")]).then(function(points){
+  var available=points.filter(function(x){return x&&Array.isArray(x.places)&&x.places.length;});
+  button.disabled=!available.length;
+  if(!available.length){status.textContent="아직 자동 복원본이 없어요. 첫 기록 저장 후 만들어집니다.";return;}
+  var recent=available.slice().sort(function(a,b){return b.createdAt-a.createdAt;})[0];
+  status.textContent="마지막 보관: "+new Date(recent.createdAt).toLocaleString("ko-KR")+" · "+recent.places.length+"개 장소"+(recoveryLastError?" · 최근 저장 오류: "+recoveryLastError:"");
+ }).catch(function(err){
+  status.textContent="자동 복원본을 확인하지 못했어요. 백업 파일 내보내기를 이용해 주세요.";
+  button.disabled=true;
+ });
+}
+async function writeRecoveryFromCurrent(slot){
+ var items=await getAll();
+ if(items.length)await recoveryWrite(slot,items);
+ recoveryLastError="";
+ await updateRecoveryUi();
+}
+function queueRecoveryWork(slot){
+ var task=recoverySaveQueue.catch(function(){}).then(function(){return writeRecoveryFromCurrent(slot);});
+ recoverySaveQueue=task;
+ return task.catch(function(err){
+  recoveryLastError="저장 공간을 확인해 주세요";
+  updateRecoveryUi().catch(function(){});
+  throw err;
+ });
+}
+function scheduleRecoverySnapshot(){
+ if(recoveryTimer!==null)clearTimeout(recoveryTimer);
+ recoveryTimer=setTimeout(function(){
+  recoveryTimer=null;
+  queueRecoveryWork("auto").catch(function(){/* File export remains available. */});
+ },1200);
+}
+async function safeguardBeforeChange(){
+ if(recoveryTimer!==null){clearTimeout(recoveryTimer);recoveryTimer=null;}
+ try{
+  await recoverySaveQueue.catch(function(){});
+  await queueRecoveryWork("safety");
+  return true;
+ }catch(err){
+  return confirm("기기 내 안전 복원본을 만들지 못했어요. 먼저 '백업 내보내기'를 권장합니다. 그래도 계속할까요?");
+ }
+}
+function importMany(items){
+ return new Promise(function(resolve,reject){
+  var t;
+  try{
+   t=db.transaction(DBSTORE,"readwrite");
+   t.oncomplete=function(){resolve();};
+   t.onerror=function(){reject(t.error||Error("백업 가져오기 저장 오류"));};
+   t.onabort=function(){reject(t.error||Error("백업 가져오기 취소"));};
+   var store=t.objectStore(DBSTORE);
+   items.forEach(function(item){store.put(item);});
+  }catch(err){if(t){try{t.abort();}catch(ignore){}}reject(err);}
+ });
+}
+async function restoreMissingFromRecovery(){
+ var button=$("recoveryRestoreBtn");if(button.disabled)return;
+ button.disabled=true;
+ try{
+  if(recoveryTimer!==null){clearTimeout(recoveryTimer);recoveryTimer=null;}
+  await recoverySaveQueue.catch(function(){});
+  var points=await Promise.all([recoveryRead("auto"),recoveryRead("safety")]);
+  var current=await getAll(),existing=new Set(current.map(function(x){return x.id;}));
+  var candidates=new Map();
+  points.filter(function(p){return p&&Array.isArray(p.places);})
+   .sort(function(a,b){return a.createdAt-b.createdAt;})
+   .forEach(function(point){point.places.forEach(function(raw){var p=normalized(raw);if(p&&p.id)candidates.set(p.id,p);});});
+  var missing=Array.from(candidates.values()).filter(function(p){return !existing.has(p.id);});
+  if(!missing.length){alert("현재 기록에 없는 장소가 복원본에 없어요. 기존 기록은 그대로 유지됩니다.");return;}
+  if(!confirm("자동 복원본에서 누락된 "+missing.length+"개 장소를 추가할까요?\n현재 저장된 장소·사진·후기는 덮어쓰지 않습니다."))return;
+  await importMany(missing);
+  places=await getAll();redraw();
+  alert(missing.length+"개 장소를 복구했어요. 다른 기기에서도 보관하려면 백업 파일을 내려받아 주세요.");
+  scheduleRecoverySnapshot();
+ }catch(err){alert("복원본을 불러오지 못했어요: "+String(err&&err.message||err));}
+ finally{updateRecoveryUi().catch(function(){});}
+}
+
 function emoji(cat){return ({맛집:"🍜",카페:"☕",명소:"🌿",숙소:"🏡",기타:"📍"})[cat]||"📍";}
 function dateText(d){return d?d.replace(/-/g,"."):"방문일 미기록";}
 function visitEntries(p){
@@ -1922,7 +2051,15 @@ function sendKakaoPhotoCard(){
   alert("카카오톡 카드 공유를 시작할 수 없어요. JavaScript SDK 도메인·웹 도메인 설정을 확인하거나 일반 공유를 이용해 주세요.");
  }
 }
-async function exportBackup(){if(!places.length){alert("아직 백업할 기록이 없어요.");return;}var blob=new Blob([JSON.stringify({app:"footprint",version:3,exportedAt:new Date().toISOString(),places:places},null,2)],{type:"application/json"});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="나와봄_백업_"+new Date().toISOString().slice(0,10)+".json";document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},2000);}
+async function exportBackup(){
+ var items=await getAll();
+ if(!items.length){alert("아직 백업할 기록이 없어요.");return;}
+ var blob=new Blob([JSON.stringify({app:"footprint",version:3,exportedAt:new Date().toISOString(),places:items},null,2)],{type:"application/json"});
+ var a=document.createElement("a"),url=URL.createObjectURL(blob);
+ a.href=url;a.download="나와봄_백업_"+new Date().toISOString().slice(0,10)+".json";
+ document.body.appendChild(a);a.click();a.remove();
+ setTimeout(function(){URL.revokeObjectURL(url);},60000);
+}
 function normalized(raw){if(!raw||typeof raw!=="object"||!raw.name||!Number.isFinite(+raw.lat)||!Number.isFinite(+raw.lon))return null;return {id:String(raw.id||uid()).slice(0,80),name:String(raw.name).slice(0,100),category:["맛집","카페","명소","숙소","기타"].includes(raw.category)?raw.category:"기타",address:String(raw.address||"").slice(0,400),phone:String(raw.phone||"").replace(/[^0-9+\-()\s]/g,"").slice(0,30),area:String(raw.area||"").slice(0,100),regionCity:REGION_NAMES.includes(raw.regionCity)?raw.regionCity:"",regionTown:String(raw.regionTown||"").slice(0,40),lat:+raw.lat,lon:+raw.lon,date:String(raw.date||"").slice(0,10),rating:Math.max(1,Math.min(5,+raw.rating||5)),review:String(raw.review||"").slice(0,2000),revisit:!!(raw.revisit||raw.favorite),favorite:!!(raw.revisit||raw.favorite),photos:Array.isArray(raw.photos)?raw.photos.filter(function(s){return typeof s==="string"&&s.startsWith("data:image/");}).slice(0,3):[],comments:Array.isArray(raw.comments)?raw.comments.filter(function(c){return c&&c.id&&c.text;}).slice(0,500).map(function(c){return {id:String(c.id).slice(0,80),parentId:String(c.parentId||"").slice(0,80),author:String(c.author||"").slice(0,30),text:String(c.text||"").slice(0,500),createdAt:Number(c.createdAt)||Date.now()};}):[],visits:Array.isArray(raw.visits)?raw.visits.filter(function(v){return v&&typeof v==="object";}).map(function(v){return {id:String(v.id||uid()).slice(0,80),date:String(v.date||"").slice(0,10),rating:Math.max(1,Math.min(5,+v.rating||5)),review:String(v.review||"").slice(0,2000),photos:Array.isArray(v.photos)?v.photos.filter(function(src){return typeof src==="string"&&src.startsWith("data:image/");}).slice(0,3):[],createdAt:Number(v.createdAt)||0};}):[],updatedAt:Number(raw.updatedAt)||Date.now()};}
 REGION_NAMES.forEach(function(name){var o=document.createElement("option");o.value=name;o.textContent=name;$("regionCity").appendChild(o);});
 $("regionContent").addEventListener("click",function(e){var b=e.target.closest("[data-rname]");if(b){if(!regionViewCity){regionViewCity=b.dataset.rname;regionViewTown="";}else regionViewTown=b.dataset.rname;renderRegions();return;}if(e.target.closest("[data-rhome]")){regionViewCity="";regionViewTown="";renderRegions();return;}if(e.target.closest("[data-rback]")){regionViewTown="";renderRegions();return;}var p=e.target.closest("[data-id]");if(p)showDetail(p.dataset.id);});
@@ -2310,7 +2447,7 @@ document.addEventListener("keydown",function(e){
  if(e.key==="ArrowRight"){e.preventDefault();showPhotoAt(viewerIndex+1);}
 });
 $("editBtn").addEventListener("click",editCurrent);
-$("deleteBtn").addEventListener("click",async function(){if(!currentId||!confirm("이 장소와 사진을 영구 삭제할까요?"))return;try{await remove(currentId);places=await getAll();redraw();closeOverlay("detailOverlay");}catch(err){alert("삭제하지 못했어요.");}});
+$("deleteBtn").addEventListener("click",async function(){if(!currentId||!confirm("이 장소와 사진을 영구 삭제할까요?"))return;try{if(!await safeguardBeforeChange())return;await remove(currentId);places=await getAll();redraw();closeOverlay("detailOverlay");}catch(err){alert("삭제하지 못했어요.");}});
 $("naverSearchBtn").addEventListener("click",function(){
  var p=places.find(function(q){return q.id===currentId;});if(!p)return;
  var query=naverSearchQuery(p);if(!query)return;
@@ -2359,9 +2496,35 @@ $("sharedBackBtn").addEventListener("click",function(){
  closeOverlay("sharedPlaceOverlay");
  selectTab("mapPanel");
 });
-$("exportBtn").addEventListener("click",exportBackup);
-$("importFile").addEventListener("change",async function(e){var file=e.target.files[0];if(!file)return;try{var raw=JSON.parse(await file.text());if(raw.app!=="footprint"||!Array.isArray(raw.places))throw Error("지원되지 않는 백업 파일이에요.");if(!confirm(raw.places.length+"개 기록을 불러올까요? 같은 ID의 기록은 덮어씁니다."))return;var count=0;for(var i=0;i<raw.places.length;i++){var p=normalized(raw.places[i]);if(p){await put(p);count++;}}places=await getAll();redraw();alert(count+"개 장소를 불러왔어요.");selectTab("listPanel");}catch(err){alert("백업 파일을 불러오지 못했어요: "+err.message);}finally{e.target.value="";}});
-(async function(){try{await openDb();places=await getAll();redraw();}catch(err){alert("아이폰 브라우저 저장소를 열 수 없어요. Safari 일반 모드로 다시 접속해 주세요.");}initMap();dispatchIncomingShare();})();
+$("exportBtn").addEventListener("click",function(){exportBackup().catch(function(err){alert("백업 파일을 만들지 못했어요: "+String(err&&err.message||err));});});
+$("recoveryRestoreBtn").addEventListener("click",restoreMissingFromRecovery);
+$("importFile").addEventListener("change",async function(e){
+ var file=e.target.files[0];if(!file)return;
+ try{
+  if(file.size>150*1024*1024)throw Error("백업 파일이 150MB를 초과해요. 파일을 나누어 복원해야 합니다.");
+  var raw=JSON.parse(await file.text());
+  if(raw.app!=="footprint"||!Array.isArray(raw.places))throw Error("지원되지 않는 백업 파일이에요.");
+  if(raw.places.length>10000)throw Error("장소 개수가 비정상적으로 많아요.");
+  var imported=raw.places.map(normalized);
+  if(imported.some(function(p){return !p;}))throw Error("일부 장소 정보가 손상됐어요. 원본 파일을 확인해 주세요.");
+  var existing=new Set((await getAll()).map(function(p){return p.id;}));
+  var collisions=imported.filter(function(p){return existing.has(p.id);}).length;
+  if(!confirm(imported.length+"개 기록을 불러올까요?"+(collisions?"\n같은 ID의 기존 기록 "+collisions+"개는 백업 내용으로 덮어씁니다.":"")))return;
+  if(!await safeguardBeforeChange())return;
+  await importMany(imported);
+  places=await getAll();redraw();scheduleRecoverySnapshot();
+  alert(imported.length+"개 장소를 불러왔어요.");
+  selectTab("listPanel");
+ }catch(err){alert("백업 파일을 불러오지 못했어요: "+String(err&&err.message||err));}
+ finally{e.target.value="";}
+});
+(async function(){try{
+ await openDb();places=await getAll();redraw();
+ updateRecoveryUi().catch(function(){});
+ if(places.length)scheduleRecoverySnapshot();
+ }catch(err){alert("아이폰 브라우저 저장소를 열 수 없어요. Safari 일반 모드로 다시 접속해 주세요.");}
+ initMap();dispatchIncomingShare();
+})();
 window.addEventListener("hashchange",dispatchIncomingShare);
 if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("./sw.js").catch(function(){});});}
 })();
