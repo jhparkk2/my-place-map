@@ -648,7 +648,7 @@ button.memory-day[aria-pressed="true"] .memory-day-count{color:#effff4}
 <section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="record-view-switch" role="group" aria-label="내 기록 보기 방식"><button type="button" id="recordListMode" aria-pressed="true">📒 목록 보기</button><button type="button" id="recordAlbumMode" aria-pressed="false">📸 사진 앨범</button><button type="button" id="recordCalendarMode" aria-pressed="false">📅 추억 달력</button></div><div class="record-search" role="search"><input id="recordSearch" type="search" placeholder="저장한 장소명·지역·후기 검색" aria-label="내 기록 검색" autocomplete="off"><button id="recordSearchClear" type="button" aria-label="내 기록 검색어 지우기" hidden>지우기 ✕</button></div><p id="recordSearchInfo" class="record-search-info" aria-live="polite" hidden></p><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="좋아요">❤️ 좋아요 <span id="favoriteCount">0</span></button></div><div class="record-sort-row" id="recordSortRow"><label for="recordSort">내 기록 정렬</label><select id="recordSort" aria-label="내 기록 정렬 방식"><option value="updated">최근 기록순</option><option value="visit">방문일 최신순</option><option value="rating">별점 높은순</option><option value="name">이름 가나다순</option></select></div><div class="places" id="allPlaces"></div><div class="album-head" id="albumHead" hidden><strong id="albumTotal">📷 사진 0장</strong><span>사진을 누르면 방문 기록으로 이동해요</span></div><div class="album-grid" id="albumGrid" aria-label="방문 사진 앨범" hidden></div><button type="button" class="album-more" id="albumMore" hidden>사진 더 보기 ↓</button><section class="memory-calendar" id="memoryCalendar" aria-label="추억 달력" hidden><div class="memory-calendar-head"><button type="button" class="memory-month-nav" id="memoryPrev" aria-label="이전 달">‹</button><div class="memory-calendar-heading"><strong id="memoryMonthLabel"></strong><span id="memoryMonthCount"></span></div><button type="button" class="memory-month-nav" id="memoryNext" aria-label="다음 달">›</button></div><div class="memory-weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div class="memory-calendar-grid" id="memoryGrid" role="group" aria-label="방문한 날짜 선택"></div><p class="memory-calendar-hint">색이 표시된 날짜를 누르면 그날의 방문 기록을 볼 수 있어요.</p><div class="memory-day-summary"><strong id="memoryDayTitle"></strong><span id="memoryDayCount"></span></div><div class="memory-day-places" id="memoryDayPlaces" aria-live="polite"></div></section></section>
 <section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 기록</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
 <section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존 발자국 또는 나와봄 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다.</div></section>
-<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.21</div></div>
+<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.22</div></div>
 <button class="btn cta" id="addBtn">＋ 내가 가본 장소 기록하기</button>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새 장소 기록</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
 <form id="placeForm"><div class="form-intro">🔎 <strong>장소 이름만 입력해서 검색</strong>해 보세요.<br>검색 결과를 선택한 다음 사진과 후기를 남기면 돼요.</div>
@@ -1055,7 +1055,7 @@ async function toggleFavorite(id){
     button.textContent=selected?"❤️ 좋아요 누름 · 다시 누르면 취소":"♡ 좋아요 누르기";
    }
   }
- }catch(err){alert("좋아요를 저장하지 못했어요. 네트워크와 Supabase 연결을 확인해 주세요.");}
+ }catch(err){alert("좋아요를 저장하지 못했어요. "+socialFailureText(err));}
  finally{favoriteSavingIds.delete(id);}
 }
 function renderMarkers(keepMapView){
@@ -1150,36 +1150,80 @@ function socialUnavailable(key,err){
   retry.textContent="다시 시도";retry.disabled=false;
  });
 }
-async function socialClient(){
- var c=getSbClient(),session=await c.auth.getSession();
- if(session.error)throw session.error;
- if(!session.data.session){
-  var login=await c.auth.signInAnonymously();
-  if(login.error)throw login.error;
- }
- return c;
+var socialAuthInFlight=null;
+var socialWriteInFlight=new Map();
+var socialReadInFlight=new Map();
+var socialRequestEpoch=new Map();
+function socialEpoch(key){return socialRequestEpoch.get(key)||0;}
+function socialInvalidate(key){socialRequestEpoch.set(key,socialEpoch(key)+1);}
+function socialCheckedRow(result,needOwnState){
+ var row=socialRows(result);
+ if(!row||row.likes==null||row.views==null||!Number.isFinite(Number(row.likes))||!Number.isFinite(Number(row.views))||
+    (needOwnState&&typeof row.my_like!=="boolean"))throw Error("전체 좋아요 서버에서 정상적인 값을 받지 못했어요.");
+ return row;
 }
+/* v4.22: one anonymous login operation even if sharing and statistics load together. */
+function socialClient(){
+ if(socialAuthInFlight)return socialAuthInFlight;
+ var task=(async function(){
+  var c=getSbClient(),session=await c.auth.getSession();
+  if(session.error)throw session.error;
+  if(!session.data||!session.data.session){
+   var login=await c.auth.signInAnonymously();
+   if(login.error)throw login.error;
+   if(!login.data||!login.data.session)throw Error("익명 로그인 연결을 확인하지 못했어요.");
+  }
+  return c;
+ })();
+ socialAuthInFlight=task;
+ task.then(function(){if(socialAuthInFlight===task)socialAuthInFlight=null;},
+           function(){if(socialAuthInFlight===task)socialAuthInFlight=null;});
+ return task;
+}
+async function socialReadOwnState(client,key){
+ var response=await client.rpc("nawabom_react",{p_key:key,p_kind:"view"});
+ if(response.error)throw response.error;
+ return socialCheckedRow(response.data,true);
+}
+
 function rememberLikeSync(key){
  try{localStorage.setItem("nawabom-liked-migration-v1:"+key,"1");}catch(err){}
 }
-async function setSharedLike(key, selected){
- if(!key)throw Error("장소 위치를 확인할 수 없어요.");
- var c=await socialClient();
- // nawabom_stats gives totals only; view returns the user's current like state.
- // Each anonymous user contributes at most one view.
- var r=await c.rpc("nawabom_react",{p_key:key,p_kind:"view"});
- if(r.error)throw r.error;
- var data=socialRows(r.data);
- if(!data||typeof data.my_like!=="boolean")throw Error("좋아요 상태를 확인하지 못했어요.");
- if(data.my_like!==selected){
-  r=await c.rpc("nawabom_react",{p_key:key,p_kind:"like"});
-  if(r.error)throw r.error;
-  data=socialRows(r.data);
-  if(!data||data.my_like!==selected)throw Error("좋아요 상태가 일치하지 않아요.");
- }
- socialFill(key,data,true);
- return data;
+/* Serialize writes per place. A failed toggle is verified, never blindly retried. */
+function setSharedLike(key,selected){
+ if(!key)return Promise.reject(Error("장소 위치를 확인할 수 없어요."));
+ var previous=socialWriteInFlight.get(key);
+ var task=Promise.resolve(previous).catch(function(){}).then(async function(){
+  socialInvalidate(key);
+  try{
+   var c=await socialClient();
+   var data=await socialReadOwnState(c,key);
+   if(data.my_like!==selected){
+    var uncertainError=null;
+    try{
+     var result=await c.rpc("nawabom_react",{p_key:key,p_kind:"like"});
+     if(result.error)throw result.error;
+     data=socialCheckedRow(result.data,true);
+    }catch(err){
+     uncertainError=err;
+     // The server might have committed the like before the connection dropped.
+     // Re-read once; do not issue a second toggle on an uncertain response.
+     try{data=await socialReadOwnState(c,key);}
+     catch(checkError){throw uncertainError;}
+     if(data.my_like!==selected)throw uncertainError;
+    }
+    if(data.my_like!==selected)throw Error("좋아요 상태가 일치하지 않아요. 다시 확인해 주세요.");
+   }
+   socialFill(key,data,true);
+   return data;
+  }finally{socialInvalidate(key);}
+ });
+ socialWriteInFlight.set(key,task);
+ task.then(function(){if(socialWriteInFlight.get(key)===task)socialWriteInFlight.delete(key);},
+           function(){if(socialWriteInFlight.get(key)===task)socialWriteInFlight.delete(key);});
+ return task;
 }
+
 async function adoptOldFavorite(p,key,data){
  if(!p||!p.id||!isFavoritePlace(p)||!data||typeof data.my_like!=="boolean")return;
  var storageKey="nawabom-liked-migration-v1:"+key;
@@ -1189,23 +1233,39 @@ async function adoptOldFavorite(p,key,data){
   rememberLikeSync(key);
  }catch(err){/* Preserve the personal selection if the cloud is temporarily unavailable. */}
 }
-async function socialShow(p){
- var key=typeof p==="string"?p:socialPlaceKey(p);if(!key)return;
- try{
-  var c=await socialClient();
-  var r=await c.rpc("nawabom_react",{p_key:key,p_kind:"view"});
-  if(r.error)throw r.error;
-  socialFill(key,r.data,true);
-  if(typeof p!=="string")await adoptOldFavorite(p,key,socialRows(r.data));
- }catch(err){
+/* Concurrent reads share one RPC; stale reads cannot undo a newer like update. */
+function socialShow(p){
+ var key=typeof p==="string"?p:socialPlaceKey(p);
+ if(!key)return Promise.resolve();
+ if(socialReadInFlight.has(key))return socialReadInFlight.get(key);
+ var task=(async function(){
+  var activeWrite=socialWriteInFlight.get(key);
+  if(activeWrite)await activeWrite.catch(function(){});
+  var epoch=socialEpoch(key);
   try{
-   var client=getSbClient(),r2=await client.rpc("nawabom_stats",{p_key:key});
-   if(r2.error)throw r2.error;
-   socialFill(key,r2.data,true);
-   if(typeof p!=="string")await adoptOldFavorite(p,key,socialRows(r2.data));
-  }catch(other){socialUnavailable(key,other);}
- }
+   var c=await socialClient(),data=await socialReadOwnState(c,key);
+   if(socialEpoch(key)!==epoch)return;
+   socialFill(key,data,true);
+   if(typeof p!=="string")await adoptOldFavorite(p,key,data);
+  }catch(err){
+   try{
+    var client=getSbClient(),response=await client.rpc("nawabom_stats",{p_key:key});
+    if(response.error)throw response.error;
+    var counts=socialCheckedRow(response.data,false);
+    if(socialEpoch(key)!==epoch)return;
+    // Reading public totals doesn't prove this user's login/like status.
+    socialFill(key,counts,false);
+   }catch(other){
+    if(socialEpoch(key)===epoch)socialUnavailable(key,other);
+   }
+  }
+ })();
+ socialReadInFlight.set(key,task);
+ task.then(function(){if(socialReadInFlight.get(key)===task)socialReadInFlight.delete(key);},
+           function(){if(socialReadInFlight.get(key)===task)socialReadInFlight.delete(key);});
+ return task;
 }
+
 document.addEventListener("click",function(e){
  var retry=e.target.closest("[data-social-retry]");if(!retry)return;
  e.preventDefault();e.stopPropagation();
@@ -1220,22 +1280,22 @@ document.addEventListener("click",async function(e){
  e.preventDefault();e.stopPropagation();
  var key=btn.dataset.socialLike;
  if(!key||btn.disabled)return;
+ var desired=btn.getAttribute("aria-pressed")!=="true";
  btn.disabled=true;
  try{
-  var c=await socialClient();
-  var r=await c.rpc("nawabom_react",{p_key:key,p_kind:"like"});
-  if(r.error)throw r.error;
-  socialFill(key,r.data,true);
-  var data=socialRows(r.data);
+  var data=await setSharedLike(key,desired);
   var local=places.find(function(p){return socialPlaceKey(p)===key;});
-  if(local&&data&&typeof data.my_like==="boolean"&&isFavoritePlace(local)!==data.my_like){
+  if(local&&isFavoritePlace(local)!==data.my_like){
    try{
     await put(Object.assign({},local,{favorite:data.my_like,revisit:data.my_like}));
     places=await getAll();redraw({keepMapView:true});
-   }catch(storageError){/* The global reaction remains saved. */}
+   }catch(storageError){
+    alert("전체 좋아요는 저장됐지만 이 기기의 기록 동기화에 실패했어요. 저장 공간을 확인해 주세요.");
+   }
   }
   rememberLikeSync(key);
  }catch(err){
+  socialUnavailable(key,err);
   btn.disabled=false;
   alert("좋아요를 저장하지 못했어요. "+socialFailureText(err));
  }
@@ -1739,14 +1799,9 @@ async function uploadSharedPhoto(p,options){
  // v4.21: Even places without photos use a short cloud link for Kakao.
  // This avoids passing a long #place= data fragment to the Kakao share request.
  var src=sharePhotoSource(p),hasPhoto=!!(options.photo&&src);
- var client=getSbClient(),sessionResult=await client.auth.getSession();
+ var client=await socialClient(),sessionResult=await client.auth.getSession();
  if(sessionResult.error)throw sessionResult.error;
  var user=sessionResult.data.session&&sessionResult.data.session.user;
- if(!user){
-  var loginResult=await client.auth.signInAnonymously();
-  if(loginResult.error)throw Error("Supabase에서 익명 로그인을 켜야 해요. ("+loginResult.error.message+")");
-  user=loginResult.data.user;
- }
  if(!user||!user.id)throw Error("로그인 정보를 확인할 수 없어요.");
  var key=crypto.randomUUID(),dir="shares/"+user.id+"/"+key,storage=client.storage.from(SB_BUCKET);
  var photoPath=dir+"/photo.jpg",jsonPath=dir+"/record.json";
