@@ -1207,7 +1207,7 @@ async function toggleFavorite(id){
  try{
   // 내 좋아요는 먼저 이 기기의 장소 기록에 저장합니다.
   // 공용 서버가 느리거나 끊겨도 내 좋아요 버튼이 막혀서는 안 됩니다.
-  var next=Object.assign({},item,{favorite:selected,revisit:selected,updatedAt:Date.now()});
+  var next=Object.assign({},item,{favorite:selected,revisit:selected});
   await put(next);
   places=await getAll();
   redraw({keepMapView:true});
