@@ -649,6 +649,35 @@ button.memory-day[aria-pressed="true"] .memory-day-count{color:#effff4}
 #betaStatus,#betaFeedbackStatus{font-size:12px;line-height:1.6;color:#386c56;margin-top:11px;white-space:pre-wrap}
 #betaFeedbackText{min-height:145px}
 #betaHealthResult{white-space:pre-wrap;margin:9px 0;padding:11px 12px;border-radius:11px;background:#f6faf5;color:#536c59;font-size:12px;line-height:1.75}#betaHealthResult[hidden]{display:none}
+
+/* v4.29 · 지역별 기록: 감성 배지 카드 */
+#regionPanel .region-intro{padding:13px 15px;border-radius:16px;background:#fff4ed;border:1px solid #efdfd3;color:#876a59;line-height:1.65}
+#regionPanel .region-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin:14px 0 24px}
+#regionPanel .region-card-v429{
+ position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:stretch;text-align:left;
+ min-width:0;min-height:194px;gap:0;padding:15px 14px 13px;border:1px solid #ecdcd0;border-radius:22px;
+ background:linear-gradient(155deg,#fffdf9 0%,#fff8f1 100%);color:#4d4038;
+ box-shadow:0 5px 17px rgba(125,90,69,.065);transition:transform .15s ease,box-shadow .15s ease;
+}
+#regionPanel .region-card-v429:nth-child(3n+2){background:linear-gradient(145deg,#fffaf8,#f9f1eb)}
+#regionPanel .region-card-v429:nth-child(3n){background:linear-gradient(145deg,#fffdf9,#f4f6ef)}
+#regionPanel .region-card-v429.region-card-featured{
+ background:linear-gradient(145deg,#fff1e6,#fffaf0);border-color:#e6c9b7;
+ box-shadow:0 6px 20px rgba(171,101,70,.12);
+}
+#regionPanel .region-card-v429:active{transform:scale(.985)}
+#regionPanel .region-card-v429:focus-visible{outline:3px solid #d69380;outline-offset:3px}
+#regionPanel .region-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+#regionPanel .region-card-symbol{width:37px;height:37px;display:grid;place-items:center;border-radius:13px;background:#f8e4da;font-size:20px}
+#regionPanel .region-card-v429:nth-child(3n) .region-card-symbol{background:#e8eee3}
+#regionPanel .region-card-arrow{font-size:17px;color:#b79380;background:#ffffffb5;border:1px solid #f0e3d8;border-radius:50%;width:26px;height:26px;display:grid;place-items:center}
+#regionPanel .region-card-v429 .region-card-name{display:block;font-size:16px;font-weight:850;letter-spacing:-.7px;line-height:1.38;color:#534138;overflow-wrap:anywhere;word-break:keep-all;margin:0 0 10px}
+#regionPanel .region-card-badges{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-bottom:9px}
+#regionPanel .region-badge{display:inline-flex;align-items:center;border:1px solid #ebdfd4;background:#fffefa;color:#93715d;border-radius:999px;padding:5px 7px;font-size:10px;font-weight:750;line-height:1.25;white-space:nowrap}
+#regionPanel .region-badge-main{background:#fce5dc;color:#a75a45;border-color:#f0d3c4}
+#regionPanel .region-card-preview{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;overflow-wrap:anywhere;word-break:keep-all;font-size:11px;line-height:1.55;color:#928175;min-height:17px;margin-bottom:12px}
+#regionPanel .region-card-link{margin-top:auto;font-size:11px;font-weight:800;color:#b0644e;display:flex;align-items:center;justify-content:space-between}
+@media(max-width:360px){#regionPanel .region-grid{gap:8px}#regionPanel .region-card-v429{padding:13px 11px 12px;min-height:190px}#regionPanel .region-badge{font-size:9px;padding:4px 6px}}
 </style></head>
 <body><div class="app">
 <header class="header"><div class="brand"><span class="brandicon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
@@ -664,9 +693,9 @@ button.memory-day[aria-pressed="true"] .memory-day-count{color:#effff4}
 <nav class="tabs" aria-label="보기 선택"><button class="tab active" data-tab="mapPanel">🗺 지도</button><button class="tab" data-tab="regionPanel">🗂 지역별</button><button class="tab" data-tab="listPanel">📒 내 기록</button><button class="tab" data-tab="managePanel">⚙ 관리</button></nav>
 <section class="panel active" id="mapPanel"><div class="sectiontitle recent-heading"><div><span class="section-eyebrow">MY RECENT PLACES</span><h2>최근 기록한 장소</h2></div><button class="topaction" id="morePlaces">전체 보기 →</button></div><div class="places" id="recentPlaces" aria-label="최근 기록한 장소 목록"></div><div class="sectiontitle map-heading"><div><span class="section-eyebrow">MY PLACE MAP</span><h2>나만의 장소 지도</h2></div><div class="map-view-actions"><span class="subtle" id="mapCount">0개 장소</span><button type="button" id="mapFavoriteToggle" class="map-fav-filter" aria-pressed="false">❤️ 좋아요만 보기</button></div></div><div class="map-canvas-wrap"><div id="map" role="application" aria-label="저장한 장소와 내 위치 지도"></div><button type="button" id="myLocationBtn" class="my-location-btn" aria-label="내 현재 위치를 지도에 표시">⌖ 내 위치</button></div><p id="myLocationStatus" class="my-location-status" role="status" aria-live="polite" hidden></p><p id="mapFavoriteStatus" class="map-favorite-status" role="status" aria-live="polite" hidden>❤️ 아직 좋아요한 장소가 없어요. 장소 카드에서 ♡을 눌러 표시해 보세요.</p><div id="nearbyPlaces" class="nearby-places" aria-live="polite" hidden></div><div class="map-legend"><span>🍜 맛집</span><span>☕ 카페</span><span>🌿 명소</span><span>🏡 숙소</span><span>❤️ 좋아요</span></div><p class="mapnote">📍 저장한 장소를 지도에 하나씩 표시해요. 가까이 모여 있으면 지도를 확대해 확인해 보세요.</p><section class="map-mini-preview" aria-label="지도 장소 미리보기"><div class="map-mini-heading"><strong>📒 기록 미리보기 · <span id="mapListCount">0</span>곳</strong><button type="button" id="mapSeeAll">전체 기록 보기 ›</button></div><div class="map-places-list" id="mapPlacesList"></div><p class="map-mini-hint">최근 기록 4곳만 표시해요. 전체 기록은 ‘내 기록’에서 볼 수 있어요.</p></section></section>
 <section class="panel" id="listPanel"><div class="sectiontitle"><h2>내가 다녀온 곳</h2><span class="subtle" id="listCount">0개</span></div><div class="record-view-switch" role="group" aria-label="내 기록 보기 방식"><button type="button" id="recordListMode" aria-pressed="true">📒 목록 보기</button><button type="button" id="recordAlbumMode" aria-pressed="false">📸 사진 앨범</button><button type="button" id="recordCalendarMode" aria-pressed="false">📅 추억 달력</button></div><div class="record-search" role="search"><input id="recordSearch" type="search" placeholder="저장한 장소명·지역·후기 검색" aria-label="내 기록 검색" autocomplete="off"><button id="recordSearchClear" type="button" aria-label="내 기록 검색어 지우기" hidden>지우기 ✕</button></div><p id="recordSearchInfo" class="record-search-info" aria-live="polite" hidden></p><div class="filters" id="filters"><button class="chip active" data-filter="전체">전체</button><button class="chip" data-filter="맛집">🍜 맛집</button><button class="chip" data-filter="카페">☕ 카페</button><button class="chip" data-filter="명소">🌿 명소</button><button class="chip" data-filter="숙소">🏡 숙소</button><button class="chip" data-filter="좋아요">❤️ 좋아요 <span id="favoriteCount">0</span></button></div><div class="record-sort-row" id="recordSortRow"><label for="recordSort">내 기록 정렬</label><select id="recordSort" aria-label="내 기록 정렬 방식"><option value="updated">최근 기록순</option><option value="visit">방문일 최신순</option><option value="rating">별점 높은순</option><option value="name">이름 가나다순</option></select></div><div class="places" id="allPlaces"></div><div class="album-head" id="albumHead" hidden><strong id="albumTotal">📷 사진 0장</strong><span>사진을 누르면 방문 기록으로 이동해요</span></div><div class="album-grid" id="albumGrid" aria-label="방문 사진 앨범" hidden></div><button type="button" class="album-more" id="albumMore" hidden>사진 더 보기 ↓</button><section class="memory-calendar" id="memoryCalendar" aria-label="추억 달력" hidden><div class="memory-calendar-head"><button type="button" class="memory-month-nav" id="memoryPrev" aria-label="이전 달">‹</button><div class="memory-calendar-heading"><strong id="memoryMonthLabel"></strong><span id="memoryMonthCount"></span></div><button type="button" class="memory-month-nav" id="memoryNext" aria-label="다음 달">›</button></div><div class="memory-weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div class="memory-calendar-grid" id="memoryGrid" role="group" aria-label="방문한 날짜 선택"></div><p class="memory-calendar-hint">색이 표시된 날짜를 누르면 그날의 방문 기록을 볼 수 있어요.</p><div class="memory-day-summary"><strong id="memoryDayTitle"></strong><span id="memoryDayCount"></span></div><div class="memory-day-places" id="memoryDayPlaces" aria-live="polite"></div></section></section>
-<section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 기록</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌆 시·도를 고른 후 동네를 선택하면 내가 기록한 장소를 볼 수 있어요.<br>예: 인천광역시 → 옥련동 → 부용국밥</div><div id="regionContent"></div></section>
+<section class="panel" id="regionPanel"><div class="sectiontitle"><h2>지역별 기록</h2><span class="subtle" id="regionCount"></span></div><div class="region-intro">🌷 내가 다녀온 지역을 작은 여행 앨범처럼 모았어요. 카드를 눌러 동네와 방문 기록을 둘러보세요.</div><div id="regionContent"></div></section>
 <section class="panel" id="managePanel"><div class="sectiontitle"><h2>내 기록 관리</h2></div><div class="backup beta-tools"><h3>🌱 나와봄 체험 테스트</h3><p>회원가입 없이 바로 체험할 수 있어요. 처음 사용하는 분에게 아래 순서로 사용해 보도록 안내해 주세요.</p><ol class="beta-steps"><li>가본 장소를 검색해 사진과 후기를 저장하기</li><li>내 기록·지도에서 장소를 다시 열어보기</li><li>❤️ 좋아요와 공유하기 기능을 사용해 보기</li></ol><div class="beta-actions"><button type="button" class="btn secondary" id="betaShareBtn">테스트 링크 보내기</button><button type="button" class="btn light" id="betaFeedbackOpen">사용 의견 보내기</button></div><p class="beta-note">기록·사진은 현재 사용 중인 브라우저에만 저장됩니다. 다른 기기와 자동 동기화되지 않으며, 중요한 기록은 백업해야 해요.</p><p id="betaStatus" role="status" aria-live="polite" hidden></p><div class="beta-health"><button type="button" class="btn light" id="betaHealthBtn">🔎 연결 상태 점검</button><p id="betaHealthResult" role="status" aria-live="polite" hidden></p><p class="beta-note">기기 기록·서버·익명 로그인을 확인해요. 좋아요·조회수를 올리거나 사진을 서버에 보내지 않아요.</p></div></div><div class="backup"><h3>📤 백업 파일 만들기</h3><p>장소, 후기, 사진을 JSON 파일로 저장합니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 꼭 백업하세요.</p><button class="btn secondary" id="exportBtn">백업 내보내기</button></div><div class="backup"><h3>🛟 기기 내 자동 복원본</h3><p>기록이 바뀌면 같은 브라우저 안에 임시 복원본을 보관합니다. 삭제나 백업 불러오기 직전 기록도 따로 보존해요.</p><p class="subtle" id="recoveryStatus" role="status" aria-live="polite">복원본 확인 중…</p><button type="button" class="btn light" id="recoveryRestoreBtn" disabled>빠진 장소 되살리기</button><p class="subtle">현재 기록은 덮어쓰지 않고, 없는 장소만 복구합니다. 브라우저 데이터를 삭제하면 이 복원본도 함께 사라집니다.</p></div><div class="backup"><h3>📥 백업 불러오기</h3><p>기존 발자국 또는 나와봄 백업 파일을 불러옵니다. 같은 장소는 백업 내용으로 덮어씁니다.</p><label class="btn light" for="importFile">백업 파일 선택</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="alert">현재 시험 버전은 개인 기록을 저장하는 계정 서버가 없습니다. 기록과 사진은 이 기기의 브라우저에만 저장되며, 다른 기기와 자동 동기화되지 않습니다. 기기 분실과 브라우저 데이터 삭제에 대비해 백업 파일을 별도로 보관해 주세요.</div></section>
-<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.28</div></div>
+<div class="foot">나와봄 · 내가 와본 곳, 오래 남을 기억 · 시험판 v4.29</div></div>
 <button class="btn cta" id="addBtn">＋ 내가 가본 장소 기록하기</button>
 <div class="overlay" id="betaFeedbackOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="betaFeedbackTitle"><div class="sheethead"><h2 id="betaFeedbackTitle">🌱 나와봄 사용 의견</h2><button type="button" class="x" data-close="betaFeedbackOverlay" aria-label="닫기">×</button></div><p class="share-intro">좋았던 점이나 불편한 점을 적어 주세요. 카카오톡·문자 등으로 의견을 전달할 상대를 직접 고르는 방식이에요.</p><label class="field" for="betaFeedbackText"><span>어떤 점을 개선하면 좋을까요?</span><textarea id="betaFeedbackText" maxlength="800" placeholder="예: 아이폰에서 장소 검색은 편리했는데 사진 등록 중 오류가 났어요."></textarea></label><div class="actions"><button type="button" class="btn" id="betaFeedbackShareBtn">카카오톡 등으로 의견 전달</button></div><p class="beta-note">의견은 앱 운영자에게 자동 전송되지 않아요. 공유 메뉴에서 의견을 받을 사람을 선택해야 합니다. 개인정보는 적지 마세요.</p><p id="betaFeedbackStatus" role="status" aria-live="polite" hidden></p></div></div>
 <div class="overlay" id="formOverlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitle"><div class="sheethead"><h2 id="formTitle">새 장소 기록</h2><button class="x" data-close="formOverlay" aria-label="닫기">×</button></div>
@@ -1116,8 +1145,26 @@ function placeRegion(p){
 }
 function regionLabel(p){var r=placeRegion(p);return r.city==="지역 미지정"?(p.area||"지역 미지정"):r.city+" · "+r.town;}
 function regionCards(group){
- return Object.keys(group).sort(function(a,b){return a.includes("미지정")?1:b.includes("미지정")?-1:a.localeCompare(b,"ko");}).map(function(name){
-  return '<button type="button" class="region-card" data-rname="'+esc(name)+'"><span class="sym">'+(regionViewCity?"📍":"🌆")+'</span><strong>'+esc(name)+'</strong><small>'+group[name].length+'개 장소 →</small></button>';
+ var names=Object.keys(group).sort(function(a,b){
+  if(a.includes("미지정")!==b.includes("미지정"))return a.includes("미지정")?1:-1;
+  return group[b].length-group[a].length||a.localeCompare(b,"ko");
+ });
+ return names.map(function(name,index){
+  var records=group[name],cityLevel=!regionViewCity;
+  var previews=Array.from(new Set(records.map(function(p){
+   return cityLevel?placeRegion(p).town:p.name;
+  }).filter(Boolean)));
+  var subtitle=previews.slice(0,3).join(" · ")+(previews.length>3?" 외 "+(previews.length-3)+"곳":"");
+  var likes=records.filter(isFavoritePlace).length;
+  var second=cityLevel?("🏘 "+previews.length+"개 동네"):("❤️ "+likes+"개 좋아요");
+  var icon=cityLevel?"🏙️":"📍";
+  return '<button type="button" class="region-card region-card-v429'+(cityLevel&&index===0?' region-card-featured':'')+'" data-rname="'+esc(name)+'" aria-label="'+esc(name)+', '+records.length+'곳의 기록 보기">'+
+   '<span class="region-card-top"><span class="region-card-symbol" aria-hidden="true">'+icon+'</span><span class="region-card-arrow" aria-hidden="true">↗</span></span>'+
+   '<strong class="region-card-name">'+esc(name)+'</strong>'+
+   '<span class="region-card-badges"><span class="region-badge region-badge-main">📍 '+records.length+'곳</span><span class="region-badge">'+second+'</span></span>'+
+   '<span class="region-card-preview">'+esc(subtitle||"아직 분류되지 않은 기록")+'</span>'+
+   '<span class="region-card-link">'+(cityLevel?"동네 둘러보기":"방문 기록 보기")+' <span aria-hidden="true">→</span></span>'+
+   '</button>';
  }).join("");
 }
 function renderRegions(){
