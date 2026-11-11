@@ -665,6 +665,14 @@ button.memory-day[aria-pressed="true"] .memory-day-count{color:#effff4}
  background:linear-gradient(145deg,#fff1e6,#fffaf0);border-color:#e6c9b7;
  box-shadow:0 6px 20px rgba(171,101,70,.12);
 }
+/* v4.30: 현재 지역 안내 및 전국 목록으로 바로 가기 */
+#regionPanel .region-switch{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 13px;margin:15px 0 11px;background:#fffaf5;border:1px solid #ebdfd5;border-radius:17px}
+#regionPanel .region-switch-label{display:flex;flex-direction:column;gap:3px;min-width:0}
+#regionPanel .region-switch-label small{font-size:11px;color:#958679}
+#regionPanel .region-switch-label strong{font-size:14px;line-height:1.4;color:#55463c;overflow-wrap:anywhere}
+#regionPanel .region-change-btn{flex-shrink:0;min-height:40px;padding:8px 12px;border-radius:999px;border:1px solid #e6d8ca;background:#fff;color:#6a5b4f;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 2px 7px rgba(108,87,69,.06)}
+#regionPanel .region-change-btn:active{background:#f6eee6}
+#regionPanel .region-change-btn:focus-visible{outline:3px solid #d69380;outline-offset:2px}
 #regionPanel .region-card-v429:active{transform:scale(.985)}
 #regionPanel .region-card-v429:focus-visible{outline:3px solid #d69380;outline-offset:3px}
 #regionPanel .region-card-v429{min-height:162px}
@@ -1174,6 +1182,8 @@ function renderRegions(){
  if(regionViewCity)trail+='<span>›</span><button type="button" data-rback="1">'+esc(regionViewCity)+'</button>';
  if(regionViewTown)trail+='<span>›</span><strong>'+esc(regionViewTown)+'</strong>';
  trail+='</div>';
+ // 선택한 동네에서도 한 번의 탭으로 전국 지역 목록에 돌아갈 수 있게 안내.
+ if(regionViewCity)trail='<div class="region-switch"><div class="region-switch-label"><small>지금 보고 있는 지역</small><strong>📍 '+esc(regionViewCity)+(regionViewTown?' · '+esc(regionViewTown):'')+'</strong></div><button type="button" class="region-change-btn" data-rhome="1" aria-label="전국 지역 목록으로 이동">↻ 지역 변경</button></div>'+trail;
  if(!regionViewCity){
   places.forEach(function(p){var r=placeRegion(p);(group[r.city]||(group[r.city]=[])).push(p);});
   box.innerHTML=trail+'<div class="region-grid">'+regionCards(group)+'</div>';
