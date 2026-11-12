@@ -1,5 +1,5 @@
-// 나와봄 v4.32 — 동일한 앱 주소에 붙는 ?v=... 링크의 중복 캐시 방지
-const CACHE="nawabom-v4.32-map-clusters";
+// 나와봄 v4.33 — 동일한 앱 주소에 붙는 ?v=... 링크의 중복 캐시 방지
+const CACHE="nawabom-v4.33-search-expand-clusters";
 const CORE=["./","./index.html","./manifest.webmanifest","./icon.svg","./apple-touch-icon.png"];
 const scope=new URL(self.registration.scope);
 const corePaths=new Set(CORE.map(p=>new URL(p,scope).pathname));
@@ -20,7 +20,7 @@ self.addEventListener("fetch",event=>{
  if(!navigation&&!corePaths.has(url.pathname))return;
  const cacheKey=new Request(url.origin+url.pathname);
  event.respondWith(
-  fetch(request).then(response=>{
+  fetch(request,{cache:"no-store"}).then(response=>{
    if(response.ok){
     const copy=response.clone();
     event.waitUntil(caches.open(CACHE).then(cache=>cache.put(cacheKey,copy)));
