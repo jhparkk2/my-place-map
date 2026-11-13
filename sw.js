@@ -1,6 +1,6 @@
-// 나와봄 v4.34 — 동일한 앱 주소에 붙는 ?v=... 링크의 중복 캐시 방지
-const CACHE="nawabom-v4.34-ios-input-zoom";
-const CORE=["./","./index.html","./manifest.webmanifest","./icon.svg","./apple-touch-icon.png"];
+// 나와봄 v4.35 — 동일한 앱 주소에 붙는 ?v=... 링크의 중복 캐시 방지
+const CACHE="nawabom-v4.35-cloud-backup";
+const CORE=["./","./index.html","./manifest.webmanifest","./icon.svg","./apple-touch-icon.png","./cloud-backup.js"];
 const scope=new URL(self.registration.scope);
 const corePaths=new Set(CORE.map(p=>new URL(p,scope).pathname));
 self.addEventListener("install",event=>{
