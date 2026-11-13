@@ -6,7 +6,7 @@
  var bridge=window.nawabomCloudBridge, panel=document.getElementById("managePanel");
  if(!bridge||!panel)return;
  var BUCKET="nawabom-private-backups",DIR="sync-records",MAX_BYTES=40*1024*1024;
- var user=null,running=false,timer=null,ready=false,enabled=false;
+ var user=null,running=false,timer=null,needsResync=false,enabled=false;
  var section=document.createElement("section");section.className="backup";
  section.innerHTML=[
   '<h3>🔄 내 기록 자동 동기화 (베타)</h3>',
@@ -56,6 +56,7 @@
  }
  function schedule(delay){
   if(!user||!enabled)return;
+  if(running){needsResync=true;return;}
   if(timer)clearTimeout(timer);
   timer=setTimeout(function(){timer=null;syncOnce();},delay||1500);
  }
@@ -127,14 +128,25 @@
   var uid=user.id; textStatus("🔄 서버와 장소 기록을 확인하고 있어요…");
   try{
    var names=await remoteList(uid), remote=await downloadAll(uid,names);
+   var migratingLegacy=false;
    if(!remote.length){
     var legacy=await legacyEntries(uid);
-    if(legacy.length){remote=legacy;textStatus("🔄 기존 서버 백업을 안전하게 가져오고 있어요…");}
+    if(legacy.length){
+     migratingLegacy=true;remote=legacy;
+     textStatus("🔄 기존 서버 백업을 개별 장소 저장 방식으로 옮기고 있어요…");
+    }
    }
    if(!user||user.id!==uid||!enabled)return;
    var tomb=getTombs(),current=await bridge.readLocal(),localMap=new Map(current.map(function(p){return [p.id,p];}));
    var remoteMap=new Map(remote.map(function(e){return [e.id,e];}));
+   // Migration must seed EVERY legacy place into per-record storage, including unchanged ones.
+   // The original places.json is never overwritten by this automatic synchronization.
+   if(migratingLegacy)remoteMap.clear();
    var changes=[],tombChanged=false;
+   // If this device already has records, do not resurrect locations deleted since the old snapshot.
+   if(migratingLegacy&&current.length){
+    remote=remote.filter(function(e){return localMap.has(e.id);});
+   }
    for(var e of remote){
     var local=localMap.get(e.id),del=Number(tomb[e.id])||0;
     if(del&&del>=Number(e.updatedAt))continue;
@@ -173,7 +185,7 @@
    textStatus("✅ 동기화 완료 · 현재 "+count+"개 장소 · "+new Date().toLocaleString("ko-KR")+
     (changes.length||outgoing.length?" (받은 변경 "+changes.length+"개, 보낸 변경 "+outgoing.length+"개)":" (변경 없음)"));
   }catch(err){textStatus("⚠️ 자동 동기화 실패: "+errorText(err)+" · 이 기기의 기록은 그대로 남아 있어요. 연결 후 ‘지금 동기화’를 눌러 주세요.");}
-  finally{running=false;updateButtons();}
+  finally{running=false;updateButtons();if(needsResync){needsResync=false;schedule(300);}}
  }
  toggle.addEventListener("click",function(){
   if(running||!user)return;
@@ -201,5 +213,5 @@
  setInterval(function(){if(document.visibilityState!=="hidden")schedule(1000);},5*60*1000);
  try{bridge.client().auth.onAuthStateChange(function(){setTimeout(refreshAccount,0);});}
  catch(err){textStatus("로그인 감시를 시작하지 못했어요: "+errorText(err));}
- refreshAccount();ready=true;
+ refreshAccount();
 })();
