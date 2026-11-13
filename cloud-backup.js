@@ -14,7 +14,7 @@
   '<p class="subtle" id="cloudAccountStatus" role="status" aria-live="polite">로그인 상태 확인 중…</p>',
   '<div class="actions"><button type="button" class="btn secondary" id="cloudUpload" disabled>☁️ 서버에 백업하기</button><button type="button" class="btn light" id="cloudRestore" disabled>📥 누락 기록 복원하기</button></div>',
   '<p class="subtle" id="cloudStatus" role="status" aria-live="polite">기존 아이폰 기록은 변경하지 않습니다. 서버 설정이 완료돼야 백업할 수 있어요.</p>',
-  '<p class="beta-note">⚠️ 아직 자동 동기화가 아닌 수동 백업입니다. 기존 JSON 내보내기도 계속 이용해 주세요. 다른 기기에서 복원한 기록은 자동으로 서버에 다시 올라가지 않습니다. 이메일 로그인 링크는 받은편지함에서 열어 주세요.</p>'
+  '<p class="beta-note">⚠️ 이 영역은 수동 백업입니다. 별도 ‘자동 동기화’를 아래에서 켤 수 있어요. 수동 백업은 기존 서버의 places.json을 덮어쓸 수 있으므로 주의해 주세요. JSON 내보내기도 계속 이용해 주세요.</p>'
  ].join("");
  var warning=panel.querySelector(".alert");
  panel.insertBefore(section,warning||null);
