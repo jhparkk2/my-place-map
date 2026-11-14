@@ -23,7 +23,8 @@
  upload=id("cloudUpload"), restore=id("cloudRestore"),
  account=id("cloudAccountStatus"), status=id("cloudStatus"),busy=false,currentUser=null;
  function message(s){status.textContent=s;}
- function setBusy(value){busy=value; login.disabled=value; logout.disabled=value||!currentUser; upload.disabled=value||!currentUser; restore.disabled=value||!currentUser;}
+ function canUse(){return !!(currentUser&&(!window.nawabomAccountGuard||window.nawabomAccountGuard.compatible(currentUser)));}
+ function setBusy(value){busy=value;login.disabled=value;logout.disabled=value||!currentUser;upload.disabled=value||!canUse();restore.disabled=value||!canUse();}
  function validUser(user){return !!(user&&user.id&&user.email&&user.is_anonymous!==true);}
  function friendlyError(err){
   var m=String(err&&err.message||err||"알 수 없는 오류");
@@ -33,6 +34,7 @@
  }
  function storageAndPath(){
   if(!currentUser)throw Error("이메일 로그인이 필요해요.");
+  if(window.nawabomAccountGuard)window.nawabomAccountGuard.claim(currentUser);
   return {storage:bridge.client().storage.from(BUCKET),path:currentUser.id+"/"+FILE};
  }
  async function userFromServer(){
@@ -47,7 +49,8 @@
   try{
    currentUser=await userFromServer();
    if(currentUser){
-    account.textContent="✅ 이메일 계정 연결: "+currentUser.email;
+    account.textContent=canUse()?"✅ 이메일 계정 연결: "+currentUser.email:
+     "⚠️ 다른 이메일 계정이 연결돼 있어요. 현재 기기의 기록을 보호하기 위해 서버 백업·복원을 차단했습니다. 로그아웃한 뒤 원래 이메일로 로그인해 주세요.";
     email.value=currentUser.email;
     email.disabled=true;
     login.hidden=true;logout.hidden=false;
@@ -78,7 +81,7 @@
  });
  logout.addEventListener("click",async function(){
   if(busy||!currentUser)return;
-  if(!confirm("나와봄 서버 백업 계정에서 로그아웃할까요? 이 기기의 방문 기록은 삭제되지 않아요."))return;
+  if(!confirm("이메일 계정에서 로그아웃할까요?\n\n주의: 로그아웃해도 이 기기의 장소·사진·후기는 삭제되지 않으며 Safari를 열면 계속 볼 수 있습니다. 공용 기기라면 사용하지 마세요."))return;
   setBusy(true);
   try{
    var r=await bridge.client().auth.signOut({scope:"local"});
