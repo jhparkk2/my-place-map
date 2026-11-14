@@ -1,4 +1,4 @@
-/* 나와봄 v4.37: account awareness and accidental cross-account sync prevention.
+/* 나와봄 v4.38: account awareness and accidental cross-account sync prevention.
    A local guard is NOT device encryption or access control. Supabase Storage RLS
    controls actual remote privacy. Existing IndexedDB data stays on this device. */
 (function(){
@@ -63,6 +63,27 @@
  ].join("");
  var heading=panel.querySelector(".sectiontitle");
  panel.insertBefore(section,heading?heading.nextSibling:panel.firstChild);
+ // Separate rights and deletion guidance. Account deletion is intentionally NOT enabled
+ // until the server function and anonymous-share cleanup are tested in production.
+ var rights=document.createElement("section");
+ rights.className="backup";
+ rights.setAttribute("aria-labelledby","dataRightsTitle");
+ rights.innerHTML=[
+  '<h3 id="dataRightsTitle">🧾 내 기록·계정 삭제 안내</h3>',
+  '<p>장소 기록과 이메일 계정, 공개 공유 링크는 <strong>보관되는 위치가 서로 달라요.</strong> 삭제 전 JSON 백업 파일로 필요한 기록을 따로 보관해 주세요.</p>',
+  '<div class="actions"><button type="button" class="btn light" id="rightsExportJson">📤 내 기록 JSON 백업</button></div>',
+  '<details class="search-more"><summary>장소 하나만 삭제하려면?</summary><p class="searchhelp"><strong>내 기록 → 해당 장소 → 삭제</strong>를 선택하세요. 자동 동기화가 켜져 있으면 변경이 서버에 전파될 수 있습니다. 과거 JSON 백업이나 수동 서버 백업 파일에서는 자동 삭제되지 않을 수 있어요.</p></details>',
+  '<details class="search-more"><summary>로그아웃하면 모든 기록이 사라지나요?</summary><p class="searchhelp">아니요. 이 기기의 장소·사진·복원본은 로그아웃 후에도 남습니다. Safari 방문 기록이나 사이트 데이터를 삭제하면 기기 기록을 잃을 수 있으므로 먼저 JSON 백업을 보관하세요.</p></details>',
+  '<details class="search-more"><summary>이메일 계정과 서버 기록을 모두 삭제하려면?</summary><p class="searchhelp">계정 완전 삭제 기능은 현재 <strong>개발·검증 중이며 아직 이용할 수 없습니다.</strong> 로그인 계정의 서버 저장 파일 외에 과거 공유 링크·익명 계정으로 만든 공유 자료도 확인해야 합니다. 실제 기능이 출시되기 전에는 앱에서 모든 데이터가 즉시 삭제된다고 보장하지 않습니다.</p></details>',
+  '<details class="search-more"><summary>공개 공유 링크를 취소할 수 있나요?</summary><p class="searchhelp">사진 포함 공유 링크는 공개 저장소에 남을 수 있습니다. <strong>공유 링크 취소·일괄 삭제는 아직 지원되지 않습니다.</strong> 외부로 공유할 사진과 장소 내용을 신중히 선택해 주세요.</p></details>',
+  '<p class="beta-note">⚠️ 정식 출시 전에 개인정보처리방침, 문의처, 계정 탈퇴, 공개 공유 자료 삭제 기능을 별도로 검증해야 합니다.</p>'
+ ].join("");
+ panel.insertBefore(rights,section.nextSibling);
+ var exportBtn=document.getElementById("rightsExportJson");
+ exportBtn.addEventListener("click",function(){
+  var existing=document.getElementById("exportBtn");
+  if(existing)existing.click();
+ });
  var status=document.getElementById("accountSafetyStatus");
  var go=document.getElementById("accountGoToLogin");
  go.addEventListener("click",function(){
