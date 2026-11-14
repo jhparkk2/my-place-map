@@ -143,10 +143,10 @@
    // The original places.json is never overwritten by this automatic synchronization.
    if(migratingLegacy)remoteMap.clear();
    var changes=[],tombChanged=false;
-   // If this device already has records, do not resurrect locations deleted since the old snapshot.
-   if(migratingLegacy&&current.length){
-    remote=remote.filter(function(e){return localMap.has(e.id);});
-   }
+   // During first migration, preserve ALL locations in the previous manual backup.
+   // Explicit tombstones still win; otherwise prefer recovering a missing record to losing it.
+   // An older deleted location might reappear once: it can be deleted after migration.
+
    for(var e of remote){
     var local=localMap.get(e.id),del=Number(tomb[e.id])||0;
     if(del&&del>=Number(e.updatedAt))continue;
@@ -184,7 +184,7 @@
    var count=(await bridge.readLocal()).length;
    textStatus("✅ 동기화 완료 · 현재 "+count+"개 장소 · "+new Date().toLocaleString("ko-KR")+
     (changes.length||outgoing.length?" (받은 변경 "+changes.length+"개, 보낸 변경 "+outgoing.length+"개)":" (변경 없음)"));
-  }catch(err){textStatus("⚠️ 자동 동기화 실패: "+errorText(err)+" · 이 기기의 기록은 그대로 남아 있어요. 연결 후 ‘지금 동기화’를 눌러 주세요.");}
+  }catch(err){textStatus("⚠️ 자동 동기화 중 일부 작업을 완료하지 못했어요: "+errorText(err)+" · 기록 보관 상태를 확인하고 ‘지금 동기화’를 눌러 다시 확인해 주세요.");}
   finally{running=false;updateButtons();if(needsResync){needsResync=false;schedule(300);}}
  }
  toggle.addEventListener("click",function(){
