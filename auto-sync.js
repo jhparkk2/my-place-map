@@ -13,7 +13,7 @@
   '<p>같은 이메일로 로그인한 기기끼리 장소·후기·사진의 <strong>추가·수정·삭제</strong>를 맞춥니다. 기기 기록은 그대로 사용하고 서버에도 개별 장소를 저장합니다.</p>',
   '<div class="actions"><button type="button" class="btn secondary" id="autoSyncToggle" disabled>자동 동기화 켜기</button><button type="button" class="btn light" id="autoSyncNow" disabled>지금 동기화</button></div>',
   '<p class="subtle" id="autoSyncStatus" role="status" aria-live="polite">로그인 상태 확인 중…</p>',
-  '<p class="beta-note">⚠️ 처음 켤 때 현재 기기의 장소를 로그인한 계정의 비공개 저장 공간에 복사합니다. 앱이 열려 있고 인터넷에 연결돼 있을 때 동기화됩니다. 여러 기기에서 같은 장소를 동시에 수정하면 최근 수정 시간의 기록이 우선합니다. 기존 JSON 백업 파일은 계속 보관해 주세요.</p>'
+  '<p class="beta-note">⚠️ 처음 켤 때 현재 기기의 장소를 로그인한 계정의 비공개 저장 공간에 복사합니다. 기기에 남은 기록은 로그아웃해도 계속 보입니다. 앱이 열려 있고 인터넷에 연결돼 있을 때 동기화됩니다. 여러 기기에서 같은 장소를 동시에 수정하면 최근 수정 시간의 기록이 우선합니다. JSON 백업 파일도 보관해 주세요.</p>'
  ].join("");
  var warning=panel.querySelector(".alert");panel.insertBefore(section,warning||null);
  var toggle=document.getElementById("autoSyncToggle"),now=document.getElementById("autoSyncNow"),status=document.getElementById("autoSyncStatus");
@@ -28,8 +28,10 @@
   var t=getTombs();t[id]=Math.max(Number(t[id])||0,Number(at)||Date.now());saveTombs(t);
  }
  function saveSetting(value){try{localStorage.setItem(prefKey(),value?"1":"0");return true;}catch(err){textStatus("자동 동기화 설정을 저장하지 못했어요. 브라우저 저장 공간을 확인하세요.");return false;}}
+ function compatibleAccount(){return !!user&&(!window.nawabomAccountGuard||window.nawabomAccountGuard.compatible(user));}
  function updateButtons(){
-  toggle.disabled=!user||running;now.disabled=!user||!enabled||running;
+  toggle.disabled=!compatibleAccount()||running;
+  now.disabled=!compatibleAccount()||!enabled||running;
   toggle.textContent=enabled?"자동 동기화 끄기":"자동 동기화 켜기";
  }
  function errorText(err){return String(err&&err.message||err||"알 수 없는 오류");}
@@ -46,10 +48,11 @@
   try{
    var found=await checkedUser(),previous=user&&user.id;
    user=found;
-   enabled=!!user&&localStorage.getItem(prefKey())==="1";
+   enabled=compatibleAccount()&&localStorage.getItem(prefKey())==="1";
    if(previous!==(user&&user.id)){if(timer)clearTimeout(timer);timer=null;}
    updateButtons();
    if(!user)textStatus("위쪽 ‘내 기록 서버 백업’에서 이메일로 로그인하면 사용할 수 있어요.");
+   else if(!compatibleAccount())textStatus("⚠️ 다른 계정의 장소 기록이 이 기기에 있어요. 잘못된 서버 전송을 막기 위해 동기화를 차단했습니다. 원래 이메일로 다시 로그인해 주세요.");
    else if(!enabled)textStatus("이메일 로그인 완료. 자동 동기화는 아직 꺼져 있어요. 버튼을 눌러 시작할 수 있어요.");
    else{ textStatus("✅ 자동 동기화 사용 중 · 앱을 열거나 기록을 바꾸면 서버와 확인해요.");schedule(700);}
   }catch(err){user=null;enabled=false;updateButtons();textStatus("⚠️ 로그인 확인 실패: "+errorText(err));}
@@ -127,6 +130,7 @@
   running=true;updateButtons();
   var uid=user.id; textStatus("🔄 서버와 장소 기록을 확인하고 있어요…");
   try{
+   if(window.nawabomAccountGuard)window.nawabomAccountGuard.claim(user);
    var names=await remoteList(uid), remote=await downloadAll(uid,names);
    var migratingLegacy=false;
    if(!remote.length){
@@ -188,7 +192,7 @@
   finally{running=false;updateButtons();if(needsResync){needsResync=false;schedule(300);}}
  }
  toggle.addEventListener("click",function(){
-  if(running||!user)return;
+  if(running||!compatibleAccount())return;
   if(enabled){
    if(!confirm("자동 동기화를 끌까요? 이 기기의 장소와 이미 저장된 서버 기록은 삭제되지 않아요."))return;
    enabled=false;if(!saveSetting(false)){enabled=true;return;}
@@ -196,6 +200,8 @@
    textStatus("자동 동기화가 꺼졌어요. 기기 기록과 서버 기록은 유지돼요.");
   }else{
    if(!confirm("자동 동기화를 켤까요?\n\n이 기기의 장소·후기·사진을 현재 로그인한 이메일 계정의 비공개 서버에 저장하고, 같은 계정의 다른 기기와 변경사항을 맞춥니다.\n\n기존 JSON 백업 파일은 계속 보관해 주세요."))return;
+   try{if(window.nawabomAccountGuard)window.nawabomAccountGuard.claim(user);}
+   catch(err){textStatus("⚠️ "+errorText(err));return;}
    enabled=true;if(!saveSetting(true)){enabled=false;return;}
    textStatus("자동 동기화를 시작합니다…");schedule(100);
   }
