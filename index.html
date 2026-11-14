@@ -949,7 +949,7 @@ function importMany(items){
    t.onerror=function(){reject(t.error||Error("백업 가져오기 저장 오류"));};
    t.onabort=function(){reject(t.error||Error("백업 가져오기 취소"));};
    var store=t.objectStore(DBSTORE);
-   items.forEach(function(item){store.put(item);});
+   items.forEach(function(item){store.put(Object.assign({},item,{updatedAt:Math.max(Date.now(),(Number(item.updatedAt)||0)+1)}));});
   }catch(err){if(t){try{t.abort();}catch(ignore){}}reject(err);}
  });
 }
@@ -3012,4 +3012,4 @@ window.nawabomCloudBridge={
 window.addEventListener("hashchange",dispatchIncomingShare);
 if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("./sw.js").catch(function(){});});}
 })();
-</script><script src="./cloud-backup.js?v=435"></script><script src="./auto-sync.js?v=436"></script></body></html>
+</script><script src="./cloud-backup.js?v=436"></script><script src="./auto-sync.js?v=436"></script></body></html>
